@@ -21,8 +21,10 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
+          echo $USER
           echo HELLO WORLD!
           su trustseco
+          echo $USER
           echo LOGGED IN
           cd /srv/TrustSECO-DLT
           echo FOUND CORRECT FOLDEER
