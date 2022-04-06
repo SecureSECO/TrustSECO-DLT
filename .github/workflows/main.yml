@@ -26,6 +26,7 @@ jobs:
           echo LOGGED IN
           cd /srv/TrustSECO-DLT
           echo FOUND CORRECT FOLDEER
+          git status
           git pull
           echo PULLED
           sudo systemctl restart TrustSECO-DLT
