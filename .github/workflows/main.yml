@@ -23,8 +23,12 @@ jobs:
         run: |
           echo HELLO WORLD!
           su trustseco
+          echo LOGGED IN
           cd /srv/TrustSECO-DLT
+          echo FOUND CORRECT FOLDEER
           git pull
+          echo PULLED
           sudo systemctl restart TrustSECO-DLT
+          echo RESTARTED SERVICE
           
           
