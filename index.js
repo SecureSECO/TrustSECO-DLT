@@ -7,4 +7,12 @@ const config = require('./config/config.json');
 
 const app = Application.defaultApplication(genesisBlock, config);
 
-app.run();
+// Export function so CoSy can call it.
+module.exports = {
+    start() {
+        app.run();
+    }
+}
+
+// Call start if file is ran by 'node index.js'
+module.exports.start();
