@@ -18,6 +18,8 @@ jobs:
         proxy_username: ${{ secrets.PROXY_USERNAME }}
         proxy_key: ${{ secrets.KEY }}
         script: |
-          whoami
-          pwd
-          ls -al
+          cd /srv/TrustSECO-DLT
+          git pull
+          npm install
+          sudo systemctl restart TrustSECO-DLT
+          
