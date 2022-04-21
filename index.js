@@ -15,4 +15,5 @@ module.exports = {
 }
 
 // Call start if file is ran by 'node index.js'
-module.exports.start();
+if (require.main === module)
+    module.exports.start();
