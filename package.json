@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@liskhq/lisk-framework-dashboard-plugin": "^0.1.6",
     "lisk-sdk": "^5.2.1"
   }
 }
