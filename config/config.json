@@ -5,7 +5,8 @@
     "rpc": {
         "enable": true,
         "mode": "ws",
-        "port": 8080
+        "port": 8080,
+        "host": "0.0.0.0"
     },
     "genesisConfig": {
         "blockTime": 5,
@@ -39,6 +40,14 @@
     "logger": {
         "fileLogLevel": "debug",
         "consoleLogLevel": "info"
+    },
+    "plugins": {
+        "dashboard": {
+            "applicationName": "TrustSECO DLT",
+            "applicationUrl": "ws://turtle.science.uu.nl:8080/ws",
+            "port": 8001,
+            "host": "0.0.0.0"
+        }
     },
     "network": {
         "port": 8000,
@@ -164,6 +173,5 @@
             }
         ],
         "defaultPassword": "fides is awesome"
-    },
-    "plugins": {}
+    }
 }
