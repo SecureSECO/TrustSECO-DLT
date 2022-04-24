@@ -1,5 +1,8 @@
 FROM node:12.22.9-alpine
 
+RUN apk add --update python make g++\
+   && rm -rf /var/cache/apk/*
+
 # Create app directory
 WORKDIR /usr/src/app
 
