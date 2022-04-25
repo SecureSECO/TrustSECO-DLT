@@ -17,30 +17,15 @@ export interface TrustFactsAssetProps {
 
 export class NaiveModule extends BaseModule {
     public actions = {
-        // Example below
-        // getBalance: async (params) => this._dataAccess.account.get(params.address).token.balance,
-        // getBlockByID: async (params) => this._dataAccess.blocks.get(params.id),
+  
     };
     public reducers = {
-        // Example below
-        // getBalance: async (
-		// 	params: Record<string, unknown>,
-		// 	stateStore: StateStore,
-		// ): Promise<bigint> => {
-		// 	const { address } = params;
-		// 	if (!Buffer.isBuffer(address)) {
-		// 		throw new Error('Address must be a buffer');
-		// 	}
-		// 	const account = await stateStore.account.getOrDefault<TokenAccount>(address);
-		// 	return account.token.balance;
-		// },
+  
     };
     public name = 'naive';
     public transactionAssets = [new FactMessageAsset()];
     public events = [
         'newTrustFact'
-        // Example below
-        // 'naive:newBlock',
     ];
     public id = 1001;
 
@@ -57,11 +42,6 @@ export class NaiveModule extends BaseModule {
             trustFacts: 'TrF: ',
         },
     };
-
-    // public constructor(genesisConfig: GenesisConfig) {
-    //     super(genesisConfig);
-    // }
-
     // Lifecycle hooks
 
     public async afterTransactionApply(_input: TransactionApplyContext) {
@@ -77,8 +57,8 @@ export class NaiveModule extends BaseModule {
                _input.transaction.asset
            );
 
-        // 3. Publish the event 'hello:newHello' and
-        // attach information about the sender address and the posted hello message.
+        // 3. Publish the event 'naive:newTrustFact' and
+        // attach information about the sender address and the posted message.
         this._channel.publish('naive:newTrustFact', {
             sender: _input.transaction.senderAddress.toString('hex'),
             naive: trustAsset.TrustFactsJSON

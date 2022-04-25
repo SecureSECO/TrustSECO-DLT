@@ -1,5 +1,3 @@
-
-
 const trustFactAssetSchema = {
   $id: "lisk/hello/asset",
   type: "object",

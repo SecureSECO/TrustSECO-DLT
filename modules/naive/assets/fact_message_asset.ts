@@ -30,7 +30,7 @@ export class FactMessageAsset extends BaseAsset {
 	// eslint-disable-next-line @typescript-eslint/require-await
 	public async apply({ asset, transaction, stateStore }): Promise<void> {
 
-		 // 1. Get account data of the sender of the hello transaction
+		 // 1. Get account data of the sender of the transaction
 		 const senderAddress = transaction.senderAddress;
 		 const senderAccount = await stateStore.account.get(senderAddress);
 
