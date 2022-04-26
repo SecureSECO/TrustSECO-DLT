@@ -19,3 +19,5 @@ When necessary (f.e. after adding a module); the `config/createGenesisBlock.js` 
 # Safety
 
 Note that the master password for all delegate accounts is very weak, and stored in plain-text in the config.
+
+hallo
