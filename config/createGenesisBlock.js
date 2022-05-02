@@ -4,6 +4,7 @@ const { TokenModule, DPoSModule, KeysModule, SequenceModule, genesis, passphrase
 const config = require('./config.json');
 const { writeFileSync } = require('fs');
 const path = require('path');
+const { NaiveModule } = require('../dist/modules/naive/naive_module');
 
 // todo: import all custom modules
 // const { MyModule } = require('./my-module');
@@ -21,7 +22,7 @@ const modules = [
     new SequenceModule(config.genesisConfig),
 
     // todo; add our modules!
-    // new MyModule(),
+    new NaiveModule(),
 
 ]
 
