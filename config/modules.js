@@ -1,7 +1,7 @@
 const { TokenModule, DPoSModule, KeysModule, SequenceModule } = require('lisk-sdk');
 const config = require('./config.json');
 
-// const { CodaModule } = require('../modules/coordination-database/coda-module');
+const { NaiveModule } = require('../dist/modules/naive/naive_module');
 
 const modules = [
 
@@ -14,7 +14,7 @@ const modules = [
     // ADD ALL MODULES HERE
     // (don't forget to import them)
     
-    // new CodaModule(config.genesisConfig),
+    new NaiveModule(config.genesisConfig),
 ]
 
 module.exports.modules = modules;

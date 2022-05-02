@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "genesis": "node config/createGenesisBlock.js",
-    "start": "tsc && node dist/index.js"
+    "genesis": "npx tsc && node config/createGenesisBlock.js",
+    "start": "npx tsc && node dist/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +15,7 @@
     "lisk-sdk": "^5.2.1"
   },
   "devDependencies": {
-    "prompt": "^1.3.0"
+    "prompt": "^1.3.0",
+    "typescript": "^4.6.4"
   }
 }
