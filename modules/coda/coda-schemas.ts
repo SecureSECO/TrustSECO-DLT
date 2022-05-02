@@ -1,27 +1,39 @@
 
-export const codaJobsSchema = {
-    $id: "lisk/hello/counter",
-    type: "object",
-    required: ["helloCounter"],
+export const codaJobSchema = {
+    $id: 'coda/add-job',
+    type: 'object',
+    required: ["package", "source", "fact"],
     properties: {
-        helloCounter: {
-            dataType: "uint32",
-            fieldNumber: 1,
+        // package of the trustfact (e.g. "microsoft/terminal")
+        package: {
+            dataType: 'string',
+            fieldNumber: 1
         },
-    },
-};
+        // source for the fact (e.g. "github")
+        source: {
+            dataType: 'string',
+            fieldNumber: 2
+        },
+        // the type of fact (e.g. "stars")
+        fact: {
+            dataType: 'string',
+            fieldNumber: 3
+        }
+    }
+}
 
-export const helloAssetSchema = {
-    $id: "lisk/hello/asset",
-    type: "object",
-    required: ["helloString"],
+export const codaJobListSchema = {
+    $id: 'coda/job-list',
+    type: 'object',
+    required: ["jobs"],
     properties: {
-        helloString: {
-            dataType: "string",
+        jobs: {
+            type: 'array',
             fieldNumber: 1,
-        },
-    },
-};
+            items: codaJobSchema
+        }
+    }
+}
 
 export const validFacts = {
     "github" : ["stars", "forks", "issues"],
