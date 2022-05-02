@@ -8,7 +8,7 @@
     "build": "npx tsc",
     "genesis": "npm run build && node config/createGenesisBlock.js",
     "start": "npm run build && node dist/index.js",
-    "unsafe-reset": "rm -rf ~/.lisk/TrustSECO-DLT",
+    "unsafe-reset": "rm -rf ~/.lisk/TrustSECO",
     "reset": "read -p \"Removing ~/.lisk/.. of the CURRENT USER! Are you sure? [yes|no] \" ok && if [ \"$ok\" = \"yes\" ]; then npm run unsafe-reset; fi;"
   },
   "author": "",
