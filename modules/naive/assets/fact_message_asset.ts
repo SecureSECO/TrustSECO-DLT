@@ -1,4 +1,6 @@
-import { BaseAsset, ApplyAssetContext, ValidateAssetContext, codec } from 'lisk-sdk';
+//, ApplyAssetContext, ValidateAssetContext, codec
+
+import { BaseAsset} from 'lisk-sdk';
 
 export class FactMessageAsset extends BaseAsset {
 	public name = 'factMessage';
