@@ -84,10 +84,15 @@ function createGenesisBlock() {
                 hashOnion: { count, distance, hashes }
             });
         }
+
+        credentials.push({...account, cred});
+
         return account;
     }
 
     config.forging.delegates = [];
+
+    credentials = [];
 
     delegates = [
         newAccount(100000000, 'genesisDelegate1'),
@@ -124,4 +129,7 @@ function createGenesisBlock() {
 
     writeFileSync(path.resolve(__dirname,'config.json'), JSON.stringify(config, null, 4));
     console.log('Updated config.json');
+    
+    writeFileSync(path.resolve(__dirname,'accounts.json'), JSON.stringify(credentials, null, 4));
+    console.log('Updated accounts.json');
 }

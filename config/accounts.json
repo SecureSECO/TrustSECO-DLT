@@ -1,0 +1,131 @@
+[
+    {
+        "address": "f945dac1067679459294a9cb8dd22c879e91bf4f",
+        "token": {
+            "balance": "100000000"
+        },
+        "dpos": {
+            "delegate": {
+                "username": "genesisDelegate1"
+            }
+        },
+        "cred": {
+            "address": "lskgmvhqu3b7ajk5pkkqnm2skyouf84c8d8pbptb9",
+            "binaryAddress": "f945dac1067679459294a9cb8dd22c879e91bf4f",
+            "passphrase": "sorry noise hour salute uniform coffee goat rotate baby check history various",
+            "publicKey": "6dedb2d2f8600730742d96a9bcba8b64d854dba1dca5f1c5f0bedc824531dfd0",
+            "privateKey": "a1b3e2896f78c40b7227b79d6edd7ba49c1fcac8fcbd6ea5bc6d6cab373331a06dedb2d2f8600730742d96a9bcba8b64d854dba1dca5f1c5f0bedc824531dfd0"
+        }
+    },
+    {
+        "address": "cf460ffa9d0823f6a6b4ba8b528a9f65b80e1245",
+        "token": {
+            "balance": "100000000"
+        },
+        "dpos": {
+            "delegate": {
+                "username": "genesisDelegate2"
+            }
+        },
+        "cred": {
+            "address": "lskahczgfkhxzyg94qkw6mqmvkgoejzjprmc63qct",
+            "binaryAddress": "cf460ffa9d0823f6a6b4ba8b528a9f65b80e1245",
+            "passphrase": "page build you rubber credit put response hover reduce craft chunk when",
+            "publicKey": "b3e33495eb2104c39a8029fc1119666d8527bb23fd5334b2b35127bd0c908336",
+            "privateKey": "0ca1328294ad70e485eed3c855276f6cb3cb3cd87549ecece43a1f0a714287b8b3e33495eb2104c39a8029fc1119666d8527bb23fd5334b2b35127bd0c908336"
+        }
+    },
+    {
+        "address": "b293d81118572c9b9e724d07106e47a6ad12f365",
+        "token": {
+            "balance": "100000000"
+        },
+        "dpos": {
+            "delegate": {
+                "username": "genesisDelegate3"
+            }
+        },
+        "cred": {
+            "address": "lske64hup326je4wntr4kcyzsrnkdeymjsm7fg6or",
+            "binaryAddress": "b293d81118572c9b9e724d07106e47a6ad12f365",
+            "passphrase": "grit monitor sweet spy derive lens rich stock garbage congress toss vocal",
+            "publicKey": "2a4d20d7eb3be38eb923edb0c5361e7d831d8b19b9212a6764883d32d67b3986",
+            "privateKey": "fe90246a233826f73b2c0eef5ef02c3c20d7cd1628b5f247868548df3adbb44b2a4d20d7eb3be38eb923edb0c5361e7d831d8b19b9212a6764883d32d67b3986"
+        }
+    },
+    {
+        "address": "9fe0c95c9463e5d0af654e9527509bf04b2093ed",
+        "token": {
+            "balance": "100000000"
+        },
+        "dpos": {
+            "delegate": {
+                "username": "genesisDelegate4"
+            }
+        },
+        "cred": {
+            "address": "lsktguorwpko8rhx5sm4d6r7kpsfxmrxpg94f5js5",
+            "binaryAddress": "9fe0c95c9463e5d0af654e9527509bf04b2093ed",
+            "passphrase": "pool wire boil equal person north orange home process mixture permit goddess",
+            "publicKey": "e29789f11f8418b74860940d22a172cb4cb1a30b0305632ab508faaec279145e",
+            "privateKey": "8ad69bbd310e94c04c57c5189ae1475359bbe359f2c5adf73a0177cc605c62d2e29789f11f8418b74860940d22a172cb4cb1a30b0305632ab508faaec279145e"
+        }
+    },
+    {
+        "address": "d8e10d11fb30db121aa0b1d06c2927e9de06732e",
+        "token": {
+            "balance": "100000000"
+        },
+        "dpos": {
+            "delegate": {
+                "username": "genesisDelegate5"
+            }
+        },
+        "cred": {
+            "address": "lskscuudp8sbc9ypbqzen3b264nhn8zoja7xbyqo2",
+            "binaryAddress": "d8e10d11fb30db121aa0b1d06c2927e9de06732e",
+            "passphrase": "jump spot grid method gym guess burst rapid visa want fossil drill",
+            "publicKey": "a75fbfd937ac4b750aa99be19fddae0b15021944568c142adcb6bcbcca85e36c",
+            "privateKey": "99e5da161b2445878e8d4ee62eae0d58a8620afd1686b98f5dc17d1b2122faeda75fbfd937ac4b750aa99be19fddae0b15021944568c142adcb6bcbcca85e36c"
+        }
+    },
+    {
+        "address": "4e5e0aa5d2e91d81e81c0a7937dd1b9227abd378",
+        "token": {
+            "balance": "25000000000"
+        },
+        "cred": {
+            "address": "lsk4a8zq47rhp72cdzjx4jt8w3sr3tdwks2zep77u",
+            "binaryAddress": "4e5e0aa5d2e91d81e81c0a7937dd1b9227abd378",
+            "passphrase": "timber grape couple useless tower lyrics orange armed guess breeze crunch sadness",
+            "publicKey": "f749aade6380d3797e5b73e172d2e194afa47701072bec8adee35246104be93e",
+            "privateKey": "20b428d131b5b8bdccf9b67a3f25895a707244a5d750e62bdb3249a7c3056241f749aade6380d3797e5b73e172d2e194afa47701072bec8adee35246104be93e"
+        }
+    },
+    {
+        "address": "151ba05fef37e5ec57ceb608068a7c79d1a3a597",
+        "token": {
+            "balance": "25000000000"
+        },
+        "cred": {
+            "address": "lskvk9dzwg8bgrf2qf7e2pz9vtj8n3dn4owd9qnrg",
+            "binaryAddress": "151ba05fef37e5ec57ceb608068a7c79d1a3a597",
+            "passphrase": "recipe arrow tape family cinnamon poem audit neither giant expect nature story",
+            "publicKey": "03c7b58421ba5a4a8888246690a9a72092cc8e8697861dd38fa438a7ff36f1e7",
+            "privateKey": "dad4b1a886c5797af442b30022c14c2c5e911aea8c759f455fa80b53a54251b203c7b58421ba5a4a8888246690a9a72092cc8e8697861dd38fa438a7ff36f1e7"
+        }
+    },
+    {
+        "address": "92eca412d5ac459f2271ab8873e9c6a0f96c84ac",
+        "token": {
+            "balance": "25000000000"
+        },
+        "cred": {
+            "address": "lskr5e63peqqyvaf3tyq7pnnd7bkcjeaxmopatn9t",
+            "binaryAddress": "92eca412d5ac459f2271ab8873e9c6a0f96c84ac",
+            "passphrase": "flight mansion hub debate flame panel swallow arrest crowd often month until",
+            "publicKey": "94c7622957f6021490f195bb2f84b47286c8268171849537e19b9309feb47883",
+            "privateKey": "fec1fe8bb46439906cbb9e4d483d5874242322ee1dd628512a1b59cf779c31a494c7622957f6021490f195bb2f84b47286c8268171849537e19b9309feb47883"
+        }
+    }
+]
