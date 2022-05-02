@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "genesis": "node config/createGenesisBlock.js"
+    "genesis": "node config/createGenesisBlock.js",
+    "start": "tsc && node dist/index.js"
   },
   "author": "",
   "license": "ISC",

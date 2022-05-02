@@ -24,7 +24,7 @@
                     },
                     "dpos": {
                         "delegate": {
-                            "username": "genesisDelegate2",
+                            "username": "genesisDelegate1",
                             "pomHeights": [],
                             "consecutiveMissedBlocks": 0,
                             "lastForgedHeight": 0,
@@ -180,7 +180,7 @@
                     },
                     "dpos": {
                         "delegate": {
-                            "username": "genesisDelegate1",
+                            "username": "genesisDelegate2",
                             "pomHeights": [],
                             "consecutiveMissedBlocks": 0,
                             "lastForgedHeight": 0,

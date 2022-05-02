@@ -18,6 +18,8 @@ prompt.start().get({
 
 });
 
+
+
 function createGenesisBlock() {
 
     const { genesis, passphrase, cryptography } = require('lisk-sdk');
