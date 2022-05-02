@@ -5,19 +5,48 @@
         "previousBlockID": "",
         "reward": "0",
         "signature": "",
-        "timestamp": 1651496869,
+        "timestamp": 1651501482,
         "transactionRoot": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "version": 0,
         "asset": {
             "initRounds": 3,
             "initDelegates": [
-                "3bd8aa9b3682c34a704a7b7694f6ccec9c9c2076",
-                "41c81b3b436c8c48ac7fa9e7f3afef1bbe3056a2",
-                "4ee3291abfdf9585c0bd2e1990ab97c516588830",
-                "9a0558d5d5f4cd8997f7d8f6bc82f3b720524eb1",
-                "afbb6d9280b9a07267e64e9c577ae3f865eeb250"
+                "004ef54ea9f367223bf11628a76633ad02789a85",
+                "30cd06b4ff7fb45b16f4597fe7e0c0a9d60a5afa",
+                "55611c11050391ceee6925d5d210e0f9e746d7ec",
+                "5f5ed52fdba6dac02e44c739a5c76b3720c3493d",
+                "6a5e6959020892dde0c1d8aee58cbda3171d4e27"
             ],
             "accounts": [
+                {
+                    "token": {
+                        "balance": "100000000"
+                    },
+                    "dpos": {
+                        "delegate": {
+                            "username": "genesisDelegate5",
+                            "pomHeights": [],
+                            "consecutiveMissedBlocks": 0,
+                            "lastForgedHeight": 0,
+                            "isBanned": false,
+                            "totalVotesReceived": "0"
+                        },
+                        "sentVotes": [],
+                        "unlocking": []
+                    },
+                    "keys": {
+                        "mandatoryKeys": [],
+                        "optionalKeys": [],
+                        "numberOfSignatures": 0
+                    },
+                    "sequence": {
+                        "nonce": "0"
+                    },
+                    "naive": {
+                        "trustFacts": "TrF: "
+                    },
+                    "address": "004ef54ea9f367223bf11628a76633ad02789a85"
+                },
                 {
                     "token": {
                         "balance": "25000000000"
@@ -45,15 +74,15 @@
                     "naive": {
                         "trustFacts": "TrF: "
                     },
-                    "address": "0ec602c8759043d8da8160ca29700aa5a942bf90"
+                    "address": "1078ca13c65e7e84d3f3707ea2010b41a9ce888f"
                 },
                 {
                     "token": {
-                        "balance": "100000000"
+                        "balance": "25000000000"
                     },
                     "dpos": {
                         "delegate": {
-                            "username": "genesisDelegate3",
+                            "username": "",
                             "pomHeights": [],
                             "consecutiveMissedBlocks": 0,
                             "lastForgedHeight": 0,
@@ -74,7 +103,7 @@
                     "naive": {
                         "trustFacts": "TrF: "
                     },
-                    "address": "3bd8aa9b3682c34a704a7b7694f6ccec9c9c2076"
+                    "address": "14d6923b448ad4787c96aa684cbaa648e5c34233"
                 },
                 {
                     "token": {
@@ -103,36 +132,7 @@
                     "naive": {
                         "trustFacts": "TrF: "
                     },
-                    "address": "41c81b3b436c8c48ac7fa9e7f3afef1bbe3056a2"
-                },
-                {
-                    "token": {
-                        "balance": "100000000"
-                    },
-                    "dpos": {
-                        "delegate": {
-                            "username": "genesisDelegate2",
-                            "pomHeights": [],
-                            "consecutiveMissedBlocks": 0,
-                            "lastForgedHeight": 0,
-                            "isBanned": false,
-                            "totalVotesReceived": "0"
-                        },
-                        "sentVotes": [],
-                        "unlocking": []
-                    },
-                    "keys": {
-                        "mandatoryKeys": [],
-                        "optionalKeys": [],
-                        "numberOfSignatures": 0
-                    },
-                    "sequence": {
-                        "nonce": "0"
-                    },
-                    "naive": {
-                        "trustFacts": "TrF: "
-                    },
-                    "address": "4ee3291abfdf9585c0bd2e1990ab97c516588830"
+                    "address": "30cd06b4ff7fb45b16f4597fe7e0c0a9d60a5afa"
                 },
                 {
                     "token": {
@@ -161,7 +161,7 @@
                     "naive": {
                         "trustFacts": "TrF: "
                     },
-                    "address": "5919666a9d1ee7f2b65be8ceada3235bd2cd22f5"
+                    "address": "42ff7b83282ad72bfb3c15365a852cbeede43f7b"
                 },
                 {
                     "token": {
@@ -190,7 +190,7 @@
                     "naive": {
                         "trustFacts": "TrF: "
                     },
-                    "address": "9a0558d5d5f4cd8997f7d8f6bc82f3b720524eb1"
+                    "address": "55611c11050391ceee6925d5d210e0f9e746d7ec"
                 },
                 {
                     "token": {
@@ -198,7 +198,7 @@
                     },
                     "dpos": {
                         "delegate": {
-                            "username": "genesisDelegate5",
+                            "username": "genesisDelegate3",
                             "pomHeights": [],
                             "consecutiveMissedBlocks": 0,
                             "lastForgedHeight": 0,
@@ -219,15 +219,15 @@
                     "naive": {
                         "trustFacts": "TrF: "
                     },
-                    "address": "afbb6d9280b9a07267e64e9c577ae3f865eeb250"
+                    "address": "5f5ed52fdba6dac02e44c739a5c76b3720c3493d"
                 },
                 {
                     "token": {
-                        "balance": "25000000000"
+                        "balance": "100000000"
                     },
                     "dpos": {
                         "delegate": {
-                            "username": "",
+                            "username": "genesisDelegate2",
                             "pomHeights": [],
                             "consecutiveMissedBlocks": 0,
                             "lastForgedHeight": 0,
@@ -248,11 +248,11 @@
                     "naive": {
                         "trustFacts": "TrF: "
                     },
-                    "address": "d06668bbb2421e7ae0e935903193ecf7fdbc4473"
+                    "address": "6a5e6959020892dde0c1d8aee58cbda3171d4e27"
                 }
             ]
         },
-        "id": "b1054c047fc6a0828bc36a9d999f433c1ee2254f0c0a1e358c2146928219a9a3"
+        "id": "00a48135c79d0cd8f791b4236d4979aa0f3fd012cbe43c6e61adecf16fdba5ef"
     },
     "payload": []
 }
