@@ -8,7 +8,7 @@ To get this running:
 
 1. `git clone` this repo
 2. `npm install`
-3. `node index.js` and profit!
+3. `npm run start` and profit!
 
 You should get connected to turtle and/or dove and/or other running instances. If your chain does _not_ start at block 0 you know it worked :D
 
