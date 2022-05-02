@@ -1,0 +1,131 @@
+[
+    {
+        "address": "23404404f2c8d8647f6a554a368088f2325bf8ba",
+        "token": {
+            "balance": "100000000"
+        },
+        "dpos": {
+            "delegate": {
+                "username": "genesisDelegate1"
+            }
+        },
+        "cred": {
+            "address": "lskp9zp3xnracob3gs66qmc9zp3f3amwfmdom82n9",
+            "binaryAddress": "23404404f2c8d8647f6a554a368088f2325bf8ba",
+            "passphrase": "photo sound easily pupil aisle taxi pact keep gorilla retreat imitate switch",
+            "publicKey": "5e2405dc9e6ecf1e6ce393a3a6855e2285f9aad023b13c6443c296f9c7da1402",
+            "privateKey": "f838e46e4fbdef4be0b5ee9f4c2c88dc75c12d692307e54a1ac717cb657a78d05e2405dc9e6ecf1e6ce393a3a6855e2285f9aad023b13c6443c296f9c7da1402"
+        }
+    },
+    {
+        "address": "5d0d01086f558f144d562e4829fa1307b6a19fd9",
+        "token": {
+            "balance": "100000000"
+        },
+        "dpos": {
+            "delegate": {
+                "username": "genesisDelegate2"
+            }
+        },
+        "cred": {
+            "address": "lsk5kbuvvc86eny3t6emapvtfutzfs6cnfa4y9nq6",
+            "binaryAddress": "5d0d01086f558f144d562e4829fa1307b6a19fd9",
+            "passphrase": "emotion control fish decide club divert ranch sauce this kite delay dry",
+            "publicKey": "ff926ca42e941b66604cbb3e2a8745fec6ad5892874fc8cccadcfa01e207a1a1",
+            "privateKey": "c129b110fbb77b8deed70e05725c9a23c06001637d1ef6c7c1d68901ed595935ff926ca42e941b66604cbb3e2a8745fec6ad5892874fc8cccadcfa01e207a1a1"
+        }
+    },
+    {
+        "address": "de7681929cfb650e761543aef8bffc5734c3d922",
+        "token": {
+            "balance": "100000000"
+        },
+        "dpos": {
+            "delegate": {
+                "username": "genesisDelegate3"
+            }
+        },
+        "cred": {
+            "address": "lsksas3cpkjg9rujhuq37w8y8gj6jdone4vmfv3o2",
+            "binaryAddress": "de7681929cfb650e761543aef8bffc5734c3d922",
+            "passphrase": "first behave wisdom broom dinosaur tuition choice shrimp any nose cage lecture",
+            "publicKey": "9e9d3c10dc42645117dbdb8bea7a0639e763891b9b5e50d6c871f78ae328635a",
+            "privateKey": "ed50c49da16e171e0b20115c03ac8ba8f2b620eb274bbd7f3b14adcc1778de769e9d3c10dc42645117dbdb8bea7a0639e763891b9b5e50d6c871f78ae328635a"
+        }
+    },
+    {
+        "address": "4398b600b01b7e219ec1eb7bd82f0b18d587986f",
+        "token": {
+            "balance": "100000000"
+        },
+        "dpos": {
+            "delegate": {
+                "username": "genesisDelegate4"
+            }
+        },
+        "cred": {
+            "address": "lsk37o5ozmuc9gvcnexh9hhu525cc628bc82pwo6g",
+            "binaryAddress": "4398b600b01b7e219ec1eb7bd82f0b18d587986f",
+            "passphrase": "fame miracle own put frost avocado health spice snake strong panic inquiry",
+            "publicKey": "59dfe105cc134a3cbb974ff0c18cbd6881afde944d8539f8eeb697198ca2fad5",
+            "privateKey": "861387f56e7d29665d521607428378f5a20477e455e54a63091f9c7e22c6f80759dfe105cc134a3cbb974ff0c18cbd6881afde944d8539f8eeb697198ca2fad5"
+        }
+    },
+    {
+        "address": "bd63d8595ae5947c927fe2fdb797ea5e7fcdeb67",
+        "token": {
+            "balance": "100000000"
+        },
+        "dpos": {
+            "delegate": {
+                "username": "genesisDelegate5"
+            }
+        },
+        "cred": {
+            "address": "lskwqyhue6dje6naptgj5fs8mg65agjsdsnbtrsno",
+            "binaryAddress": "bd63d8595ae5947c927fe2fdb797ea5e7fcdeb67",
+            "passphrase": "high twin cradle target tonight child uncle combine online above pet estate",
+            "publicKey": "5e0591900aaf57d63c96a036eb5c5a822e59ac736d66da4a1f25b428d6aed76c",
+            "privateKey": "ee6feaa57f2902cc5d674553508332ebe285803b69b4253199f568743df05a395e0591900aaf57d63c96a036eb5c5a822e59ac736d66da4a1f25b428d6aed76c"
+        }
+    },
+    {
+        "address": "69240d34d049283d893118eeb7a910915f1e9f10",
+        "token": {
+            "balance": "25000000000"
+        },
+        "cred": {
+            "address": "lsk9przd9bu4pkcsv4yccw5863urm8yhn2um2fhjt",
+            "binaryAddress": "69240d34d049283d893118eeb7a910915f1e9f10",
+            "passphrase": "island brave tissue pepper tongue scale false pumpkin inject wife hamster soda",
+            "publicKey": "1c7a7bcb68f0a6e7dc7853406cc6cb0788f980c10455dd79c106d80027ba2d7a",
+            "privateKey": "9752a83a55c64c2de826012f032d260e3222f8c5e99cd038acd6d53d883fc0751c7a7bcb68f0a6e7dc7853406cc6cb0788f980c10455dd79c106d80027ba2d7a"
+        }
+    },
+    {
+        "address": "5b213d3bfea568cda423077a5d2092c6defe201c",
+        "token": {
+            "balance": "25000000000"
+        },
+        "cred": {
+            "address": "lsk5outd7gfkqkos4xczhhmd3pr2s88j3zj8ep82j",
+            "binaryAddress": "5b213d3bfea568cda423077a5d2092c6defe201c",
+            "passphrase": "hurt increase open clarify aunt wink input unit emerge coral render wink",
+            "publicKey": "be5a7adc129f808216695b430def8c5e11901bd38c51e41a1fbf4993739b676c",
+            "privateKey": "f88ba08a0eb2f80981ce8beade039acd2ff0d65e734f2de5c30e6c96c07babd9be5a7adc129f808216695b430def8c5e11901bd38c51e41a1fbf4993739b676c"
+        }
+    },
+    {
+        "address": "10341b80ecb29d718d991926d66c269810f4b630",
+        "token": {
+            "balance": "25000000000"
+        },
+        "cred": {
+            "address": "lskvzdxwznoe67wccoacpt9osxbtz3849yuqdup4g",
+            "binaryAddress": "10341b80ecb29d718d991926d66c269810f4b630",
+            "passphrase": "sadness strategy flash unit subject license gun rail old noodle height response",
+            "publicKey": "a8447b04afa97866d28b7cbd13195b7395210685080fc4588a72e0bf6b64c78d",
+            "privateKey": "9caeaf13fb0af824be1edecc51bf9914936f41602eb81832a7f3f41a2a79b8fda8447b04afa97866d28b7cbd13195b7395210685080fc4588a72e0bf6b64c78d"
+        }
+    }
+]

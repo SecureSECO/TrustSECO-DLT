@@ -1,15 +1,25 @@
 // The simplest LISK application
-import { NaiveModule } from "./modules/naive/naive_module";
-//const { NaiveModule } = require('./modules/naive/naive_module.js')
+
+require('dotenv').config();
 
 import { Application } from 'lisk-sdk';
 import { DashboardPlugin } from '@liskhq/lisk-framework-dashboard-plugin';
 
-const genesisBlock = require ('./config/genesis-block.json');
+import { NaiveModule } from "./modules/naive/naive_module";
+import { CodaModule } from  "./modules/coda/coda-module";
+
+const genesisBlock = require('./config/genesis-block.json');
 const config = require('./config/config.json');
+
+if (config.plugins.dashboard.applicationUrl == "auto") {
+    let hostname = process.env.HOSTNAME ?? "localhost";
+    config.plugins.dashboard.applicationUrl = `ws://${hostname}:${config.rpc.port}/ws`;
+}
 
 const app = Application.defaultApplication(genesisBlock, config);
 
 app.registerModule(NaiveModule);
+app.registerModule(CodaModule);
 app.registerPlugin(DashboardPlugin);
+
 app.run();
