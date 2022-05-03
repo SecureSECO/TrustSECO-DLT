@@ -42,13 +42,13 @@ export class CodaModule extends BaseModule {
     // PUBLISHING EVENTS WHEN NEW JOBS ARE ADDED
     // (not used in this module, or anywhere afaik)
 
-    events = ['newJob'];
+    // events = ['newJob'];
 
-    public async afterTransactionApply({ transaction: {moduleID, assetID, asset} }) {
-        if (moduleID === this.id && assetID === CodaAddJobAsset.id) {
-            let job = codec.decode<{}>(codaJobSchema, asset);
-            console.log('afterTransactionApply: job:', job);
-            this._channel.publish('coda:newJob', job);
-        }
-    }
+    // public async afterTransactionApply({ transaction: {moduleID, assetID, asset} }) {
+    //     if (moduleID === this.id && assetID === CodaAddJobAsset.id) {
+    //         let job = codec.decode<{}>(codaJobSchema, asset);
+    //         console.log('afterTransactionApply: job:', job);
+    //         this._channel.publish('coda:newJob', job);
+    //     }
+    // }
 }

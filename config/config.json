@@ -39,7 +39,7 @@
     },
     "logger": {
         "fileLogLevel": "debug",
-        "consoleLogLevel": "info"
+        "consoleLogLevel": "warn"
     },
     "plugins": {
         "dashboard": {
