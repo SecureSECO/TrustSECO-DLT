@@ -6,7 +6,8 @@ import { Application } from 'lisk-sdk';
 import { DashboardPlugin } from '@liskhq/lisk-framework-dashboard-plugin';
 
 import { NaiveModule } from "./modules/naive/naive_module";
-import { CodaModule } from  "./modules/coda/coda-module";
+import { CodaModule } from "./modules/coda/coda-module";
+import { TrustFactsModule } from "./modules/trustfacts/trustfacts_module"
 
 const genesisBlock = require('./config/genesis-block.json');
 const config = require('./config/config.json');
@@ -20,6 +21,7 @@ const app = Application.defaultApplication(genesisBlock, config);
 
 app.registerModule(NaiveModule);
 app.registerModule(CodaModule);
+app.registerModule(TrustFactsModule);
 app.registerPlugin(DashboardPlugin);
 
 app.run();
