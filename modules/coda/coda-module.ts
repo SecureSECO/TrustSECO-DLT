@@ -34,6 +34,13 @@ export class CodaModule extends BaseModule {
         getJobs: async () => {
             let jobsBuffer:any = await this._dataAccess.getChainState("coda:jobs");
             return codec.decode(codaJobListSchema, jobsBuffer);
+        },
+
+        getRandomJob: async () => {
+            let jobsBuffer:any = await this._dataAccess.getChainState("coda:jobs");
+            let { jobs } = codec.decode<{jobs:{package:string, source:string, fact:string}[]}>(codaJobListSchema, jobsBuffer);
+            let randomNumber = Math.floor(Math.random() * jobs.length);
+            return jobs[randomNumber];
         }
     }
 
