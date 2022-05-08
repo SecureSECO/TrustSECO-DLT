@@ -1,5 +1,3 @@
-// The simplest LISK application
-
 require('dotenv').config();
 
 import { Application } from 'lisk-sdk';
@@ -25,3 +23,5 @@ app.registerModule(TrustFactsModule);
 app.registerPlugin(DashboardPlugin);
 
 app.run();
+
+console.log("TrustSECO-DLT is running...");

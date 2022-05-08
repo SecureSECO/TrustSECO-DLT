@@ -1,25 +1,29 @@
 {
-  "name": "my_hello_world",
+  "name": "trust_seco_dlt",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc",
+    "build": "rm -rf ./dist && npx tsc",
+    "version": "node -v && npm -v",
     "genesis": "npm run build && node config/createGenesisBlock.js",
-    "start": "npm run build && node dist/index.js",
+    "start": "npm run build ; node dist/index.js",
     "unsafe-reset": "rm -rf ~/.lisk/TrustSECO",
     "reset": "read -p \"Removing ~/.lisk/.. of the CURRENT USER! Are you sure? [yes|no] \" ok && if [ \"$ok\" = \"yes\" ]; then npm run unsafe-reset; fi;"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Fides",
   "dependencies": {
-    "@liskhq/lisk-framework-dashboard-plugin": "^0.1.6",
+    "@liskhq/lisk-framework-dashboard-plugin": "^0.1.7",
     "dotenv": "^16.0.0",
-    "lisk-sdk": "^5.2.1"
+    "lisk-sdk": "^5.2.2"
   },
   "devDependencies": {
     "prompt": "^1.3.0",
     "typescript": "^4.6.4"
-  }
+  },
+  "engines": {
+    "node": ">=16.14.1 <=16",
+    "npm": ">=8.1.0"
+  },
+  "engineStrict": true
 }
