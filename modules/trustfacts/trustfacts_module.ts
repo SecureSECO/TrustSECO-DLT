@@ -6,11 +6,6 @@ export class TrustFactsModule extends BaseModule {
     id = 1234;
     name = "trustfacts";
 
-    async afterGenesisBlockApply({ stateStore }) {
-        let trustFactsBuffer = codec.encode(trustFactsListSchema, { facts: [] });
-        await stateStore.chain.set("trustfacts:facts", trustFactsBuffer);
-    }
-
     transactionAssets = [
         new TrustFactsAddFactAsset()
     ];

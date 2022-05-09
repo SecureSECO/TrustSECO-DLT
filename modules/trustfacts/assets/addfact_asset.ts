@@ -1,4 +1,5 @@
 import { BaseAsset, codec } from 'lisk-sdk';
+import { codaJobListSchema } from '../../coda/coda-schemas';
 
 import { TrustFactsSchema, trustFactsListSchema } from '../trustfacts_schema';
 
@@ -17,13 +18,24 @@ export class TrustFactsAddFactAsset extends BaseAsset {
     };
 
     async apply({ asset, stateStore }) {
-        let trustFactsBuffer = await stateStore.chain.get("trustfacts:facts");
-        let { facts } = codec.decode(trustFactsListSchema, trustFactsBuffer);
 
+        // get the job
+        let jobsBuffer = await stateStore.chain.get("coda:jobs");
+        let { jobs } = codec.decode<{jobs:[{package:string}]}>(codaJobListSchema, jobsBuffer);
+        let { package : pack } = jobs[asset.jobID];
+
+        // get the facts for this package
+        let facts : {}[] = [];
+        
+        let trustFactsBuffer = await stateStore.chain.get("trustfacts:" + pack);
+        if (trustFactsBuffer !== undefined) {
+            facts = codec.decode<{facts:[]}>(trustFactsListSchema, trustFactsBuffer).facts;
+        }
+
+        // add the new fact
         facts.push(asset);
 
-        await stateStore.chain.set("trustfacts:facts", codec.encode(trustFactsListSchema, { facts }));
-
-
+        // store!
+        await stateStore.chain.set("trustfacts:" + pack, codec.encode(trustFactsListSchema, { facts }));
     }
 }
