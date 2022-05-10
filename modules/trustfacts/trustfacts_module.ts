@@ -12,20 +12,17 @@ export class TrustFactsModule extends BaseModule {
     ];
 
     actions = {
-        // GET THE FACTS LIST
-        getFacts: async () => {
-            let trustFactsBuffer:any = await this._dataAccess.getChainState("trustfacts:facts");
-            return codec.decode(trustFactsListSchema, trustFactsBuffer);
-        },
-
         // GET ALL THE TRUSTFACTS FOR A SPECIFIC PACKAGE
-        getPackageInfo: async (packageName/*: Record<string, unknown>*/) => {
+        getPackageInfo: async ({packageName} : Record<string, unknown>) => {
+            console.log(packageName);
             //get facts buffer for the given package
             let trustFactsBuffer:any = await this._dataAccess.getChainState("trustfacts:" + packageName);
-            //decode facts buffer
+            //if it is defined, decode facts buffer
+            if (trustFactsBuffer !== undefined){
             let {facts} = codec.decode<{facts:{jobID:number,factData:string,gitSignature:string,keyURL:string}[]}>(trustFactsListSchema, trustFactsBuffer);
             //if facts are available, return them
-            if(facts.length > 0) return facts;
+            return facts;
+            }
             else throw new Error("There are no trust-facts available for this package");
         }
     }
