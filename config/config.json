@@ -9,7 +9,7 @@
         "host": "0.0.0.0"
     },
     "genesisConfig": {
-        "blockTime": 5,
+        "blockTime": 30,
         "communityIdentifier": "TrustSECO",
         "maxPayloadLength": 15360,
         "bftThreshold": 68,
