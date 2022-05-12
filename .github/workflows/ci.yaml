@@ -14,4 +14,4 @@ jobs:
     - name: TS Linting
       run: npm run lint
     - name: Run Jest tests
-      run: npm t
+      run: npm test
