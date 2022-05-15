@@ -9,7 +9,7 @@ export class CodaAddJobAsset extends BaseAsset {
     schema = codaJobSchema;
 
     validate({asset}) {
-        if (asset.package === "") throw new Error("Package cannot be empty");
+        if (asset.package.trim() === "") throw new Error("Package cannot be empty");
         if (!validFacts.hasOwnProperty(asset.source)) throw new Error("Unknown source");
         if (!validFacts[asset.source].includes(asset.fact)) throw new Error("Unknown fact for this source");
     };

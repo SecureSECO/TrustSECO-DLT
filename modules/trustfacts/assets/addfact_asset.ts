@@ -13,7 +13,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         // for now onlycheck if fields are not empty, TODO more logic
         
         //TODO: validate data and gpg key
-        if (asset.factData === "") throw new Error("Data cannot be empty");
+        if (asset.factData.trim() === "") throw new Error("Data cannot be empty");
 
     };
 

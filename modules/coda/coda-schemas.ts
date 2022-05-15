@@ -36,6 +36,6 @@ export const codaJobListSchema = {
 }
 
 export const validFacts = {
-    "github" : ["stars", "forks", "issues"],
-    "libraries.io" : ["sourcerank"]
+    github: ["stars", "forks", "issues"],
+    libraries_io: ["sourcerank"]
 }
