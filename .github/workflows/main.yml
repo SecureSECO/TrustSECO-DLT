@@ -17,5 +17,6 @@ jobs:
         script: |
           cd /srv/TrustSECO-DLT
           git pull
+          nvm use
           npm install
           sudo systemctl restart TrustSECO-DLT
