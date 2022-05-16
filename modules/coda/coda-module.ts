@@ -6,18 +6,12 @@ export class CodaModule extends BaseModule {
     static id = 2632; // the T9 code for "coda"
     id = CodaModule.id;
     name = 'coda';
-
-
-
     // INITIALIZE THE JOBS LIST (EMPTY)
 
     async afterGenesisBlockApply({ stateStore }) {
-        let jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
-        await stateStore.chain.set( "coda:jobs", jobsBuffer );
-        
+        const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
+        await stateStore.chain.set( "coda:jobs", jobsBuffer );   
     }
-
-
 
     // TRANSACTIONS TO MODIFY THE JOBS LIST
 
@@ -25,26 +19,21 @@ export class CodaModule extends BaseModule {
         new CodaAddJobAsset()
     ];
 
-
-
     // ACTIONS TO GET THE CURRENT STATE OF THE JOBS LIST
-
     actions = {
         // GET THE JOBS LIST
         getJobs: async () => {
-            let jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
+            const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             return codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         },
 
         getRandomJob: async () => {
-            let jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
-            let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-            let randomNumber = Math.floor(Math.random() * jobs.length);
+            const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
+            const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+            const randomNumber = Math.floor(Math.random() * jobs.length);
             return jobs[randomNumber];
         }
     }
-
-
 
     // PUBLISHING EVENTS WHEN NEW JOBS ARE ADDED
     // (not used in this module, or anywhere afaik)
@@ -53,7 +42,7 @@ export class CodaModule extends BaseModule {
 
     public async afterTransactionApply({ transaction: {moduleID, assetID, asset} } : TransactionApplyContext) {
         if (moduleID === this.id && assetID === CodaAddJobAsset.id) {
-            let job = codec.decode<CodaJob>(codaJobSchema, asset);
+            const job = codec.decode<CodaJob>(codaJobSchema, asset);
             this._channel.publish('coda:newJob', job);
         }
     }

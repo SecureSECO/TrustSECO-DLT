@@ -14,20 +14,19 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         
         //TODO: validate data and gpg key
         if (asset.factData.trim() === "") throw new Error("Data cannot be empty");
-
-    };
+    }
 
     async apply({ asset, stateStore } : ApplyAssetContext<TrustFact>) {
 
         // get the job
-        let jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
-        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-        let { package : pack } = jobs[asset.jobID];
+        const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const { package : pack } = jobs[asset.jobID];
 
         // get the facts for this package
         let facts : TrustFact[] = [];
         
-        let trustFactsBuffer = await stateStore.chain.get("trustfacts:" + pack);
+        const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + pack);
         if (trustFactsBuffer !== undefined) {
             facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
         }

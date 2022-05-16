@@ -13,7 +13,7 @@ const genesisBlock = require('./config/genesis-block.json');
 const config = require('./config/config.json');
 
 if (config.plugins.dashboard.applicationUrl == "auto") {
-    let hostname = process.env.HOSTNAME ?? "localhost";
+    const hostname = process.env.HOSTNAME ?? "localhost";
     config.plugins.dashboard.applicationUrl = `ws://${hostname}:${config.rpc.port}/ws`;
 }
 

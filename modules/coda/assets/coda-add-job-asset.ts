@@ -16,11 +16,10 @@ export class CodaAddJobAsset extends BaseAsset {
 
     async apply({ asset, stateStore } : ApplyAssetContext<CodaJob>) {
 
-        let jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
-        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
         jobs.push(asset);
-
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
     }
 }
