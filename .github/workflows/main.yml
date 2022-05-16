@@ -5,6 +5,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
     - name: multiple command
       uses: appleboy/ssh-action@master
