@@ -8,5 +8,34 @@
       "eslint:recommended",
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended"
+    ],
+    "overrides": [
+      {
+        "files": ["modules/**/*.ts"],
+        "rules": {
+          "@typescript-eslint/no-explicit-any": ["off"],
+          "@typescript-eslint/ban-types": ["off"],
+          "@typescript-eslint/no-var-requires": ["off"],
+        }
+      },
+      {
+        "files": ["index.ts"],
+        "rules": {
+          "@typescript-eslint/no-var-requires": ["off"]
+        }
+      },
+      {
+        "files": ["modules/coda/assets/coda-add-job-asset.ts"],
+        "rules": {
+          "no-prototype-builtins": ["off"]
+        }
+      },
+      {
+        "files": ["modules/naive/naive_module.ts"],
+        "rules": {
+          "prefer-const": ["off"],
+          "@typescript-eslint/no-unused-vars": ["off"]
+        }
+      }
     ]
   }

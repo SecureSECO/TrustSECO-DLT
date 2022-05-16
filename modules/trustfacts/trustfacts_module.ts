@@ -16,10 +16,16 @@ export class TrustFactsModule extends BaseModule {
         getPackageInfo: async ({packageName} : Record<string, unknown>) => {
             console.log(packageName);
             //get facts buffer for the given package
-            let trustFactsBuffer:any = await this._dataAccess.getChainState("trustfacts:" + packageName);
+            const trustFactsBuffer:any = await this._dataAccess.getChainState("trustfacts:" + packageName);
             //if it is defined, decode facts buffer
             if (trustFactsBuffer !== undefined){
-            let {facts} = codec.decode<{facts:{jobID:number,factData:string,gitSignature:string,keyURL:string}[]}>(trustFactsListSchema, trustFactsBuffer);
+            const {facts} = codec.decode<{ 
+                facts: {
+                    jobID: number,
+                    factData: string,
+                    gitSignature: string,
+                    keyURL: string
+                }[]}>(trustFactsListSchema, trustFactsBuffer);
             //if facts are available, return them
             return facts;
             }
@@ -31,7 +37,7 @@ export class TrustFactsModule extends BaseModule {
 
     public async afterTransactionApply({ transaction: { moduleID, assetID, asset } }) {
         if (moduleID === this.id && assetID === TrustFactsAddFactAsset.id) {
-            let fact = codec.decode<{}>(TrustFactsSchema, asset);
+            const fact = codec.decode<{}>(TrustFactsSchema, asset);
             console.log('afterTransactionApply: fact:', fact);
             this._channel.publish('trustfacts:newFact', fact);
         }

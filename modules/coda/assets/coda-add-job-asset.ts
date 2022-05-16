@@ -12,15 +12,12 @@ export class CodaAddJobAsset extends BaseAsset {
         if (asset.package.trim() === "") throw new Error("Package cannot be empty");
         if (!validFacts.hasOwnProperty(asset.source)) throw new Error("Unknown source");
         if (!validFacts[asset.source].includes(asset.fact)) throw new Error("Unknown fact for this source");
-    };
+    }
     
     async apply({ asset, stateStore }) {
-
-        let jobsBuffer = await stateStore.chain.get("coda:jobs");
-        let { jobs } = codec.decode(codaJobListSchema, jobsBuffer);
-
+        const jobsBuffer = await stateStore.chain.get("coda:jobs");
+        const { jobs } = codec.decode(codaJobListSchema, jobsBuffer);
         jobs.push(asset);
-
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
     }
 }
