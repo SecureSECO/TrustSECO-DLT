@@ -20,7 +20,7 @@
   "author": "Fides",
   "dependencies": {
     "@liskhq/lisk-framework-dashboard-plugin": "^0.1.7",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.1",
     "lisk-sdk": "^5.2.2"
   },
   "devDependencies": {
