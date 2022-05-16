@@ -6,7 +6,7 @@ describe('Test the validate function', () => {
         const asset = {
             asset: {
                 package: '',
-                source: 'github', 
+                source: 'github',
                 fact: 'stars'
             }
         }

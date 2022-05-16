@@ -8,12 +8,12 @@ export class CodaAddJobAsset extends BaseAsset {
     name = 'AddJob';
     schema = codaJobSchema;
 
-    validate({asset}) {
+    validate({ asset }) {
         if (asset.package.trim() === "") throw new Error("Package cannot be empty");
         if (!validFacts.hasOwnProperty(asset.source)) throw new Error("Unknown source");
         if (!validFacts[asset.source].includes(asset.fact)) throw new Error("Unknown fact for this source");
     };
-    
+
     async apply({ asset, stateStore }) {
 
         let jobsBuffer = await stateStore.chain.get("coda:jobs");

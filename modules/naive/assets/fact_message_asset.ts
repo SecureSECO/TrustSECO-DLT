@@ -1,6 +1,6 @@
 //, ApplyAssetContext, ValidateAssetContext, codec
 
-import { BaseAsset} from 'lisk-sdk';
+import { BaseAsset } from 'lisk-sdk';
 
 export class FactMessageAsset extends BaseAsset {
 	public name = 'factMessage';
@@ -13,31 +13,31 @@ export class FactMessageAsset extends BaseAsset {
 		required: ["trustFactJSON"],
 		properties: {
 			trustFactJSON: {
-				dataType: 'string', 
-				fieldNumber: 1, 
-				minLength: 3, 
-				maxLength: 10000, 
+				dataType: 'string',
+				fieldNumber: 1,
+				minLength: 3,
+				maxLength: 10000,
 			},
 		},
 	};
 
 	public validate({ asset }): void {
-		if(asset.trustFactJSON == ""){
+		if (asset.trustFactJSON == "") {
 			throw new Error(
-		 		'Illegal message: ${asset.trustFactJSON}'
-		 	);
-		 }
+				'Illegal message: ${asset.trustFactJSON}'
+			);
+		}
 	}
 
 	// eslint-disable-next-line @typescript-eslint/require-await
 	public async apply({ asset, transaction, stateStore }): Promise<void> {
 
-		 // 1. Get account data of the sender of the transaction
-		 const senderAddress = transaction.senderAddress;
-		 const senderAccount = await stateStore.account.get(senderAddress);
+		// 1. Get account data of the sender of the transaction
+		const senderAddress = transaction.senderAddress;
+		const senderAccount = await stateStore.account.get(senderAddress);
 
-		 // 2. Update account data
-		 senderAccount.naive.trustFacts += asset.trustFactJSON;
-		 stateStore.account.set(senderAccount.address, senderAccount);
+		// 2. Update account data
+		senderAccount.naive.trustFacts += asset.trustFactJSON;
+		stateStore.account.set(senderAccount.address, senderAccount);
 	}
 }

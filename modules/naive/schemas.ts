@@ -11,5 +11,5 @@ const trustFactAssetSchema = {
 };
 
 module.exports = {
-    trustFactAssetSchema
+  trustFactAssetSchema
 };

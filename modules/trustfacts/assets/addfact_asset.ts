@@ -4,14 +4,14 @@ import { codaJobListSchema } from '../../coda/coda-schemas';
 import { TrustFactsSchema, trustFactsListSchema } from '../trustfacts_schema';
 
 export class TrustFactsAddFactAsset extends BaseAsset {
-    static id = 12340;
+    static id = 32280;
     id = TrustFactsAddFactAsset.id;
     name = 'AddFacts';
     schema = TrustFactsSchema;
 
     validate({ asset }) {
         // for now onlycheck if fields are not empty, TODO more logic
-        
+
         //TODO: validate data and gpg key
         if (asset.factData.trim() === "") throw new Error("Data cannot be empty");
 
@@ -21,15 +21,15 @@ export class TrustFactsAddFactAsset extends BaseAsset {
 
         // get the job
         let jobsBuffer = await stateStore.chain.get("coda:jobs");
-        let { jobs } = codec.decode<{jobs:[{package:string}]}>(codaJobListSchema, jobsBuffer);
-        let { package : pack } = jobs[asset.jobID];
+        let { jobs } = codec.decode<{ jobs: [{ package: string }] }>(codaJobListSchema, jobsBuffer);
+        let { package: pack } = jobs[asset.jobID];
 
         // get the facts for this package
-        let facts : {}[] = [];
-        
+        let facts: {}[] = [];
+
         let trustFactsBuffer = await stateStore.chain.get("trustfacts:" + pack);
         if (trustFactsBuffer !== undefined) {
-            facts = codec.decode<{facts:[]}>(trustFactsListSchema, trustFactsBuffer).facts;
+            facts = codec.decode<{ facts: [] }>(trustFactsListSchema, trustFactsBuffer).facts;
         }
 
         // add the new fact

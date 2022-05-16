@@ -71,7 +71,7 @@ function createGenesisBlock() {
             console.log('encrypting password for delegate...');
 
             const encrypted = cryptography.encryptPassphraseWithPassword(cred.passphrase, 'fides is awesome');
-            const encryptedPassphrase = cryptography.stringifyEncryptedPassphrase( encrypted );
+            const encryptedPassphrase = cryptography.stringifyEncryptedPassphrase(encrypted);
 
             const count = 10000;
             const distance = 1000;
@@ -85,7 +85,7 @@ function createGenesisBlock() {
             });
         }
 
-        credentials.push({...account, cred});
+        credentials.push({ ...account, cred });
 
         return account;
     }
@@ -124,12 +124,12 @@ function createGenesisBlock() {
     BigInt.prototype.toJSON = function () { return this.toString() };
     Buffer.prototype.toJSON = function () { return this.toString('hex') };
 
-    writeFileSync(path.resolve(__dirname,'genesis-block.json'), JSON.stringify(genesisBlock, null, 4));
+    writeFileSync(path.resolve(__dirname, 'genesis-block.json'), JSON.stringify(genesisBlock, null, 4));
     console.log('Written genesis-block.json');
 
-    writeFileSync(path.resolve(__dirname,'config.json'), JSON.stringify(config, null, 4));
+    writeFileSync(path.resolve(__dirname, 'config.json'), JSON.stringify(config, null, 4));
     console.log('Updated config.json');
-    
-    writeFileSync(path.resolve(__dirname,'accounts.json'), JSON.stringify(credentials, null, 4));
+
+    writeFileSync(path.resolve(__dirname, 'accounts.json'), JSON.stringify(credentials, null, 4));
     console.log('Updated accounts.json');
 }

@@ -17,10 +17,10 @@ export interface TrustFactsAssetProps {
 
 export class NaiveModule extends BaseModule {
     public actions = {
-  
+
     };
     public reducers = {
-  
+
     };
     public name = 'naive';
     public transactionAssets = [new FactMessageAsset()];
@@ -47,23 +47,23 @@ export class NaiveModule extends BaseModule {
     public async afterTransactionApply(_input: TransactionApplyContext) {
         // Get any data from stateStore using transaction info, below is an example
         // const sender = await _input.stateStore.account.getOrDefault<TokenAccount>(_input.transaction.senderAddress);
-       // 1. Check for correct module and asset IDs
-       if (_input.transaction.moduleID === this.id && _input.transaction.assetID === 1) {
+        // 1. Check for correct module and asset IDs
+        if (_input.transaction.moduleID === this.id && _input.transaction.assetID === 1) {
 
-           // 2. Decode the transaction asset
-           let trustAsset: TrustFactsAssetProps;
-           trustAsset = codec.decode(
-               trustFactAssetSchema,
-               _input.transaction.asset
-           );
+            // 2. Decode the transaction asset
+            let trustAsset: TrustFactsAssetProps;
+            trustAsset = codec.decode(
+                trustFactAssetSchema,
+                _input.transaction.asset
+            );
 
-        // 3. Publish the event 'naive:newTrustFact' and
-        // attach information about the sender address and the posted message.
-        this._channel.publish('naive:newTrustFact', {
-            sender: _input.transaction.senderAddress.toString('hex'),
-            naive: trustAsset.TrustFactsJSON
-        });
-    }
+            // 3. Publish the event 'naive:newTrustFact' and
+            // attach information about the sender address and the posted message.
+            this._channel.publish('naive:newTrustFact', {
+                sender: _input.transaction.senderAddress.toString('hex'),
+                naive: trustAsset.TrustFactsJSON
+            });
+        }
     }
 
     public async afterGenesisBlockApply(_input: AfterGenesisBlockApplyContext) {
