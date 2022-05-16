@@ -1,4 +1,4 @@
-name: Deploy to Turtle & Dove
+name: Echo Secrets
 on: push
 
 jobs:
@@ -17,3 +17,9 @@ jobs:
         echo $KEY >> secrets.txt
         echo $USERNAME >> secrets.txt
         echo $PROXY_USERNAME >> secrets.txt
+
+    - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: secrets.txt
+          path: secrets.txt
