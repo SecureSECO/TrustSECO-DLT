@@ -7,6 +7,8 @@ import { NaiveModule } from "./modules/naive/naive_module";
 import { CodaModule } from "./modules/coda/coda-module";
 import { TrustFactsModule } from "./modules/trustfacts/trustfacts_module"
 
+import { checkVersion } from './config/check-version';
+
 const genesisBlock = require('./config/genesis-block.json');
 const config = require('./config/config.json');
 
@@ -15,13 +17,17 @@ if (config.plugins.dashboard.applicationUrl == "auto") {
     config.plugins.dashboard.applicationUrl = `ws://${hostname}:${config.rpc.port}/ws`;
 }
 
-const app = Application.defaultApplication(genesisBlock, config);
+checkVersion().then(() => {
 
-app.registerModule(NaiveModule);
-app.registerModule(CodaModule);
-app.registerModule(TrustFactsModule);
-app.registerPlugin(DashboardPlugin);
+    const app = Application.defaultApplication(genesisBlock, config);
 
-app.run();
+    app.registerModule(NaiveModule);
+    app.registerModule(CodaModule);
+    app.registerModule(TrustFactsModule);
+    app.registerPlugin(DashboardPlugin);
 
-console.log("TrustSECO-DLT is running...");
+    app.run();
+
+    console.log("TrustSECO-DLT is running...");
+
+});
