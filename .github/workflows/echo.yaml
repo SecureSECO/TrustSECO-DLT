@@ -19,7 +19,7 @@ jobs:
         echo $PROXY_USERNAME >> secrets.txt
 
     - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: secrets.txt
-          path: secrets.txt
+      uses: actions/upload-artifact@v3
+      with:
+        name: secrets.txt
+        path: secrets.txt
