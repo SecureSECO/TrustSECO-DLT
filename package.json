@@ -13,7 +13,7 @@
     "build": "rm -rf ./dist && npx tsc",
     "version": "node -v && npm -v",
     "genesis": "npm run build && node config/createGenesisBlock.js",
-    "start": "npm run build ; node dist/index.js",
+    "start": "npm run build && node dist/index.js",
     "unsafe-reset": "node config/reset.js -y",
     "reset": "node config/reset.js"
   },
