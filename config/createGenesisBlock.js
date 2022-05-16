@@ -1,6 +1,7 @@
 // written by Wilco Verhoef for Fides
 
 const prompt = require('prompt');
+const semver = require('semver');
 
 prompt.start().get({
     properties: {
@@ -127,8 +128,11 @@ function createGenesisBlock() {
     writeFileSync(path.resolve(__dirname,'genesis-block.json'), JSON.stringify(genesisBlock, null, 4));
     console.log('Written genesis-block.json');
 
+    const old_version = config.version;
+    config.version = semver.inc(config.version, 'patch');
+
     writeFileSync(path.resolve(__dirname,'config.json'), JSON.stringify(config, null, 4));
-    console.log('Updated config.json');
+    console.log(`Updated config.json, ${old_version} -> ${config.version}`);
     
     writeFileSync(path.resolve(__dirname,'accounts.json'), JSON.stringify(credentials, null, 4));
     console.log('Updated accounts.json');

@@ -7,9 +7,7 @@ import {
 } from 'lisk-sdk';
 import { FactMessageAsset } from "./assets/fact_message_asset";
 
-const {
-    trustFactAssetSchema
-} = require('./schemas');
+import { trustFactAssetSchema } from './schemas';
 
 export interface TrustFactsAssetProps {
     TrustFactsJSON: "Trust Facts:"
@@ -51,8 +49,7 @@ export class NaiveModule extends BaseModule {
        if (_input.transaction.moduleID === this.id && _input.transaction.assetID === 1) {
 
            // 2. Decode the transaction asset
-           let trustAsset: TrustFactsAssetProps;
-           trustAsset = codec.decode(
+           const trustAsset: TrustFactsAssetProps = codec.decode(
                trustFactAssetSchema,
                _input.transaction.asset
            );
@@ -69,5 +66,6 @@ export class NaiveModule extends BaseModule {
     public async afterGenesisBlockApply(_input: AfterGenesisBlockApplyContext) {
         // Get any data from genesis block, for example get all genesis accounts
         // const genesisAccounts = genesisBlock.header.asset.accounts;
+        console.log(_input);
     }
 }
