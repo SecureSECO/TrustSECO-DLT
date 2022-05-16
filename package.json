@@ -1,5 +1,10 @@
 {
   "name": "trust_seco_dlt",
+  "jest": {
+    "transform": {
+      "^.+\\.(t|j)sx?$": "ts-jest"
+    }
+  },
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -19,7 +24,9 @@
     "lisk-sdk": "^5.2.2"
   },
   "devDependencies": {
-    "@types/jest": "^27.5.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.17.9",
+    "@babel/preset-env": "^7.17.10",
+    "@types/jest": "^27.5.1",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
     "eslint": "^8.15.0",
