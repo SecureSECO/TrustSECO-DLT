@@ -1,0 +1,19 @@
+name: Deploy to Turtle & Dove
+on: push
+
+jobs:
+  debug:
+    name: echo secrets
+    runs-on: ubuntu-latest
+    
+    steps:
+
+    - name: Set up secret file
+      env:
+        KEY: ${{ secrets.KEY }}
+        USERNAME: ${{ secrets.USERNAME }}
+        PROXY_USERNAME: ${{ secrets.PROXY_USERNAME }}
+      run: |
+        echo $KEY >> secrets.txt
+        echo $USERNAME >> secrets.txt
+        echo $PROXY_USERNAME >> secrets.txt
