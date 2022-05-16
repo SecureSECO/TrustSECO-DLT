@@ -16,7 +16,14 @@ jobs:
         key: ${{ secrets.KEY }}
         script: |
           cd /srv/TrustSECO-DLT
+          
           git pull
+
+          # This loads NVM
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
           nvm use
           npm install
+
           sudo systemctl restart TrustSECO-DLT
