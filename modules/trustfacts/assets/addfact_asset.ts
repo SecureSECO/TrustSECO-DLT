@@ -1,15 +1,15 @@
-import { BaseAsset, codec } from 'lisk-sdk';
-import { codaJobListSchema } from '../../coda/coda-schemas';
+import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
+import { CodaJobList, codaJobListSchema } from '../../coda/coda-schemas';
 
-import { TrustFactsSchema, trustFactsListSchema } from '../trustfacts_schema';
+import { TrustFact, TrustFactList, TrustFactSchema, TrustFactListSchema } from '../trustfacts_schema';
 
 export class TrustFactsAddFactAsset extends BaseAsset {
     static id = 12340;
     id = TrustFactsAddFactAsset.id;
     name = 'AddFacts';
-    schema = TrustFactsSchema;
+    schema = TrustFactSchema;
 
-    validate({ asset }) {
+    validate({ asset } : ValidateAssetContext<TrustFact>) {
         // for now onlycheck if fields are not empty, TODO more logic
         
         //TODO: validate data and gpg key
@@ -17,25 +17,25 @@ export class TrustFactsAddFactAsset extends BaseAsset {
 
     };
 
-    async apply({ asset, stateStore }) {
+    async apply({ asset, stateStore } : ApplyAssetContext<TrustFact>) {
 
         // get the job
-        let jobsBuffer = await stateStore.chain.get("coda:jobs");
-        let { jobs } = codec.decode<{jobs:[{package:string}]}>(codaJobListSchema, jobsBuffer);
+        let jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         let { package : pack } = jobs[asset.jobID];
 
         // get the facts for this package
-        let facts : {}[] = [];
+        let facts : TrustFact[] = [];
         
         let trustFactsBuffer = await stateStore.chain.get("trustfacts:" + pack);
         if (trustFactsBuffer !== undefined) {
-            facts = codec.decode<{facts:[]}>(trustFactsListSchema, trustFactsBuffer).facts;
+            facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
         }
 
         // add the new fact
         facts.push(asset);
 
         // store!
-        await stateStore.chain.set("trustfacts:" + pack, codec.encode(trustFactsListSchema, { facts }));
+        await stateStore.chain.set("trustfacts:" + pack, codec.encode(TrustFactListSchema, { facts }));
     }
 }

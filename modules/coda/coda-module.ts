@@ -1,5 +1,5 @@
-import { BaseModule, codec } from 'lisk-sdk';
-import { codaJobListSchema, codaJobSchema } from './coda-schemas';
+import { BaseModule, codec, TransactionApplyContext } from 'lisk-sdk';
+import { CodaJob, CodaJobList, codaJobSchema, codaJobListSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 
 export class CodaModule extends BaseModule {
@@ -32,13 +32,13 @@ export class CodaModule extends BaseModule {
     actions = {
         // GET THE JOBS LIST
         getJobs: async () => {
-            let jobsBuffer:any = await this._dataAccess.getChainState("coda:jobs");
-            return codec.decode(codaJobListSchema, jobsBuffer);
+            let jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
+            return codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         },
 
         getRandomJob: async () => {
-            let jobsBuffer:any = await this._dataAccess.getChainState("coda:jobs");
-            let { jobs } = codec.decode<{jobs:{package:string, source:string, fact:string}[]}>(codaJobListSchema, jobsBuffer);
+            let jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
+            let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
             let randomNumber = Math.floor(Math.random() * jobs.length);
             return jobs[randomNumber];
         }
@@ -51,10 +51,9 @@ export class CodaModule extends BaseModule {
 
     events = ['newJob'];
 
-    public async afterTransactionApply({ transaction: {moduleID, assetID, asset} }) {
+    public async afterTransactionApply({ transaction: {moduleID, assetID, asset} } : TransactionApplyContext) {
         if (moduleID === this.id && assetID === CodaAddJobAsset.id) {
-            let job = codec.decode<{}>(codaJobSchema, asset);
-            console.log('afterTransactionApply: job:', job);
+            let job = codec.decode<CodaJob>(codaJobSchema, asset);
             this._channel.publish('coda:newJob', job);
         }
     }

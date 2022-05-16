@@ -1,6 +1,6 @@
-import { BaseAsset, codec } from 'lisk-sdk';
+import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
 
-import { codaJobListSchema, codaJobSchema, validFacts } from '../coda-schemas';
+import { CodaJob, CodaJobList, codaJobSchema, codaJobListSchema, validFacts } from '../coda-schemas';
 
 export class CodaAddJobAsset extends BaseAsset {
     static id = 26320; // coda-0
@@ -8,16 +8,16 @@ export class CodaAddJobAsset extends BaseAsset {
     name = 'AddJob';
     schema = codaJobSchema;
 
-    validate({asset}) {
+    validate({asset} : ValidateAssetContext<CodaJob>) {
         if (asset.package.trim() === "") throw new Error("Package cannot be empty");
         if (!validFacts.hasOwnProperty(asset.source)) throw new Error("Unknown source");
         if (!validFacts[asset.source].includes(asset.fact)) throw new Error("Unknown fact for this source");
     };
-    
-    async apply({ asset, stateStore }) {
 
-        let jobsBuffer = await stateStore.chain.get("coda:jobs");
-        let { jobs } = codec.decode(codaJobListSchema, jobsBuffer);
+    async apply({ asset, stateStore } : ApplyAssetContext<CodaJob>) {
+
+        let jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
         jobs.push(asset);
 
