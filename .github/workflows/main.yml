@@ -14,12 +14,8 @@ jobs:
         sync: true
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
-        proxy_host: "up.science.uu.nl"
-        proxy_username: ${{ secrets.PROXY_USERNAME }}
-        proxy_key: ${{ secrets.KEY }}
         script: |
           cd /srv/TrustSECO-DLT
           git pull
           npm install
           sudo systemctl restart TrustSECO-DLT
-          
