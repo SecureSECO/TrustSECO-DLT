@@ -18,7 +18,7 @@ export class TrustFactsModule extends BaseModule {
             const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
             //if it is defined, decode facts buffer
             if (trustFactsBuffer !== undefined){
-                let { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
                 //if facts are available, return them
                 return facts;
             }

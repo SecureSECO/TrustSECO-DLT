@@ -10,9 +10,9 @@ export class CodaAddJobAsset extends BaseAsset {
 
     validate({asset} : ValidateAssetContext<CodaJob>) {
         if (asset.package.trim() === "") throw new Error("Package cannot be empty");
-        if (!validFacts.hasOwnProperty(asset.source)) throw new Error("Unknown source");
+        if (!Object.keys(validFacts).includes(asset.source)) throw new Error("Unknown source");
         if (!validFacts[asset.source].includes(asset.fact)) throw new Error("Unknown fact for this source");
-    };
+    }
 
     async apply({ asset, stateStore } : ApplyAssetContext<CodaJob>) {
 

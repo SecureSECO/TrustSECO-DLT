@@ -1,6 +1,7 @@
-require('dotenv').config();
+import dotenv = require('dotenv');
+dotenv.config();
 
-import { Application } from 'lisk-sdk';
+import { Application, PartialApplicationConfig } from 'lisk-sdk';
 import { DashboardPlugin } from '@liskhq/lisk-framework-dashboard-plugin';
 
 import { NaiveModule } from "./modules/naive/naive_module";
@@ -9,8 +10,8 @@ import { TrustFactsModule } from "./modules/trustfacts/trustfacts_module"
 
 import { checkVersion } from './config/check-version';
 
-const genesisBlock = require('./config/genesis-block.json');
-const config = require('./config/config.json');
+import genesisBlock = require('./config/genesis-block.json');
+import config = require('./config/config.json');
 
 if (config.plugins.dashboard.applicationUrl == "auto") {
     const hostname = process.env.HOSTNAME ?? "localhost";
@@ -19,7 +20,7 @@ if (config.plugins.dashboard.applicationUrl == "auto") {
 
 checkVersion().then(() => {
 
-    const app = Application.defaultApplication(genesisBlock, config);
+    const app = Application.defaultApplication(genesisBlock, config as PartialApplicationConfig);
 
     app.registerModule(NaiveModule);
     app.registerModule(CodaModule);

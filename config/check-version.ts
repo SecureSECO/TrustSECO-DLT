@@ -30,7 +30,7 @@ export async function checkVersion() {
         }
     
         else {
-            let { confirmation } = await prompt.start().get({
+            const { confirmation } = await prompt.start().get({
                 properties: {
                     confirmation: {
                         description: `You probably want to run \`npm run reset\` before continuing... Do you want to continue anyway? (y|n)`,
