@@ -14,7 +14,6 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         
         //TODO: validate data and gpg key
         if (asset.factData.trim() === "") throw new Error("Data cannot be empty");
-
     }
 
     async apply({ asset, stateStore }) {
