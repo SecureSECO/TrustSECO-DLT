@@ -1,13 +1,32 @@
 export const PackageDataSchema = {
     $id: 'packagedata/add-data',
     type: 'object',
-    required: [],
+    required: ["packageName", "packagePlatform", "packageOwner", "packageReleases"],
     properties: {
-        // ID of package
-        packageID: {
-            dataType: 'uint32',
+        // ID name of package
+        packageName: {
+            dataType: 'string',
             fieldNumber: 1
-        }
+        },
+        // Platform the package is hosted on (e.g. GitHub)
+        packagePlatform: {
+            dataType: 'string',
+            fieldNumber: 2
+        },
+        // Owner (account name) of the package on the platform
+        packageOwner: {
+            dataType: 'string',
+            fieldNumber: 3
+        },
+        // A list of all versions that have been released (e.g. 'v.1.22.1')
+        packageReleases: {
+            type: 'array',
+            fieldNumber: 4,
+            items: {
+                dataType: 'string'
+            }
+        },
+
     }
 }
 

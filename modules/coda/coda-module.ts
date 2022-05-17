@@ -7,28 +7,19 @@ export class CodaModule extends BaseModule {
     id = CodaModule.id;
     name = 'coda';
 
-
-
     // INITIALIZE THE JOBS LIST (EMPTY)
 
     async afterGenesisBlockApply({ stateStore }) {
         let jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
-        await stateStore.chain.set( "coda:jobs", jobsBuffer );
-        
+        await stateStore.chain.set( "coda:jobs", jobsBuffer );        
     }
 
-
-
     // TRANSACTIONS TO MODIFY THE JOBS LIST
-
     transactionAssets = [
         new CodaAddJobAsset()
     ];
 
-
-
     // ACTIONS TO GET THE CURRENT STATE OF THE JOBS LIST
-
     actions = {
         // GET THE JOBS LIST
         getJobs: async () => {
@@ -43,8 +34,6 @@ export class CodaModule extends BaseModule {
             return jobs[randomNumber];
         }
     }
-
-
 
     // PUBLISHING EVENTS WHEN NEW JOBS ARE ADDED
     // (not used in this module, or anywhere afaik)

@@ -9,7 +9,7 @@ export const codaJobSchema = {
             dataType: 'string',
             fieldNumber: 1
         },
-        // source for the fact (e.g. "github")
+        // source for the fact (e.g. "github") // moet weg
         source: {
             dataType: 'string',
             fieldNumber: 2

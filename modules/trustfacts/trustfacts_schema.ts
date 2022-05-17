@@ -18,6 +18,7 @@ export const TrustFactsSchema = {
             dataType: 'string',
             fieldNumber: 3
         },
+        // URL to the user gpgkey
         keyURL: {
             dataType: 'string',
             fieldNumber: 4
