@@ -129,7 +129,8 @@ function createGenesisBlock() {
     console.log('Written genesis-block.json');
 
     const old_version = config.version;
-    config.version = semver.inc(config.version, 'patch');
+    const random_suffix = Math.random().toString(16).substring(2, 6);
+    config.version = semver.inc(semver.coerce(config.version), 'patch') + '-' + random_suffix;
 
     writeFileSync(path.resolve(__dirname,'config.json'), JSON.stringify(config, null, 4));
     console.log(`Updated config.json, ${old_version} -> ${config.version}`);
