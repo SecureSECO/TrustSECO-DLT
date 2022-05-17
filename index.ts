@@ -12,6 +12,7 @@ import { checkVersion } from './config/check-version';
 
 import genesisBlock = require('./config/genesis-block.json');
 import config = require('./config/config.json');
+import { TrustScoreCalculation } from './modules/trustScoreCalculation/trustScoreCalculation_module';
 
 if (config.plugins.dashboard.applicationUrl == "auto") {
     const hostname = process.env.HOSTNAME ?? "localhost";
@@ -25,6 +26,7 @@ checkVersion().then(() => {
     app.registerModule(NaiveModule);
     app.registerModule(CodaModule);
     app.registerModule(TrustFactsModule);
+    app.registerModule(TrustScoreCalculation);
     app.registerPlugin(DashboardPlugin);
 
     app.run();
