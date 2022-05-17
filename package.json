@@ -24,7 +24,7 @@
     "lisk-sdk": "^5.2.2"
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.17.9",
+    "@babel/plugin-transform-modules-commonjs": "^7.17.12",
     "@babel/preset-env": "^7.17.10",
     "@types/jest": "^27.5.1",
     "@types/node": "^16.11.35",
