@@ -9,6 +9,7 @@ import { Schema } from "lisk-sdk";
 export interface TrustFact extends Record<string, unknown> {
     jobID: number,
     factData: string,
+    version: string,
     gitSignature: string,
     keyURL: string,
 }
@@ -26,7 +27,7 @@ export interface TrustFactList extends Record<string, unknown> {
 export const TrustFactSchema : Schema = {
     $id: 'trustfacts/add-facts',
     type: 'object',
-    required: ["jobID", "factData", "gitSignature", "keyURL"],
+    required: ["jobID", "factData", "version", "gitSignature", "keyURL"],
     properties: {
         // ID of job in CODA
         jobID: {
@@ -38,15 +39,20 @@ export const TrustFactSchema : Schema = {
             dataType: 'string',
             fieldNumber: 2
         },
+        // The version of the package the trustfact was gathered for
+        version: {
+            dataType: 'string',
+            fieldNumber: 3
+        },
         // Git signature and gpgkey
         gitSignature: {
             dataType: 'string',
-            fieldNumber: 3
+            fieldNumber: 4
         },
         // URL to the user gpgkey
         keyURL: {
             dataType: 'string',
-            fieldNumber: 4
+            fieldNumber: 5
         }
     }
 }

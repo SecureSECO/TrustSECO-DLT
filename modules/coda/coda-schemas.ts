@@ -12,7 +12,7 @@ export const validFacts = {
 
 export interface CodaJob extends Record<string, unknown> {
     package: string;
-    source: string;
+    version: string;
     fact: string;
 }
 
