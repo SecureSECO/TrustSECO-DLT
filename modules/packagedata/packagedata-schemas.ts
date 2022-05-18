@@ -29,16 +29,3 @@ export const PackageDataSchema = {
 
     }
 }
-
-export const PackageDataListSchema = {
-    $id: 'packagedata/package-data-list',
-    type: 'object',
-    required: ["packageDataList"],
-    properties: {
-        packageDataList: {
-            type: 'array',
-            fieldNumber: 1,
-            items: PackageDataSchema
-        }
-    }
-}

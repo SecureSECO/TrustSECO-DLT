@@ -1,5 +1,5 @@
 import { BaseAsset, codec } from "lisk-sdk";
-import { PackageDataSchema, PackageDataListSchema } from "../packagedata-schemas";
+import { PackageDataSchema } from "../packagedata-schemas";
 
 export class PackageDataAddDataAsset extends BaseAsset {
     static id = 63280; // meta-0
@@ -15,33 +15,32 @@ export class PackageDataAddDataAsset extends BaseAsset {
     };
 
     async apply({ asset, stateStore }) {
-        let packageDataListBuffer = await stateStore.chain.get("packagedata:packageDataList");
 
-        let { packageList } = codec.decode(PackageDataListSchema, packageDataListBuffer);
-        if( packageList == []){
-            packageList.push(asset);
+        // Get package data if available
+        let packageDataBuffer = await stateStore.chain.get("packagedata:" + asset.packageName);
+        let packageData = {packageName:"",packagePlatform: "",packageOwner:"", packageReleases:[""]};
+
+        // Add all new added versions of the package
+        if (packageDataBuffer !== undefined) {
+            packageData = codec.decode<{packageName:"",packagePlatform: "",packageOwner:"", packageReleases:[]}>(PackageDataSchema, packageDataBuffer);
+            let versionFound = false;
+
+            asset.packageReleases.forEach(function (pRelease) {
+                packageData.packageReleases.forEach(function (release) {
+                    if (release === pRelease) {
+                        versionFound = true;
+                    }
+                })
+                if (!versionFound) packageData.packageReleases.push(pRelease);
+                versionFound = false;
+            });
+        } 
+        // If package is new, add it
+        else {
+            packageData = asset;
         }
 
-        // add missing package versions to package releases
-        let packageFound = false, versionFound = false;
-        packageList.forEach(function (entry) {
-            if (entry.packageName === asset.packageName) {
-                packageFound = true;
-                asset.packageReleases.forEach(function (pRelease) {
-                    entry.packageReleases.forEach(function (release){
-                        if (release === pRelease) {
-                            versionFound = true;
-                        }
-                    })
-                    if (!versionFound) packageList.packageReleases.push(pRelease);
-                });
-            }
-        });
-        // if package is not yet in the package list, add it
-        if (!packageFound) packageList.push(asset);
-
-        console.log("check");
-
-        await stateStore.chain.set("packagedata:" + asset.packageName, codec.encode(PackageDataListSchema, { packageData }));
+        // Store
+        await stateStore.chain.set("packagedata:" + asset.packageName, codec.encode(PackageDataSchema, packageData));
     }
 }
