@@ -4,7 +4,8 @@ on: [push]
 jobs:
   standard-checks:
     name: Linting and Tests
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    container: node:16
 
     steps:
     - name: Checkout code

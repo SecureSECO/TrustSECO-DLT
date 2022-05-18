@@ -1,10 +1,12 @@
+
 name: Deploy to Turtle & Dove
 on: push
 
 jobs:
   deploy:
     name: Deploy
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    container: alpine
     timeout-minutes: 5
     steps:
     - name: multiple command
@@ -12,12 +14,11 @@ jobs:
       with:
         host: "turtle.science.uu.nl,dove.science.uu.nl"
         port: 22
-        sync: true
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         script: |
           cd /srv/TrustSECO-DLT
-          
+
           git pull
 
           # This loads NVM
