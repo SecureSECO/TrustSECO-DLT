@@ -7,12 +7,11 @@ jobs:
     runs-on: self-hosted
     container: ubuntu:latest
     steps:
-    - name: multiple command
+    - name: Deploying to turtle & dove...
       uses: appleboy/ssh-action@master
       with:
         host: "turtle.science.uu.nl,dove.science.uu.nl"
         port: 22
-        sync: true
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         proxy_host: "up.science.uu.nl"
@@ -23,4 +22,6 @@ jobs:
           git pull
           npm install
           sudo systemctl restart TrustSECO-DLT
+        script_stop: true
+        debug: true
           
