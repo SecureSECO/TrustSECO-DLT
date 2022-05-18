@@ -5,7 +5,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: self-hosted
-    container: alpine
+    container: ubuntu-latest
     steps:
     - name: multiple command
       uses: appleboy/ssh-action@master
