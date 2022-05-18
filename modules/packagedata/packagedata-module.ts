@@ -16,10 +16,10 @@ export class PackageDataModule extends BaseModule {
         getPackageInfo: async ({packageName} : Record<string, unknown>) => {
             console.log("Get the metadata for package: " + packageName);
             //get data bufer for the given package
-            let packageDataBuffer:any = await this._dataAccess.getChainState("packagedata:" + packageName);
+            const packageDataBuffer:any = await this._dataAccess.getChainState("packagedata:" + packageName);
             //if it is defined, decode packagedata buffer
             if(packageDataBuffer !== undefined){
-                let packageData = codec.decode<{packageData:[{package:string}]}>(PackageDataSchema, packageDataBuffer);
+                const packageData = codec.decode<{packageData:[{package:string}]}>(PackageDataSchema, packageDataBuffer);
                 //if info is available, return it
                 return packageData;
             }
