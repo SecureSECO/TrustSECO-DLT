@@ -1,0 +1,17 @@
+name: Continuous Integration
+on: [push]
+
+jobs:
+  standard-checks:
+    name: Linting and Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install packages
+      run: npm install    
+    - name: TS Linting
+      run: npm run lint
+    - name: Run Jest tests
+      run: npm test

@@ -1,41 +1,47 @@
-import { BaseAsset, codec } from 'lisk-sdk';
-import { codaJobListSchema } from '../../coda/coda-schemas';
+import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
+import { CodaJobList, codaJobListSchema } from '../../coda/coda-schemas';
 
-import { TrustFactsSchema, trustFactsListSchema } from '../trustfacts_schema';
+import { TrustFact, TrustFactList, TrustFactSchema, TrustFactListSchema } from '../trustfacts_schema';
 
 export class TrustFactsAddFactAsset extends BaseAsset {
-    static id = 12340;
+    static id = 32280;
     id = TrustFactsAddFactAsset.id;
     name = 'AddFacts';
-    schema = TrustFactsSchema;
+    schema = TrustFactSchema;
 
-    validate({ asset }) {
+    validate({ asset } : ValidateAssetContext<TrustFact>) {
         // for now onlycheck if fields are not empty, TODO more logic
         
         //TODO: validate data and gpg key
-        if (asset.factData === "") throw new Error("Data cannot be empty");
+        if (asset.factData.trim() === "") throw new Error("FactData cannot be empty");
+        if (asset.gitSignature.trim() === "") throw new Error("GitSignature cannot be empty");
+        if (asset.keyURL.trim() === "") throw new Error("KeyUrl cannot be empty");
+        if (asset.jobID < 0) throw new Error("JobID can't be negative");
+    }
 
-    };
-
-    async apply({ asset, stateStore }) {
+    async apply({ asset, stateStore } : ApplyAssetContext<TrustFact>) {
 
         // get the job
-        let jobsBuffer = await stateStore.chain.get("coda:jobs");
-        let { jobs } = codec.decode<{jobs:[{package:string}]}>(codaJobListSchema, jobsBuffer);
-        let { package : pack } = jobs[asset.jobID];
+        const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+
+        // check if job id is correct 
+        // needs refactoring if we add a CoDa garbarge collector
+        if( asset.jobID > jobs.length - 1) throw new Error("JobID incorrect, job does not exist");
+
+        const { package : pack } = jobs[asset.jobID];   
 
         // get the facts for this package
-        let facts : {}[] = [];
+        let facts : TrustFact[] = [];
         
-        let trustFactsBuffer = await stateStore.chain.get("trustfacts:" + pack);
+        const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + pack);
         if (trustFactsBuffer !== undefined) {
-            facts = codec.decode<{facts:[]}>(trustFactsListSchema, trustFactsBuffer).facts;
+            facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
         }
-
         // add the new fact
         facts.push(asset);
 
         // store!
-        await stateStore.chain.set("trustfacts:" + pack, codec.encode(trustFactsListSchema, { facts }));
+        await stateStore.chain.set("trustfacts:" + pack, codec.encode(TrustFactListSchema, { facts }));
     }
 }

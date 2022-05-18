@@ -1,5 +1,31 @@
+import { Schema } from "lisk-sdk";
 
-export const codaJobSchema = {
+export const validFacts = {
+    github: ["stars", "forks", "issues"],
+    libraries_io: ["sourcerank"]
+}
+
+
+////////////////
+// INTERFACES //
+////////////////
+
+export interface CodaJob extends Record<string,unknown> {
+    package: string;
+    source: string;
+    fact: string;
+}
+
+export interface CodaJobList extends Record<string,unknown> {
+    jobs: CodaJob[];
+}
+
+
+/////////////
+// SCHEMAS //
+/////////////
+
+export const codaJobSchema : Schema = {
     $id: 'coda/add-job',
     type: 'object',
     required: ["package", "source", "fact"],
@@ -20,9 +46,10 @@ export const codaJobSchema = {
             fieldNumber: 3
         }
     }
-}
+};
 
-export const codaJobListSchema = {
+
+export const codaJobListSchema : Schema = {
     $id: 'coda/job-list',
     type: 'object',
     required: ["jobs"],
@@ -33,9 +60,4 @@ export const codaJobListSchema = {
             items: codaJobSchema
         }
     }
-}
-
-export const validFacts = {
-    "github" : ["stars", "forks", "issues"],
-    "libraries.io" : ["sourcerank"]
 }

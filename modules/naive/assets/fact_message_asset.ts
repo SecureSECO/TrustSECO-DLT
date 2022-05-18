@@ -24,20 +24,18 @@ export class FactMessageAsset extends BaseAsset {
 	public validate({ asset }): void {
 		if(asset.trustFactJSON == ""){
 			throw new Error(
-		 		'Illegal message: ${asset.trustFactJSON}'
-		 	);
-		 }
+				'Illegal message: ${asset.trustFactJSON}'
+			);
+		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/require-await
 	public async apply({ asset, transaction, stateStore }): Promise<void> {
+		// 1. Get account data of the sender of the transaction
+		const senderAddress = transaction.senderAddress;
+		const senderAccount = await stateStore.account.get(senderAddress);
 
-		 // 1. Get account data of the sender of the transaction
-		 const senderAddress = transaction.senderAddress;
-		 const senderAccount = await stateStore.account.get(senderAddress);
-
-		 // 2. Update account data
-		 senderAccount.naive.trustFacts += asset.trustFactJSON;
-		 stateStore.account.set(senderAccount.address, senderAccount);
+		// 2. Update account data
+		senderAccount.naive.trustFacts += asset.trustFactJSON;
+		stateStore.account.set(senderAccount.address, senderAccount);
 	}
 }

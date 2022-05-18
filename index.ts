@@ -1,6 +1,7 @@
-require('dotenv').config();
+import dotenv = require('dotenv');
+dotenv.config();
 
-import { Application } from 'lisk-sdk';
+import { Application, PartialApplicationConfig } from 'lisk-sdk';
 import { DashboardPlugin } from '@liskhq/lisk-framework-dashboard-plugin';
 
 import { NaiveModule } from "./modules/naive/naive_module";
@@ -8,22 +9,27 @@ import { CodaModule } from "./modules/coda/coda-module";
 import { TrustFactsModule } from "./modules/trustfacts/trustfacts_module"
 import { PackageDataModule } from './modules/packagedata/packagedata-module';
 
-const genesisBlock = require('./config/genesis-block.json');
-const config = require('./config/config.json');
+import { checkVersion } from './config/check-version';
+
+import genesisBlock = require('./config/genesis-block.json');
+import config = require('./config/config.json');
 
 if (config.plugins.dashboard.applicationUrl == "auto") {
-    let hostname = process.env.HOSTNAME ?? "localhost";
+    const hostname = process.env.HOSTNAME ?? "localhost";
     config.plugins.dashboard.applicationUrl = `ws://${hostname}:${config.rpc.port}/ws`;
 }
 
-const app = Application.defaultApplication(genesisBlock, config);
+checkVersion().then(() => {
 
-app.registerModule(NaiveModule);
-app.registerModule(CodaModule);
-app.registerModule(TrustFactsModule);
-app.registerPlugin(DashboardPlugin);
-app.registerModule(PackageDataModule);
+    const app = Application.defaultApplication(genesisBlock, config as PartialApplicationConfig);
 
-app.run();
+    app.registerModule(NaiveModule);
+    app.registerModule(CodaModule);
+    app.registerModule(TrustFactsModule);
+    app.registerPlugin(DashboardPlugin);
+    app.registerModule(PackageDataModule);
+    app.run();
 
-console.log("TrustSECO-DLT is running...");
+    console.log("TrustSECO-DLT is running...");
+
+});

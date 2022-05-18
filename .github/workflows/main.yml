@@ -5,6 +5,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
     - name: multiple command
       uses: appleboy/ssh-action@master
@@ -14,12 +15,16 @@ jobs:
         sync: true
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
-        proxy_host: "up.science.uu.nl"
-        proxy_username: ${{ secrets.PROXY_USERNAME }}
-        proxy_key: ${{ secrets.KEY }}
         script: |
           cd /srv/TrustSECO-DLT
-          git pull
-          npm install
-          sudo systemctl restart TrustSECO-DLT
           
+          git pull
+
+          # This loads NVM
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+          nvm use
+          npm install
+
+          sudo systemctl restart TrustSECO-DLT

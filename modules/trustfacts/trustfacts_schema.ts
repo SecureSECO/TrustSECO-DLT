@@ -1,7 +1,32 @@
-export const TrustFactsSchema = {
+import { Schema } from "lisk-sdk";
+
+
+
+////////////////
+// INTERFACES //
+////////////////
+
+export interface TrustFact extends Record<string, unknown> {
+    jobID: number,
+    factData: string,
+    gitSignature: string,
+    keyURL: string,
+}
+
+export interface TrustFactList extends Record<string, unknown> {
+    facts: TrustFact[];
+}
+
+
+
+/////////////
+// SCHEMAS //
+/////////////
+
+export const TrustFactSchema : Schema = {
     $id: 'trustfacts/add-facts',
     type: 'object',
-    required: [],
+    required: ["jobID", "factData", "gitSignature", "keyURL"],
     properties: {
         // ID of job in CODA
         jobID: {
@@ -26,7 +51,7 @@ export const TrustFactsSchema = {
     }
 }
 
-export const trustFactsListSchema = {
+export const TrustFactListSchema : Schema = {
     $id: 'trustfacts/facts-list',
     type: 'object',
     required: ["facts"],
@@ -34,7 +59,7 @@ export const trustFactsListSchema = {
         facts: {
             type: 'array',
             fieldNumber: 1,
-            items: TrustFactsSchema
+            items: TrustFactSchema
         }
     }
 }

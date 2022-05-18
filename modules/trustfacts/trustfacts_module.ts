@@ -1,10 +1,9 @@
-import { BaseModule, codec } from 'lisk-sdk';
-import { TrustFactsSchema, trustFactsListSchema } from './trustfacts_schema'
+import { BaseModule, codec, TransactionApplyContext } from 'lisk-sdk';
+import { TrustFact, TrustFactList, TrustFactSchema, TrustFactListSchema } from './trustfacts_schema'
 import { TrustFactsAddFactAsset } from './assets/addfact_asset'
-//import { codaJobListSchema } from '../coda/coda-schemas';
 
 export class TrustFactsModule extends BaseModule {
-    id = 1234;
+    id = 3228;
     name = "trustfacts";
 
     transactionAssets = [
@@ -16,10 +15,10 @@ export class TrustFactsModule extends BaseModule {
         getPackageFacts: async ({packageName} : Record<string, unknown>) => {
             console.log("Get trustfacts for package: " + packageName);
             //get facts buffer for the given package
-            let trustFactsBuffer:any = await this._dataAccess.getChainState("trustfacts:" + packageName);
+            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
             //if it is defined, decode facts buffer
             if (trustFactsBuffer !== undefined){
-                let {facts} = codec.decode<{facts:{jobID:number,factData:string,gitSignature:string,keyURL:string}[]}>(trustFactsListSchema, trustFactsBuffer);
+                const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
                 //if facts are available, return them
                 return facts;
             }
@@ -29,9 +28,9 @@ export class TrustFactsModule extends BaseModule {
 
     events = ['newFact'];
 
-    public async afterTransactionApply({ transaction: { moduleID, assetID, asset } }) {
+    public async afterTransactionApply({ transaction: { moduleID, assetID, asset } } : TransactionApplyContext) {
         if (moduleID === this.id && assetID === TrustFactsAddFactAsset.id) {
-            let fact = codec.decode<{}>(TrustFactsSchema, asset);
+            const fact = codec.decode<TrustFact>(TrustFactSchema, asset);
             console.log('afterTransactionApply: fact:', fact);
             this._channel.publish('trustfacts:newFact', fact);
         }
