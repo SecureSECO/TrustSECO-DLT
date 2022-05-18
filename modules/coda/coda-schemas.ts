@@ -14,6 +14,7 @@ export interface CodaJob extends Record<string,unknown> {
     package: string;
     source: string;
     fact: string;
+    date: string;
 }
 
 export interface CodaJobList extends Record<string,unknown> {
@@ -28,7 +29,7 @@ export interface CodaJobList extends Record<string,unknown> {
 export const codaJobSchema : Schema = {
     $id: 'coda/add-job',
     type: 'object',
-    required: ["package", "source", "fact"],
+    required: ["package", "source", "fact", "date"],
     properties: {
         // package of the trustfact (e.g. "microsoft/terminal")
         package: {
@@ -44,6 +45,10 @@ export const codaJobSchema : Schema = {
         fact: {
             dataType: 'string',
             fieldNumber: 3
+        },
+        date: {
+            dataType: 'string',
+            fieldNumber: 4
         }
     }
 };

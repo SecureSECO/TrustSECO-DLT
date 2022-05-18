@@ -10,7 +10,8 @@ describe('Test the validate function', () => {
             asset: {
                 package: '',
                 source: 'github', 
-                fact: 'stars'
+                fact: 'stars',
+                date: "2000-01-01"
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader
@@ -22,7 +23,8 @@ describe('Test the validate function', () => {
             asset: {
                 package: 'Some package',
                 source: 'Unknown',
-                fact: 'stars'
+                fact: 'stars',
+                date: "2000-01-01"
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader
@@ -34,7 +36,8 @@ describe('Test the validate function', () => {
             asset: {
                 package: 'Some package',
                 source: 'github',
-                fact: 'unknown'
+                fact: 'unknown',
+                date: "2000-01-01"
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader
