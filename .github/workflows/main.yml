@@ -1,3 +1,4 @@
+
 name: Deploy to Turtle & Dove
 on: push
 
@@ -5,23 +6,24 @@ jobs:
   deploy:
     name: Deploy
     runs-on: self-hosted
-    container: ubuntu:latest
+    container: alpine
+    timeout-minutes: 5
     steps:
-    - name: Deploying to turtle & dove...
+    - name: multiple command
       uses: appleboy/ssh-action@master
       with:
         host: "turtle.science.uu.nl,dove.science.uu.nl"
         port: 22
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
-        proxy_host: "up.science.uu.nl"
-        proxy_username: ${{ secrets.PROXY_USERNAME }}
-        proxy_key: ${{ secrets.KEY }}
         script: |
           cd /srv/TrustSECO-DLT
+
           git pull
+          # This loads NVM
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+          nvm use
           npm install
           sudo systemctl restart TrustSECO-DLT
-        script_stop: true
-        debug: true
-          
