@@ -44,5 +44,18 @@ describe('Test the validate function', () => {
         }
         expect(() => { coda.validate(asset) }).toThrow();
     })
+    test('Throw an error if an invalid date is given', () => {
+        const asset : ValidateAssetContext<CodaJob> = {
+            asset: {
+                package: 'Some package',
+                source: 'github',
+                fact: 'stars',
+                date: "01-2000-04"
+            },
+            transaction: {} as Transaction,
+            header: {} as BlockHeader
+        }
+        expect(() => { coda.validate(asset) }).toThrow();
+    })
 });
 

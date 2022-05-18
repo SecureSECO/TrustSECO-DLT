@@ -9,9 +9,11 @@ export class CodaAddJobAsset extends BaseAsset {
     schema = codaJobSchema;
 
     validate({asset} : ValidateAssetContext<CodaJob>) {
+        const date = new Date(asset.date);
         if (asset.package.trim() === "") throw new Error("Package cannot be empty");
         if (!Object.keys(validFacts).includes(asset.source)) throw new Error("Unknown source");
         if (!validFacts[asset.source].includes(asset.fact)) throw new Error("Unknown fact for this source");
+        if (isNaN(date.getDate())) throw new Error("Invalid date specified (year-month-day, hours and more specific are optional)");
     }
 
     async apply({ asset, stateStore } : ApplyAssetContext<CodaJob>) {
