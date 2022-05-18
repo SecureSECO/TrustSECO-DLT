@@ -17,7 +17,7 @@ export class PackageDataAddDataAsset extends BaseAsset {
     async apply({ asset, stateStore }) {
 
         // Get package data if available
-        let packageDataBuffer = await stateStore.chain.get("packagedata:" + asset.packageName);
+        const packageDataBuffer = await stateStore.chain.get("packagedata:" + asset.packageName);
         let packageData = {packageName:"",packagePlatform: "",packageOwner:"", packageReleases:[""]};
 
         // Add all new added versions of the package
