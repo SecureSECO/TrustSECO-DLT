@@ -5,17 +5,32 @@ import { TrustFactsAddFactAsset } from './addfact_asset';
 
 const trustfacts = new TrustFactsAddFactAsset();
 describe('Test the validate function', () => {
-    test('Throw an error if the asset factdata is empty', () => {
+    test('Throw an error if the asset fact is empty', () => {
         const asset : ValidateAssetContext<TrustFact> = {
             asset: {
-                factData: '',
                 jobID: 0,
-                gitSignature: '',
-                keyURL: '',
+                fact: '',
+                factData: 'test',
+                gitSignature: 'test',
+                keyURL: 'test',
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader
         }
         expect(() => { trustfacts.validate(asset) }).toThrow();
-    });
+    })
+    test('Throw an error if the asset factdata is empty', () => {
+        const asset : ValidateAssetContext<TrustFact> = {
+            asset: {
+                jobID: 0,
+                fact: 'stars',
+                factData: '',
+                gitSignature: 'test',
+                keyURL: 'test',
+            },
+            transaction: {} as Transaction,
+            header: {} as BlockHeader
+        }
+        expect(() => { trustfacts.validate(asset) }).toThrow();
+    })
 });

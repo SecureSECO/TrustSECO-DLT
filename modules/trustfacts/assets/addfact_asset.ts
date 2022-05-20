@@ -13,28 +13,38 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         // for now onlycheck if fields are not empty, TODO more logic
         
         //TODO: validate data and gpg key
-        if (asset.factData.trim() === "") throw new Error("Data cannot be empty");
+        if (asset.fact.trim() === "") throw new Error("Fact cannot be empty")
+        if (asset.factData.trim() === "") throw new Error("Fact data cannot be empty");
     }
 
-    async apply({ asset, stateStore } : ApplyAssetContext<TrustFact>) {
-
-        // get the job
+    async apply({ asset, stateStore } : ApplyAssetContext<TrustFact>) 
+    {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
-        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-        const { package : pack } = jobs[asset.jobID];
-
-        // get the facts for this package
-        let facts : TrustFact[] = [];
+        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const job = jobs.find(job => job.jobID === asset.jobID);
         
-        const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + pack);
-        if (trustFactsBuffer !== undefined) {
-            facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
+        if (job !== undefined) {
+            // get the facts for this package
+            let facts : TrustFact[] = [];
+            
+            const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job?.package);
+            if (trustFactsBuffer !== undefined) {
+                facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
+            }
+            facts.push(asset);
+            
+            // Count how often the fact has already been spidered for this particular job, remove the job after a certain threshold
+            const count = facts.filter(fact => 
+                fact.fact === asset.fact && fact.jobID == asset.jobID).length;
+            if (count > 4) {
+                jobs = jobs.filter(job => job.jobID != asset.jobID);
+                console.log(jobs); 
+                await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
+            }
+
+            await stateStore.chain.set("trustfacts:" + job?.package, codec.encode(TrustFactListSchema, { facts }));
+        } else {
+            throw new Error("Job with given job ID does not exist!");
         }
-
-        // add the new fact
-        facts.push(asset);
-
-        // store!
-        await stateStore.chain.set("trustfacts:" + pack, codec.encode(TrustFactListSchema, { facts }));
     }
 }

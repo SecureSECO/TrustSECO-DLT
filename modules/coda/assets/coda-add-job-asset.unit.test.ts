@@ -11,7 +11,8 @@ describe('Test the validate function', () => {
                 package: '',
                 source: 'github', 
                 fact: 'stars',
-                date: "2000-01-01"
+                date: "2000-01-01",
+                jobID: 1
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader
@@ -24,7 +25,8 @@ describe('Test the validate function', () => {
                 package: 'Some package',
                 source: 'Unknown',
                 fact: 'stars',
-                date: "2000-01-01"
+                date: "2000-01-01",
+                jobID: 1
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader
@@ -37,7 +39,8 @@ describe('Test the validate function', () => {
                 package: 'Some package',
                 source: 'github',
                 fact: 'unknown',
-                date: "2000-01-01"
+                date: "2000-01-01",
+                jobID: 1
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader
@@ -50,7 +53,8 @@ describe('Test the validate function', () => {
                 package: 'Some package',
                 source: 'github',
                 fact: 'stars',
-                date: "01-2000-04"
+                date: "01-2000-04",
+                jobID: 1
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader

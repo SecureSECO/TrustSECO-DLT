@@ -21,7 +21,7 @@ export class CodaAddJobAsset extends BaseAsset {
         let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         jobs.push(asset);
 
-        // If a job has been longer in the job list for 365 days, remove it
+        // If a job has been longer in the job list for a specified number of days, remove it
         const currentDate = new Date();
         jobs = jobs.filter(job => {
             const jobDate = new Date(job.date);

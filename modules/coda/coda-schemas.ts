@@ -5,7 +5,6 @@ export const validFacts = {
     libraries_io: ["sourcerank"]
 }
 
-
 ////////////////
 // INTERFACES //
 ////////////////
@@ -15,12 +14,12 @@ export interface CodaJob extends Record<string,unknown> {
     source: string;
     fact: string;
     date: string;
+    jobID: number;
 }
 
 export interface CodaJobList extends Record<string,unknown> {
     jobs: CodaJob[];
 }
-
 
 /////////////
 // SCHEMAS //
@@ -49,6 +48,10 @@ export const codaJobSchema : Schema = {
         date: {
             dataType: 'string',
             fieldNumber: 4
+        },
+        jobID: {
+            dataType: 'uint32',
+            fieldNumber: 5
         }
     }
 };
