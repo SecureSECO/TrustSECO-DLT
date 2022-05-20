@@ -29,7 +29,6 @@ export class CodaAddJobAsset extends BaseAsset {
             const differenceInDays = Math.ceil(differenceInMilliSeconds / (1000 * 60 * 60 * 24));
             return differenceInDays <= 365;
         });
-        console.log(jobs);
 
         // If the job list exceeds the maximum number of allowed jobs, remove the oldest ones (current jobs - number of allowed jobs).
         const maximumCodaJobs = 100000;
