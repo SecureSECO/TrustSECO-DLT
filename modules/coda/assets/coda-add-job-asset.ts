@@ -18,18 +18,28 @@ export class CodaAddJobAsset extends BaseAsset {
 
     async apply({ asset, stateStore } : ApplyAssetContext<CodaJob>) {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
-        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         jobs.push(asset);
 
+        // If a job has been longer in the job list for 365 days, remove it
+        var currentDate = new Date();
+        jobs = jobs.filter(job => {
+            const jobDate = new Date(job.date);
+            const differenceInMilliSeconds = currentDate.getTime() - jobDate.getTime();
+            const differenceInDays = Math.ceil(differenceInMilliSeconds / (1000 * 60 * 60 * 24));
+            return differenceInDays <= 365;
+        });
+        console.log(jobs);
+
         // If the job list exceeds the maximum number of allowed jobs, remove the oldest ones (current jobs - number of allowed jobs).
-        const maximumCodaJobs = 3;
+        const maximumCodaJobs = 100000;
         if (jobs.length > maximumCodaJobs) {
             jobs.sort((jobOne, jobTwo) => {
                 return new Date(jobOne.date).valueOf() - new Date(jobTwo.date).valueOf();
             });
             jobs.splice(0, jobs.length - maximumCodaJobs);
         }
-
+        
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
     }
 }
