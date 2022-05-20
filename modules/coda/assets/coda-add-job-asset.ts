@@ -14,11 +14,16 @@ export class CodaAddJobAsset extends BaseAsset {
         if (!Object.keys(validFacts).includes(asset.source)) throw new Error("Unknown source");
         if (!validFacts[asset.source].includes(asset.fact)) throw new Error("Unknown fact for this source");
         if (isNaN(date.getDate())) throw new Error("Invalid date specified (year-month-day, hours and more specific are optional)");
+        if (isNaN(asset.jobID)) throw new Error("Given job ID is not a number");
     }
 
     async apply({ asset, stateStore } : ApplyAssetContext<CodaJob>) {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+
+        if (jobs.filter(job => job.jobID == asset.jobID).length > 0) {
+            throw new Error("The given job ID already exists for a job, no two jobs can have the same ID!");
+        }
         jobs.push(asset);
 
         // If a job has been longer in the job list for a specified number of days, remove it

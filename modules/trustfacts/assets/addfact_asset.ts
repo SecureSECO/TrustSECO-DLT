@@ -1,5 +1,5 @@
 import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
-import { CodaJobList, codaJobListSchema } from '../../coda/coda-schemas';
+import { CodaJobList, codaJobListSchema, validFacts } from '../../coda/coda-schemas';
 
 import { TrustFact, TrustFactList, TrustFactSchema, TrustFactListSchema } from '../trustfacts_schema';
 
@@ -13,7 +13,11 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         // for now onlycheck if fields are not empty, TODO more logic
         
         //TODO: validate data and gpg key
-        if (asset.fact.trim() === "") throw new Error("Fact cannot be empty")
+        if (asset.fact.trim() === "") throw new Error("Fact cannot be empty");
+        if (!validFacts.github.some(fact => fact === asset.fact) && 
+            !validFacts.libraries_io.some(fact => fact === asset.fact)) {
+                throw new Error("You cannot add data for the given fact (invalid fact)");
+            }
         if (asset.factData.trim() === "") throw new Error("Fact data cannot be empty");
     }
 
@@ -27,7 +31,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
             // get the facts for this package
             let facts : TrustFact[] = [];
             
-            const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job?.package);
+            const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
             if (trustFactsBuffer !== undefined) {
                 facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
             }
@@ -42,7 +46,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
                 await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
             }
 
-            await stateStore.chain.set("trustfacts:" + job?.package, codec.encode(TrustFactListSchema, { facts }));
+            await stateStore.chain.set("trustfacts:" + job.package, codec.encode(TrustFactListSchema, { facts }));
         } else {
             throw new Error("Job with given job ID does not exist!");
         }
