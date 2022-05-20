@@ -40,7 +40,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
             // Count how often the fact has already been spidered for this particular job, remove the job after a certain threshold
             const count = facts.filter(fact => 
                 fact.fact === asset.fact && fact.jobID == asset.jobID).length;
-            if (count > 4) {
+            if (count > 9) {
                 jobs = jobs.filter(job => job.jobID != asset.jobID);
                 console.log(jobs); 
                 await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
