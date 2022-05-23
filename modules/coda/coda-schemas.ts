@@ -9,15 +9,15 @@ export const validFacts = {
 // INTERFACES //
 ////////////////
 
-export interface CodaJob extends Record<string,unknown> {
+export interface CodaJob extends Record<string, unknown> {
     package: string;
-    source: string;
+    version: string;
     fact: string;
     date: string;
     jobID: number;
 }
 
-export interface CodaJobList extends Record<string,unknown> {
+export interface CodaJobList extends Record<string, unknown> {
     jobs: CodaJob[];
 }
 
@@ -25,18 +25,18 @@ export interface CodaJobList extends Record<string,unknown> {
 // SCHEMAS //
 /////////////
 
-export const codaJobSchema : Schema = {
+export const codaJobSchema: Schema = {
     $id: 'coda/add-job',
     type: 'object',
-    required: ["package", "source", "fact", "date"],
+    required: ["package", "version", "fact", "date", "jobID"],
     properties: {
         // package of the trustfact (e.g. "microsoft/terminal")
         package: {
             dataType: 'string',
             fieldNumber: 1
         },
-        // source for the fact (e.g. "github")
-        source: {
+        // The version of the package this trustfact applies to
+        version: {
             dataType: 'string',
             fieldNumber: 2
         },
@@ -57,7 +57,7 @@ export const codaJobSchema : Schema = {
 };
 
 
-export const codaJobListSchema : Schema = {
+export const codaJobListSchema: Schema = {
     $id: 'coda/job-list',
     type: 'object',
     required: ["jobs"],

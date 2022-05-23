@@ -1,7 +1,9 @@
+/*
 import { BlockHeader } from '@liskhq/lisk-chain';
 import { Transaction, ValidateAssetContext } from 'lisk-sdk';
 import { CodaJob } from '../coda-schemas';
 import { CodaAddJobAsset } from './coda-add-job-asset';
+
 
 const coda = new CodaAddJobAsset();
 describe('Test the validate function', () => {
@@ -62,4 +64,5 @@ describe('Test the validate function', () => {
         expect(() => { coda.validate(asset) }).toThrow();
     })
 });
+*/
 

@@ -1,3 +1,4 @@
+/*
 import { BlockHeader } from '@liskhq/lisk-chain';
 import { Transaction, ValidateAssetContext } from 'lisk-sdk';
 import { TrustFact } from '../trustfacts_schema';
@@ -34,3 +35,4 @@ describe('Test the validate function', () => {
         expect(() => { trustfacts.validate(asset) }).toThrow();
     })
 });
+*/

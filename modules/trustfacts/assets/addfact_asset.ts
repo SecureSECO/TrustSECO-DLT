@@ -18,6 +18,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         if (asset.gitSignature.trim() === "") throw new Error("GitSignature cannot be empty");
         if (asset.keyURL.trim() === "") throw new Error("KeyUrl cannot be empty");
         if (asset.jobID < 0) throw new Error("JobID can't be negative");
+        if (asset.version.trim() === "") throw new Error("version cannot be empty");
         if (!validFacts.github.some(fact => fact === asset.fact) && 
             !validFacts.libraries_io.some(fact => fact === asset.fact)) {
                 throw new Error("You cannot add data for the given fact (invalid fact)");

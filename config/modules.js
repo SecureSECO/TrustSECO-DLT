@@ -4,6 +4,7 @@ const config = require('./config.json');
 const { NaiveModule } = require('../dist/modules/naive/naive_module');
 const { CodaModule } = require('../dist/modules/coda/coda-module');
 const { TrustFactsModule } = require('../dist/modules/trustfacts/trustfacts_module');
+const { PackageDataModule} = require('../dist/modules/packagedata/packagedata-module');
 
 const modules = [
 
@@ -19,6 +20,7 @@ const modules = [
     new NaiveModule(config.genesisConfig),
     new CodaModule(config.genesisConfig),
     new TrustFactsModule(config.genesisConfig),
+    new PackageDataModule(config.genesisConfig),
 ]
 
 module.exports.modules = modules;

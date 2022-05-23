@@ -6,15 +6,15 @@ export class CodaModule extends BaseModule {
     static id = 2632; // the T9 code for "coda"
     id = CodaModule.id;
     name = 'coda';
+
     // INITIALIZE THE JOBS LIST (EMPTY)
 
     async afterGenesisBlockApply({ stateStore }) {
         const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
-        await stateStore.chain.set( "coda:jobs", jobsBuffer );   
+        await stateStore.chain.set("coda:jobs", jobsBuffer);
     }
 
     // TRANSACTIONS TO MODIFY THE JOBS LIST
-
     transactionAssets = [
         new CodaAddJobAsset()
     ];
@@ -40,7 +40,7 @@ export class CodaModule extends BaseModule {
 
     events = ['newJob'];
 
-    public async afterTransactionApply({ transaction: {moduleID, assetID, asset} } : TransactionApplyContext) {
+    public async afterTransactionApply({ transaction: { moduleID, assetID, asset } }: TransactionApplyContext) {
         if (moduleID === this.id && assetID === CodaAddJobAsset.id) {
             const job = codec.decode<CodaJob>(codaJobSchema, asset);
             this._channel.publish('coda:newJob', job);
