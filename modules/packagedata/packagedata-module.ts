@@ -25,12 +25,6 @@ export class PackageDataModule extends BaseModule {
             }
             else throw new Error("No info is available for this package");
         },
-        /* does not work with this architecture
-        getAllPackages: async () => {
-            let packagesBuffer:any = await this._dataAccess.getChainState("packagedata:packageDataList");
-            return codec.decode(PackageDataListSchema, packagesBuffer);
-        },
-        */
     }
 
     //TODO add event when new package is added
