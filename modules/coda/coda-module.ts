@@ -1,6 +1,7 @@
 import { BaseModule, codec, TransactionApplyContext } from 'lisk-sdk';
-import { CodaJob, CodaJobList, codaJobSchema, codaJobListSchema } from './coda-schemas';
+import { CodaJob, CodaJobList, codaJobSchema, codaJobListSchema, CodaReturnJob } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
+import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 
 export class CodaModule extends BaseModule {
     static id = 2632; // the T9 code for "coda"
@@ -31,7 +32,16 @@ export class CodaModule extends BaseModule {
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
             const randomNumber = Math.floor(Math.random() * jobs.length);
-            return jobs[randomNumber];
+            const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + jobs[randomNumber].package) as Buffer;
+            const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
+            const returnJob: CodaReturnJob = {
+                packageName: jobs[randomNumber].package,
+                packagePlatform: packageData.packagePlatform,
+                packageOwner: packageData.packageOwner,
+                packageRelease: jobs[randomNumber].version,
+                jobID: jobs[randomNumber].jobID
+            };
+            return returnJob;
         }
     }
 
