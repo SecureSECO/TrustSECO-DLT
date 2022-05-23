@@ -40,7 +40,7 @@ export class TrustFactsModule extends BaseModule {
         },
         // Calculate the TrustScore for a specific package
         calculateTrustScore: async ({packageName} : Record<string, unknown>) => {
-            let facts = await this.getTrustFacts(packageName);
+            const facts = await this.getTrustFacts(packageName);
                 return await this.calculateTrustScore(facts);
         }       
     }
@@ -92,7 +92,7 @@ export class TrustFactsModule extends BaseModule {
                     break;
                 case "forks":
                     // Calculation for forks score
-                    let countForks = Number.parseInt(factData);
+                    const countForks = Number.parseInt(factData);
                     switch(true)
                     {
                         case countForks > 50:
