@@ -1,13 +1,12 @@
 import { Schema } from "lisk-sdk";
 
-
-
 ////////////////
 // INTERFACES //
 ////////////////
 
 export interface TrustFact extends Record<string, unknown> {
     jobID: number,
+    fact: string,
     factData: string,
     version: string,
     gitSignature: string,
@@ -17,8 +16,6 @@ export interface TrustFact extends Record<string, unknown> {
 export interface TrustFactList extends Record<string, unknown> {
     facts: TrustFact[];
 }
-
-
 
 /////////////
 // SCHEMAS //
@@ -34,10 +31,15 @@ export const TrustFactSchema : Schema = {
             dataType: 'uint32',
             fieldNumber: 1
         },
+        // the fact that was spidered
+        fact: { 
+            dataType: 'string',
+            fieldNumber: 2
+        },
         // the data that was spidered
         factData: {
             dataType: 'string',
-            fieldNumber: 2
+            fieldNumber: 3
         },
         // The version of the package the trustfact was gathered for
         version: {
