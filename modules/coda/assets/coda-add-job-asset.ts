@@ -34,7 +34,7 @@ export class CodaAddJobAsset extends BaseAsset {
         packageData = codec.decode<{ packageName: "", packagePlatform: "", packageOwner: "", packageReleases: [] }>(PackageDataSchema, packageDataBuffer);
         let versionFound = false;
         packageData.packageReleases.forEach(function (version) {
-            if (asset.version == version) {
+            if (asset.version === version) {
                 versionFound = true;
             }
         });
