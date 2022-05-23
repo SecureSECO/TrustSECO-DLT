@@ -21,10 +21,10 @@ export interface TrustFactList extends Record<string, unknown> {
 // SCHEMAS //
 /////////////
 
-export const TrustFactSchema : Schema = {
+export const TrustFactSchema: Schema = {
     $id: 'trustfacts/add-facts',
     type: 'object',
-    required: ["jobID","fact", "factData", "version", "gitSignature", "keyURL"],
+    required: ["jobID", "fact", "factData", "version", "gitSignature", "keyURL"],
     properties: {
         // ID of job in CODA
         jobID: {
@@ -32,12 +32,12 @@ export const TrustFactSchema : Schema = {
             fieldNumber: 1
         },
         // the fact that was spidered
-        fact: { 
+        fact: {
             dataType: 'string',
             fieldNumber: 2
         },
         // The data that was spidered
-        factData: { 
+        factData: {
             dataType: 'string',
             fieldNumber: 3
         },
@@ -59,7 +59,7 @@ export const TrustFactSchema : Schema = {
     }
 }
 
-export const TrustFactListSchema : Schema = {
+export const TrustFactListSchema: Schema = {
     $id: 'trustfacts/facts-list',
     type: 'object',
     required: ["facts"],

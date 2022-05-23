@@ -12,12 +12,12 @@ export class TrustFactsModule extends BaseModule {
 
     actions = {
         // GET ALL THE TRUSTFACTS FOR A SPECIFIC PACKAGE
-        getPackageFacts: async ({packageName} : Record<string, unknown>) => {
+        getPackageFacts: async ({ packageName }: Record<string, unknown>) => {
             console.log("Get trustfacts for package: " + packageName);
             //get facts buffer for the given package
             const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
             //if it is defined, decode facts buffer
-            if (trustFactsBuffer !== undefined){
+            if (trustFactsBuffer !== undefined) {
                 const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
                 //if facts are available, return them
                 return facts;
@@ -28,7 +28,7 @@ export class TrustFactsModule extends BaseModule {
 
     events = ['newFact'];
 
-    public async afterTransactionApply({ transaction: { moduleID, assetID, asset } } : TransactionApplyContext) {
+    public async afterTransactionApply({ transaction: { moduleID, assetID, asset } }: TransactionApplyContext) {
         if (moduleID === this.id && assetID === TrustFactsAddFactAsset.id) {
             const fact = codec.decode<TrustFact>(TrustFactSchema, asset);
             console.log('afterTransactionApply: fact:', fact);

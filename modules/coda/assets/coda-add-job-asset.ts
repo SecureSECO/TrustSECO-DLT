@@ -1,7 +1,7 @@
 import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
 import { PackageDataSchema } from '../../packagedata/packagedata-schemas';
 
-import { CodaJob, CodaJobList, codaJobSchema, codaJobListSchema/*, validFacts*/} from '../coda-schemas';
+import { CodaJob, CodaJobList, codaJobSchema, codaJobListSchema/*, validFacts*/ } from '../coda-schemas';
 
 export class CodaAddJobAsset extends BaseAsset {
     static id = 26320; // coda-0
@@ -9,7 +9,7 @@ export class CodaAddJobAsset extends BaseAsset {
     name = 'AddJob';
     schema = codaJobSchema;
 
-    validate({asset} : ValidateAssetContext<CodaJob>) {
+    validate({ asset }: ValidateAssetContext<CodaJob>) {
         const date = new Date(asset.date);
         if (asset.package.trim() === "") throw new Error("Package cannot be empty");
         if (asset.version.trim() === "") throw new Error("version cannot be empty");
@@ -21,22 +21,24 @@ export class CodaAddJobAsset extends BaseAsset {
 
     }
 
-    async apply({ asset, stateStore } : ApplyAssetContext<CodaJob>) {
+    async apply({ asset, stateStore }: ApplyAssetContext<CodaJob>) {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
         // Check if package is in packagedata and if version exists
-        const packageDataBuffer =  await stateStore.chain.get("packagedata:" + asset.package) as Buffer;
-        if(packageDataBuffer == undefined){
+        const packageDataBuffer = await stateStore.chain.get("packagedata:" + asset.package) as Buffer;
+        if (packageDataBuffer === undefined) {
             throw new Error("The given package does not exist in the packageData!");
         }
-        let packageData = {packageName:"",packagePlatform: "",packageOwner:"", packageReleases:[""]};
-        packageData = codec.decode<{packageName:"",packagePlatform: "",packageOwner:"", packageReleases:[]}>(PackageDataSchema, packageDataBuffer);
+        let packageData = { packageName: "", packagePlatform: "", packageOwner: "", packageReleases: [""] };
+        packageData = codec.decode<{ packageName: "", packagePlatform: "", packageOwner: "", packageReleases: [] }>(PackageDataSchema, packageDataBuffer);
         let versionFound = false;
-        packageData.packageReleases.forEach(function(version) {
-            if(asset.version == version) versionFound = true;           
+        packageData.packageReleases.forEach(function (version) {
+            if (asset.version == version) {
+                versionFound = true;
+            }
         });
-        if(!versionFound) {
+        if (!versionFound) {
             throw new Error("The given package version does not exist in the packageData!");
         }
 
@@ -64,7 +66,7 @@ export class CodaAddJobAsset extends BaseAsset {
             });
             jobs.splice(0, jobs.length - maximumCodaJobs);
         }
-        
+
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
     }
 }
