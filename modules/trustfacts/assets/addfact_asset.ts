@@ -4,7 +4,7 @@ import { CodaJobList, codaJobListSchema, validFacts } from '../../coda/coda-sche
 import { TrustFact, TrustFactList, TrustFactSchema, TrustFactListSchema } from '../trustfacts_schema';
 
 export class TrustFactsAddFactAsset extends BaseAsset {
-    static id = 12340;
+    static id = 32280;
     id = TrustFactsAddFactAsset.id;
     name = 'AddFacts';
     schema = TrustFactSchema;
@@ -13,20 +13,24 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         // for now onlycheck if fields are not empty, TODO more logic
         
         //TODO: validate data and gpg key
-        if (asset.fact.trim() === "") throw new Error("Fact cannot be empty");
+
+        if (asset.factData.trim() === "") throw new Error("FactData cannot be empty");
+        if (asset.gitSignature.trim() === "") throw new Error("GitSignature cannot be empty");
+        if (asset.keyURL.trim() === "") throw new Error("KeyUrl cannot be empty");
+        if (asset.jobID < 0) throw new Error("JobID can't be negative");
         if (!validFacts.github.some(fact => fact === asset.fact) && 
             !validFacts.libraries_io.some(fact => fact === asset.fact)) {
                 throw new Error("You cannot add data for the given fact (invalid fact)");
             }
-        if (asset.factData.trim() === "") throw new Error("Fact data cannot be empty");
     }
 
     async apply({ asset, stateStore } : ApplyAssetContext<TrustFact>) 
     {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+
         let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         const job = jobs.find(job => job.jobID === asset.jobID);
-        
+
         if (job !== undefined) {
             // get the facts for this package
             let facts : TrustFact[] = [];

@@ -20,16 +20,16 @@
   "author": "Fides",
   "dependencies": {
     "@liskhq/lisk-framework-dashboard-plugin": "^0.1.7",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.1",
     "lisk-sdk": "^5.2.2"
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.17.9",
-    "@babel/preset-env": "^7.17.10",
+    "@babel/plugin-transform-modules-commonjs": "^7.17.12",
+    "@babel/preset-env": "^7.17.12",
     "@types/jest": "^27.5.1",
-    "@types/node": "^16.11.35",
-    "@typescript-eslint/eslint-plugin": "^5.23.0",
-    "@typescript-eslint/parser": "^5.23.0",
+    "@types/node": "^17.0.34",
+    "@typescript-eslint/eslint-plugin": "^5.24.0",
+    "@typescript-eslint/parser": "^5.24.0",
     "command-line-args": "^5.2.1",
     "eslint": "^8.15.0",
     "jest": "^28.1.0",
