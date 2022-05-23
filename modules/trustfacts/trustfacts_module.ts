@@ -1,5 +1,5 @@
 import { BaseModule, codec, TransactionApplyContext } from 'lisk-sdk';
-import { CodaJobList, codaJobListSchema } from "../coda/coda-schemas";
+//import { CodaJobList, codaJobListSchema } from "../coda/coda-schemas";
 import { TrustFact, TrustFactList, TrustFactSchema, TrustFactListSchema } from './trustfacts_schema'
 import { TrustFactsAddFactAsset } from './assets/addfact_asset'
 
@@ -39,11 +39,13 @@ export class TrustFactsModule extends BaseModule {
             console.log("Get trustfacts for package: " + packageName);
             return await this.getTrustFacts(packageName)
         },
+        /*
         // Calculate the TrustScore for a specific package
         calculateTrustScore: async ({packageName} : Record<string, unknown>) => {
             const facts = await this.getTrustFacts(packageName);
                 return await this.calculateTrustScore(facts);
         }       
+        */
     }
 
     events = ['newFact'];
@@ -70,6 +72,7 @@ export class TrustFactsModule extends BaseModule {
             else throw new Error("There are no trust-facts available for this package");
     }
 
+    /*
     async calculateTrustScore(facts: TrustFact[]){
         let totalScore = 0.0;
         let totalTrustFactCount = 0.0;
@@ -134,4 +137,5 @@ export class TrustFactsModule extends BaseModule {
             return totalScore / totalTrustFactCount;
         return 0;
     }
+    */
 }
