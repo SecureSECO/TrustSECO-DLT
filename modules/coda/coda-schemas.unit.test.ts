@@ -9,6 +9,10 @@ test('Check if codaJobSchema has the id, type and the required package, source, 
     expect(codaJobSchema).toHaveProperty('properties.source.fieldNumber', 2);
     expect(codaJobSchema).toHaveProperty('properties.fact.dataType', 'string');
     expect(codaJobSchema).toHaveProperty('properties.fact.fieldNumber', 3);
+    expect(codaJobSchema).toHaveProperty('properties.date.dataType', 'string');
+    expect(codaJobSchema).toHaveProperty('properties.date.fieldNumber', 4);
+    expect(codaJobSchema).toHaveProperty('properties.jobID.dataType', 'uint32');
+    expect(codaJobSchema).toHaveProperty('properties.jobID.fieldNumber', 5);
 });
 
 test('Check if codaJobListSchema has the id, type and the properties of a job', () => {

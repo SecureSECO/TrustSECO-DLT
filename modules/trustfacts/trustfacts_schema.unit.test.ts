@@ -5,12 +5,14 @@ test('Check if TrustFactSchema has the id, type and the jobID, factData, gitSign
     expect(TrustFactSchema).toHaveProperty('type', 'object');
     expect(TrustFactSchema).toHaveProperty('properties.jobID.dataType', 'uint32');
     expect(TrustFactSchema).toHaveProperty('properties.jobID.fieldNumber', 1);
+    expect(TrustFactSchema).toHaveProperty('properties.fact.dataType', 'string');
+    expect(TrustFactSchema).toHaveProperty('properties.fact.fieldNumber', 2);
     expect(TrustFactSchema).toHaveProperty('properties.factData.dataType', 'string');
-    expect(TrustFactSchema).toHaveProperty('properties.factData.fieldNumber', 2);
+    expect(TrustFactSchema).toHaveProperty('properties.factData.fieldNumber', 3);
     expect(TrustFactSchema).toHaveProperty('properties.gitSignature.dataType', 'string');
-    expect(TrustFactSchema).toHaveProperty('properties.gitSignature.fieldNumber', 3);
+    expect(TrustFactSchema).toHaveProperty('properties.gitSignature.fieldNumber', 4);
     expect(TrustFactSchema).toHaveProperty('properties.keyURL.dataType', 'string');
-    expect(TrustFactSchema).toHaveProperty('properties.keyURL.fieldNumber', 4);
+    expect(TrustFactSchema).toHaveProperty('properties.keyURL.fieldNumber', 5);    
 });
 
 test('Check if trustFactListSchema has the id, type and the required package, source, fact properties', () => {
