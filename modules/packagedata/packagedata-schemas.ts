@@ -1,4 +1,21 @@
-export const PackageDataSchema = {
+import { Schema } from "lisk-sdk";
+
+////////////////
+// INTERFACES //
+////////////////
+
+export interface PackageData extends Record<string, unknown> {
+    packageName: string,
+    packagePlatform: string,
+    packageOwner: string,
+    packageReleases: [string],
+}
+
+/////////////
+// SCHEMAS //
+/////////////
+
+export const PackageDataSchema: Schema = {
     $id: 'packagedata/add-data',
     type: 'object',
     required: ["packageName", "packagePlatform", "packageOwner", "packageReleases"],
