@@ -1,7 +1,7 @@
 import { BaseModule, codec } from 'lisk-sdk';
 //import { PackageDataSchema } from './packagedata-schemas';
 import { PackageDataAddDataAsset } from './assets/packagedata-add-data-asset';
-import { PackageDataSchema } from './packagedata-schemas';
+import { PackageDataSchema, PackageData } from './packagedata-schemas';
 
 export class PackageDataModule extends BaseModule {
     id = 6328;
@@ -19,7 +19,7 @@ export class PackageDataModule extends BaseModule {
             const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + packageName);
             //if it is defined, decode packagedata buffer
             if (packageDataBuffer !== undefined) {
-                const packageData = codec.decode<{ packageData: [{ package: string }] }>(PackageDataSchema, packageDataBuffer);
+                const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
                 //if info is available, return it
                 return packageData;
             }

@@ -4,57 +4,86 @@ import { Schema } from "lisk-sdk";
 // INTERFACES //
 ////////////////
 
-export interface TrustFact extends Record<string, unknown> {
-    jobID: number,
+export interface StoreTrustFact extends Record<string, unknown> {
     fact: string,
     factData: string,
     version: string,
+    keyURL: string,
+    jobID: number,
+}
+
+export interface AddTrustFact extends Record<string, unknown> {
+    jobID: number,
+    factData: string,
     gitSignature: string,
     keyURL: string,
 }
 
 export interface TrustFactList extends Record<string, unknown> {
-    facts: TrustFact[];
+    facts: StoreTrustFact[];
 }
 
 /////////////
 // SCHEMAS //
 /////////////
 
-export const TrustFactSchema: Schema = {
+export const StoreTrustFactSchema: Schema = {
     $id: 'trustfacts/add-facts',
     type: 'object',
-    required: ["jobID", "fact", "factData", "version", "gitSignature", "keyURL"],
+    required: ["fact", "factData", "version", "keyURL"],
+    properties: {
+        // the fact that was spidered
+        fact: {
+            dataType: 'string',
+            fieldNumber: 1
+        },
+        // The data that was spidered
+        factData: {
+            dataType: 'string',
+            fieldNumber: 2
+        },
+        // The version of the package the trustfact was gathered for
+        version: {
+            dataType: 'string',
+            fieldNumber: 3
+        },
+        // URL to the user gpgkey
+        keyURL: {
+            dataType: 'string',
+            fieldNumber: 4
+        },
+        // ID of job in CODA
+        jobID: {
+            dataType: 'uint32',
+            fieldNumber: 5
+        },
+    }
+}
+
+export const AddTrustFactSchema: Schema = {
+    $id: 'trustfacts/add-facts',
+    type: 'object',
+    required: ["jobID", "factData", "gitSignature", "keyURL"],
     properties: {
         // ID of job in CODA
         jobID: {
             dataType: 'uint32',
             fieldNumber: 1
         },
-        // the fact that was spidered
-        fact: {
-            dataType: 'string',
-            fieldNumber: 2
-        },
         // The data that was spidered
         factData: {
             dataType: 'string',
-            fieldNumber: 3
-        },
-        // The version of the package the trustfact was gathered for
-        version: {
-            dataType: 'string',
-            fieldNumber: 4
+            fieldNumber: 2
         },
         // Git signature and gpgkey
         gitSignature: {
             dataType: 'string',
-            fieldNumber: 5
+            fieldNumber: 3
         },
         // URL to the user gpgkey
         keyURL: {
             dataType: 'string',
-            fieldNumber: 6
+            fieldNumber: 4
         }
     }
 }
@@ -67,7 +96,7 @@ export const TrustFactListSchema: Schema = {
         facts: {
             type: 'array',
             fieldNumber: 1,
-            items: TrustFactSchema
+            items: StoreTrustFactSchema
         }
     }
 }

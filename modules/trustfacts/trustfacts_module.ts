@@ -1,6 +1,6 @@
 import { BaseModule, codec, TransactionApplyContext } from 'lisk-sdk';
 //import { CodaJobList, codaJobListSchema } from "../coda/coda-schemas";
-import { TrustFact, TrustFactList, TrustFactSchema, TrustFactListSchema } from './trustfacts_schema'
+import { AddTrustFact, TrustFactList, AddTrustFactSchema, TrustFactListSchema } from './trustfacts_schema'
 import { TrustFactsAddFactAsset } from './assets/addfact_asset'
 
 export class TrustFactsModule extends BaseModule {
@@ -9,23 +9,23 @@ export class TrustFactsModule extends BaseModule {
 
     factWeights: [factName: string, weight: number][] = []
     githubFactWeights: [factName: string, weight: number][] = [
-                                        ["documentation",5],
-                                        ["downloads",4.5],
-                                        ["stars",4],
-                                        ["vulnerabilities", 4],
-                                        ["release",4],
-                                        ["commit frequency",3],
-                                        ["closed issue",3],
-                                        ["usage",3],
-                                        ["test code",3],
-                                        ["dependencies",3],
-                                        ["contributors",3],
-                                        ["build status",3],
-                                        ["website", 3],
-                                        ["watchers",3],
-                                        ["badges",2],
-                                        ["forks",2]
-                                    ];
+        ["documentation", 5],
+        ["downloads", 4.5],
+        ["stars", 4],
+        ["vulnerabilities", 4],
+        ["release", 4],
+        ["commit frequency", 3],
+        ["closed issue", 3],
+        ["usage", 3],
+        ["test code", 3],
+        ["dependencies", 3],
+        ["contributors", 3],
+        ["build status", 3],
+        ["website", 3],
+        ["watchers", 3],
+        ["badges", 2],
+        ["forks", 2]
+    ];
     libraries_ioFactWeights: [factName: string, weight: number][] = []
 
 
@@ -50,26 +50,26 @@ export class TrustFactsModule extends BaseModule {
 
     events = ['newFact'];
 
-    public async afterTransactionApply({ transaction: { moduleID, assetID, asset } } : TransactionApplyContext) {
+    public async afterTransactionApply({ transaction: { moduleID, assetID, asset } }: TransactionApplyContext) {
         if (moduleID === this.id && assetID === TrustFactsAddFactAsset.id) {
-            const fact = codec.decode<TrustFact>(TrustFactSchema, asset);
+            const fact = codec.decode<AddTrustFact>(AddTrustFactSchema, asset);
             console.log('afterTransactionApply: fact:', fact);
             this._channel.publish('trustfacts:newFact', fact);
         }
     }
 
     // Get all the TrustFacts of a package
-    async getTrustFacts(packageName){
-            console.log(packageName);
-            //get facts buffer for the given package
-            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
-            //if it is defined, decode facts buffer
-            if (trustFactsBuffer !== undefined) {
-                const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-                //if facts are available, return them
-                return facts;
-            }
-            else throw new Error("There are no trust-facts available for this package");
+    async getTrustFacts(packageName) {
+        console.log(packageName);
+        //get facts buffer for the given package
+        const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
+        //if it is defined, decode facts buffer
+        if (trustFactsBuffer !== undefined) {
+            const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+            //if facts are available, return them
+            return facts;
+        }
+        else throw new Error("There are no trust-facts available for this package");
     }
 
     /*

@@ -1,5 +1,5 @@
 import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
-import { PackageDataSchema } from '../../packagedata/packagedata-schemas';
+import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-schemas';
 
 import { CodaJob, CodaJobList, codaJobSchema, codaJobListSchema/*, validFacts*/ } from '../coda-schemas';
 
@@ -25,13 +25,13 @@ export class CodaAddJobAsset extends BaseAsset {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
-        // Check if package is in packagedata and if version exists
+        // Check if package is in packagedata and if version exist
         const packageDataBuffer = await stateStore.chain.get("packagedata:" + asset.package) as Buffer;
         if (packageDataBuffer === undefined) {
             throw new Error("The given package does not exist in the packageData!");
         }
         let packageData = { packageName: "", packagePlatform: "", packageOwner: "", packageReleases: [""] };
-        packageData = codec.decode<{ packageName: "", packagePlatform: "", packageOwner: "", packageReleases: [] }>(PackageDataSchema, packageDataBuffer);
+        packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
         let versionFound = false;
         packageData.packageReleases.forEach(function (version) {
             if (asset.version === version) {
