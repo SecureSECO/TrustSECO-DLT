@@ -9,6 +9,14 @@ export const validFacts = {
 // INTERFACES //
 ////////////////
 
+export interface CodaReturnJob extends Record<string, unknown> {
+    packageName: string;
+    packagePlatform: string;
+    packageOwner: string;
+    packageRelease: string;
+    jobID: number;
+}
+
 export interface CodaJob extends Record<string, unknown> {
     package: string;
     version: string;
@@ -55,6 +63,39 @@ export const codaJobSchema: Schema = {
         }
     }
 };
+
+export const codaReturnJobSchema: Schema = {
+    $id: 'coda/return-job',
+    type: 'object',
+    required: [],
+    properties: {
+        // ID name of package
+        packageName: {
+            dataType: 'string',
+            fieldNumber: 1
+        },
+        // Platform the package is hosted on (e.g. GitHub)
+        packagePlatform: {
+            dataType: 'string',
+            fieldNumber: 2
+        },
+        // Owner (account name) of the package on the platform
+        packageOwner: {
+            dataType: 'string',
+            fieldNumber: 3
+        },
+        // Release version 
+        packageRelease: {
+            dataType: 'string',
+            fieldNumber: 4            
+        },
+        // The ID corresponding to the job
+        jobID: {
+            dataType: 'uint32',
+            fieldNumber: 5
+        }
+    }
+}
 
 
 export const codaJobListSchema: Schema = {
