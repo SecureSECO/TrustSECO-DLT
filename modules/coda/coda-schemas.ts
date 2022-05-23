@@ -28,7 +28,7 @@ export interface CodaJobList extends Record<string, unknown> {
 export const codaJobSchema: Schema = {
     $id: 'coda/add-job',
     type: 'object',
-    required: ["package", "version", "fact"],
+    required: ["package", "version", "fact", "date", "jobID"],
     properties: {
         // package of the trustfact (e.g. "microsoft/terminal")
         package: {

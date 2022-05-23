@@ -24,7 +24,7 @@ export interface TrustFactList extends Record<string, unknown> {
 export const TrustFactSchema : Schema = {
     $id: 'trustfacts/add-facts',
     type: 'object',
-    required: ["jobID", "factData", "version", "gitSignature", "keyURL"],
+    required: ["jobID","fact", "factData", "version", "gitSignature", "keyURL"],
     properties: {
         // ID of job in CODA
         jobID: {
@@ -36,25 +36,25 @@ export const TrustFactSchema : Schema = {
             dataType: 'string',
             fieldNumber: 2
         },
-        // the data that was spidered
-        factData: {
+        // The data that was spidered
+        factData: { 
             dataType: 'string',
             fieldNumber: 3
         },
         // The version of the package the trustfact was gathered for
         version: {
             dataType: 'string',
-            fieldNumber: 3
+            fieldNumber: 4
         },
         // Git signature and gpgkey
         gitSignature: {
             dataType: 'string',
-            fieldNumber: 4
+            fieldNumber: 5
         },
         // URL to the user gpgkey
         keyURL: {
             dataType: 'string',
-            fieldNumber: 5
+            fieldNumber: 6
         }
     }
 }
