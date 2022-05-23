@@ -1,4 +1,6 @@
-const config = require('./config.json');
+/* eslint-disable */
+
+const config = require('../config/config.json');
 const prompt = require('prompt');
 const fs = require('fs');
 const { systemDirs } = require('lisk-sdk');

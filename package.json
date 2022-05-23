@@ -12,10 +12,10 @@
     "lint": "eslint . --ext .ts",
     "build": "rm -rf ./dist && npx tsc",
     "version": "node -v && npm -v",
-    "genesis": "npm run build && node config/createGenesisBlock.js",
+    "genesis": "npm run build && node scripts/createGenesisBlock.js",
     "start": "npm run build && node dist/index.js",
-    "unsafe-reset": "node config/reset.js -y",
-    "reset": "node config/reset.js"
+    "unsafe-reset": "node scripts/reset.js -y",
+    "reset": "node scripts/reset.js"
   },
   "author": "Fides",
   "dependencies": {

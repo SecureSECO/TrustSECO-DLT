@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const { TokenModule, DPoSModule, KeysModule, SequenceModule } = require('lisk-sdk');
 const config = require('./config.json');
 

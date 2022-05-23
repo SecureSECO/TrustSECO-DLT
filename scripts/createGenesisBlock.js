@@ -1,5 +1,7 @@
 // written by Wilco Verhoef for Fides
 
+/* eslint-disable */
+
 const prompt = require('prompt');
 const semver = require('semver');
 
@@ -24,10 +26,10 @@ prompt.start().get({
 function createGenesisBlock() {
 
     const { genesis, passphrase, cryptography } = require('lisk-sdk');
-    const config = require('./config.json');
+    const config = require('../config/config.json');
     const { writeFileSync } = require('fs');
     const path = require('path');
-    const { modules } = require('./modules.js');
+    const { modules } = require('../config/modules.js');
 
     // NOTE: LIST OF MODULES HAS MOVED TO A SEPARATE FILE
 

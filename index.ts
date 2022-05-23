@@ -8,7 +8,7 @@ import { NaiveModule } from "./modules/naive/naive_module";
 import { CodaModule } from "./modules/coda/coda-module";
 import { TrustFactsModule } from "./modules/trustfacts/trustfacts_module"
 
-import { checkVersion } from './config/check-version';
+import { checkVersion } from './scripts/check-version';
 
 import genesisBlock = require('./config/genesis-block.json');
 import config = require('./config/config.json');
