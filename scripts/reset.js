@@ -1,19 +1,24 @@
 /* eslint-disable */
 
-const config = require('../config/config.json');
-const prompt = require('prompt');
-const fs = require('fs');
-const { systemDirs } = require('lisk-sdk');
+import { label, rootPath } from '../config/config.json';
+import prompt from 'prompt';
+import { existsSync, rmSync } from 'fs';
+import { systemDirs } from 'lisk-sdk';
 
 const options = require('command-line-args')([
     { name: 'yes', alias: 'y', type: Boolean }
 ]);
 
-const { dataPath } = systemDirs(config.label, config.rootPath);
+const { dataPath } = systemDirs(label, rootPath);
+
+// throw error not implemented
+if (rootPath === 'auto') {
+    throw new Error('Reset script hasn\'t been implemented for auto rootPath. Wilco fix your things.');
+}
 
 
 
-if (!fs.existsSync(dataPath)) {
+if (!existsSync(dataPath)) {
     console.log(`${dataPath} does not exist. You probably already resetted :D`);
 }
 
@@ -46,5 +51,5 @@ else {
 
 function reset() {
     console.log(`Removing ${dataPath} ...`);
-    fs.rmSync(dataPath, { recursive: true });
+    rmSync(dataPath, { recursive: true });
 }

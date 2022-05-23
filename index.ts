@@ -11,12 +11,7 @@ import { TrustFactsModule } from "./modules/trustfacts/trustfacts_module"
 import { checkVersion } from './scripts/check-version';
 
 import genesisBlock = require('./config/genesis-block.json');
-import config = require('./config/config.json');
-
-if (config.plugins.dashboard.applicationUrl == "auto") {
-    const hostname = process.env.HOSTNAME ?? "localhost";
-    config.plugins.dashboard.applicationUrl = `ws://${hostname}:${config.rpc.port}/ws`;
-}
+import config from './scripts/config-autofilled';
 
 checkVersion().then(() => {
 
