@@ -60,10 +60,6 @@
             {
                 "ip": "dove.science.uu.nl",
                 "port": 8000
-            },
-            {
-                "ip": "localhost",
-                "port": 8000
             }
         ]
     },
