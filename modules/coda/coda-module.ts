@@ -39,6 +39,7 @@ export class CodaModule extends BaseModule {
                 packagePlatform: packageData.packagePlatform,
                 packageOwner: packageData.packageOwner,
                 packageRelease: jobs[randomNumber].version,
+                fact: jobs[randomNumber].fact,
                 jobID: jobs[randomNumber].jobID
             };
             return returnJob;

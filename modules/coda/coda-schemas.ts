@@ -14,6 +14,7 @@ export interface CodaReturnJob extends Record<string, unknown> {
     packagePlatform: string;
     packageOwner: string;
     packageRelease: string;
+    fact: string;
     jobID: number;
 }
 
