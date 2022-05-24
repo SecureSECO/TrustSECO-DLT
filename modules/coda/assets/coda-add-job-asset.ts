@@ -10,7 +10,7 @@ export class CodaAddJobAsset extends BaseAsset {
     schema = codaJobSchema;
 
     validate({ asset }: ValidateAssetContext<CodaJob>) {
-        asset = this.removeTrailingWhitespaces({ asset });
+        asset = this.formatAsset({ asset });
         const date = new Date(asset.date);
         if (asset.package === "") throw new Error("Package cannot be empty");
         if (asset.version === "") throw new Error("version cannot be empty");
@@ -23,7 +23,7 @@ export class CodaAddJobAsset extends BaseAsset {
 
     async apply({ asset, stateStore }: ApplyAssetContext<CodaJob>) {
         // Prevents users from adding duplicate jobs, differentiated by whitespaces
-        asset = this.removeTrailingWhitespaces({ asset });
+        asset = this.formatAsset({ asset });
 
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
@@ -73,10 +73,13 @@ export class CodaAddJobAsset extends BaseAsset {
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
     }
 
-    removeTrailingWhitespaces({ asset }) {
+    formatAsset({ asset }) {
         asset.package = asset.package.trim();
+        asset.package = asset.package.toLowerCase();
         asset.version = asset.version.trim();
+        asset.version = asset.version.replace(/[^\d.-]/g, '');
         asset.fact = asset.fact.trim();
+        asset.fact = asset.fact.toLowerCase();
         return asset;
     }
 }

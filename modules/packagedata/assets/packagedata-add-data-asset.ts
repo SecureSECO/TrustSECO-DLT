@@ -8,7 +8,7 @@ export class PackageDataAddDataAsset extends BaseAsset {
     schema = PackageDataSchema;
 
     validate({ asset }) {
-        asset = this.removeTrailingWhitespaces({ asset });
+        asset = this.formatAsset({ asset });
         if (asset.packageName === "") throw new Error("package name is required and cannot be empty");
         if (asset.packagePlatform === "") throw new Error("package platform is required and cannot be empty");
         if (asset.packageOwner === "") throw new Error("package owner is required and cannot be empty");
@@ -17,7 +17,7 @@ export class PackageDataAddDataAsset extends BaseAsset {
 
     async apply({ asset, stateStore }) {
         // Prevents users from adding duplicate packages, differentiated by whitespaces
-        asset = this.removeTrailingWhitespaces({ asset });
+        asset = this.formatAsset({ asset });
 
         // Get package data if available
         const packageDataBuffer = await stateStore.chain.get("packagedata:" + asset.packageName);
@@ -49,10 +49,15 @@ export class PackageDataAddDataAsset extends BaseAsset {
         await stateStore.chain.set("packagedata:" + asset.packageName, codec.encode(PackageDataSchema, packageData));
     }
 
-    removeTrailingWhitespaces({ asset }) {
+    formatAsset({ asset }) {
         asset.packageName = asset.packageName.trim();
+        asset.packageName = asset.packageName.toLowerCase();
         asset.packagePlatform = asset.packagePlatform.trim();
+        asset.packagePlatform = asset.packagePlatform.toLowerCase();
         asset.packageOwner = asset.packageOwner.trim();
+        asset.packageOwner = asset.packageOwner.toLowerCase();
+        asset.packageReleases = asset.packageReleases.map(version =>
+            version.replace(/[^\d.-]/g, ''));
         return asset;
     }
 }
