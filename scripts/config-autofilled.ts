@@ -1,5 +1,5 @@
 import path = require('path');
-import { PartialApplicationConfig } from 'lisk-sdk';
+import { ApplicationConfig, PartialApplicationConfig } from 'lisk-sdk';
 import dotenv = require('dotenv');
 dotenv.config();
 
@@ -29,4 +29,4 @@ function checkauto(object, path='') {
     }
 }
 
-export default config as PartialApplicationConfig;
+export default config as PartialApplicationConfig as ApplicationConfig;

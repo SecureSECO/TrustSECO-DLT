@@ -1,22 +1,15 @@
-/* eslint-disable */
-
-import { label, rootPath } from '../config/config.json';
-import prompt from 'prompt';
+import config from './config-autofilled';
+import prompt = require('prompt');
 import { existsSync, rmSync } from 'fs';
 import { systemDirs } from 'lisk-sdk';
 
-const options = require('command-line-args')([
+import cla = require('command-line-args');
+
+const options = cla([
     { name: 'yes', alias: 'y', type: Boolean }
 ]);
 
-const { dataPath } = systemDirs(label, rootPath);
-
-// throw error not implemented
-if (rootPath === 'auto') {
-    throw new Error('Reset script hasn\'t been implemented for auto rootPath. Wilco fix your things.');
-}
-
-
+const { dataPath } = systemDirs(config.label, config.rootPath);
 
 if (!existsSync(dataPath)) {
     console.log(`${dataPath} does not exist. You probably already resetted :D`);
@@ -31,7 +24,8 @@ else if (options.yes) {
 
 
 else {
-    prompt.start().get({
+    prompt.start();
+    prompt.get({
         properties: {
             confirmation: {
                 description: `This will completely remove ${dataPath} Are you absolutely sure? (y|n)`,
