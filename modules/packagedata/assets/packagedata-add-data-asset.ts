@@ -8,13 +8,16 @@ export class PackageDataAddDataAsset extends BaseAsset {
     schema = PackageDataSchema;
 
     validate({ asset }) {
-        if (asset.packageName.trim() === "") throw new Error("package name is required and cannot be empty");
-        if (asset.packagePlatform.trim() === "") throw new Error("package platform is required and cannot be empty");
-        if (asset.packageOwner.trim() === "") throw new Error("package owner is required and cannot be empty");
+        asset = this.formatAsset({ asset });
+        if (asset.packageName === "") throw new Error("package name is required and cannot be empty");
+        if (asset.packagePlatform === "") throw new Error("package platform is required and cannot be empty");
+        if (asset.packageOwner === "") throw new Error("package owner is required and cannot be empty");
         if (asset.packageReleases === []) throw new Error("at least one release is required, the list can not be empty");
     }
 
     async apply({ asset, stateStore }) {
+        // Prevents users from adding duplicate packages, differentiated by whitespaces
+        asset = this.formatAsset({ asset });
 
         // Get package data if available
         const packageDataBuffer = await stateStore.chain.get("packagedata:" + asset.packageName);
@@ -44,5 +47,17 @@ export class PackageDataAddDataAsset extends BaseAsset {
 
         // Store
         await stateStore.chain.set("packagedata:" + asset.packageName, codec.encode(PackageDataSchema, packageData));
+    }
+
+    formatAsset({ asset }) {
+        asset.packageName = asset.packageName.trim();
+        asset.packageName = asset.packageName.toLowerCase();
+        asset.packagePlatform = asset.packagePlatform.trim();
+        asset.packagePlatform = asset.packagePlatform.toLowerCase();
+        asset.packageOwner = asset.packageOwner.trim();
+        asset.packageOwner = asset.packageOwner.toLowerCase();
+        asset.packageReleases = asset.packageReleases.map(version =>
+            version.replace(/[^\d.-]/g, ''));
+        return asset;
     }
 }

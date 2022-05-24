@@ -98,7 +98,6 @@ export const codaReturnJobSchema: Schema = {
     }
 }
 
-
 export const codaJobListSchema: Schema = {
     $id: 'coda/job-list',
     type: 'object',
