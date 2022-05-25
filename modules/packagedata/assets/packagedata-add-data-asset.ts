@@ -29,6 +29,7 @@ export class PackageDataAddDataAsset extends BaseAsset {
             packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
             const newReleases = asset.packageReleases.filter(release => {
                 return !packageData.packageReleases.includes(release)});
+            newReleases.forEach(release => packageData.packageReleases.push(release));
 
             for (const release of newReleases) {
                 await this.addJobsForAllFacts({ asset, stateStore}, release);
