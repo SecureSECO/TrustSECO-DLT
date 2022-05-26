@@ -1,9 +1,9 @@
-import { BaseAsset, codec } from "lisk-sdk";
-import { PackageDataSchema, PackageData } from "../packagedata-schemas";
+import { BaseAsset, codec } from 'lisk-sdk';
+import { PackageDataSchema, PackageData, PackageDataListSchema, PackageDataList } from "../packagedata-schemas";
 import { CodaJobList, codaJobListSchema, CodaJob, validFacts } from '../../coda/coda-schemas';
 
 export class PackageDataAddDataAsset extends BaseAsset {
-    static id = 63280; // meta-0
+    static id = 63280;
     id = PackageDataAddDataAsset.id;
     name = 'AddPackageData';
     schema = PackageDataSchema;
@@ -19,18 +19,25 @@ export class PackageDataAddDataAsset extends BaseAsset {
     async apply({ asset, stateStore }) {
         // Prevents users from adding duplicate packages, differentiated by whitespaces
         asset = this.formatAsset({ asset });
-
-        // Get package data if available
-        const packageDataBuffer = await stateStore.chain.get("packagedata:" + asset.packageName);
+        
+        // Get the buffers for the package data and all packages
+        const [packageDataBuffer, allPackagesBuffer] = await Promise.all([
+            stateStore.chain.get("packagedata:" + asset.packageName) as Buffer,
+            stateStore.chain.get("packagedata:allPackages") as Buffer
+        ]);
+        
         let packageData: PackageData = { packageName: "", packagePlatform: "", packageOwner: "", packageReleases: [""] };
+        let packageIsNew = true;
+        let newReleases = []
 
         // Add all new added versions of the package
         if (packageDataBuffer !== undefined) {
+            packageIsNew = false;
             packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
-            const newReleases = asset.packageReleases.filter(release => {
+            newReleases = asset.packageReleases.filter(release => {
                 return !packageData.packageReleases.includes(release)});
-            newReleases.forEach(release => packageData.packageReleases.push(release));
 
+            newReleases.forEach(release => packageData.packageReleases.push(release));
             for (const release of newReleases) {
                 await this.addJobsForAllFacts({ asset, stateStore}, release);
             }
@@ -42,8 +49,24 @@ export class PackageDataAddDataAsset extends BaseAsset {
                 await this.addJobsForAllFacts({ asset, stateStore}, release);
             }
         }
+
+        const { packages } = codec.decode<PackageDataList>(PackageDataListSchema, allPackagesBuffer);
+        if (packageIsNew) {
+            packages.push(packageData);
+        } else {
+            packages.map(_package => {
+                if (_package.packageName == asset.packageName) {
+                    newReleases.forEach(release =>
+                        _package.packageReleases.push(release))
+                }
+            })
+        }
+
         // Store
-        await stateStore.chain.set("packagedata:" + asset.packageName, codec.encode(PackageDataSchema, packageData));
+        await Promise.all([
+            stateStore.chain.set("packagedata:" + asset.packageName, codec.encode(PackageDataSchema, packageData)),
+            stateStore.chain.set("packagedata:allPackages", codec.encode(PackageDataListSchema, { packages }))
+        ]);
     }
 
     async addJobsForAllFacts({ asset, stateStore }, version) {
