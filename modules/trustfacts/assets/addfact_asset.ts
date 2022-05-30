@@ -1,6 +1,5 @@
 import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
 import { CodaJobList, codaJobListSchema } from '../../coda/coda-schemas';
-
 import { AddTrustFact, StoreTrustFact, TrustFactList, AddTrustFactSchema, TrustFactListSchema } from '../trustfacts_schema';
 
 export class TrustFactsAddFactAsset extends BaseAsset {

@@ -31,8 +31,11 @@ export class TrustFactsModule extends BaseModule {
 
     actions = {
         getPackageFacts: async ({ packageName }: Record<string, unknown>) => {
-            console.log("Get trustfacts for package: " + packageName);
-            return await this.getTrustFacts(packageName)
+            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
+            if (trustFactsBuffer !== undefined) {
+                return codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+            }
+            else throw new Error("There are no trust-facts available for this package");
         },
         /*
         // Calculate the TrustScore for a specific package
@@ -51,15 +54,6 @@ export class TrustFactsModule extends BaseModule {
             console.log('afterTransactionApply: fact:', fact);
             this._channel.publish('trustfacts:newFact', fact);
         }
-    }
-
-    async getTrustFacts(packageName) {
-        const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
-        if (trustFactsBuffer !== undefined) {
-            const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-            return facts;
-        }
-        else throw new Error("There are no trust-facts available for this package");
     }
 
     /*
