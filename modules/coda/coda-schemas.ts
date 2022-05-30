@@ -36,9 +36,7 @@ export const validFacts: any = {
     ]
 }
 
-////////////////
-// INTERFACES //
-////////////////
+// Interfaces
 
 export interface CodaReturnJob extends Record<string, unknown> {
     packageName: string;
@@ -67,9 +65,7 @@ export interface CodaJobList extends Record<string, unknown> {
     jobs: CodaJob[];
 }
 
-/////////////
-// SCHEMAS //
-/////////////
+// Schemas
 
 export const codaJobSchema: Schema = {
     $id: 'coda/add-job',
