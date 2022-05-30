@@ -62,7 +62,6 @@ export class PackageDataAddDataAsset extends BaseAsset {
             })
         }
 
-        // Store
         await Promise.all([
             stateStore.chain.set("packagedata:" + asset.packageName, codec.encode(PackageDataSchema, packageData)),
             stateStore.chain.set("packagedata:allPackages", codec.encode(PackageDataListSchema, { packages }))
@@ -71,7 +70,7 @@ export class PackageDataAddDataAsset extends BaseAsset {
 
     async addJobsForAllFacts({ asset, stateStore }, version) {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
-        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
         const sources = Object.keys(validFacts);
         sources.forEach(source => {
