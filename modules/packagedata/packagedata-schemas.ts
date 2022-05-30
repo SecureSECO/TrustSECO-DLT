@@ -11,6 +11,10 @@ export interface PackageData extends Record<string, unknown> {
     packageReleases: [string],
 }
 
+export interface PackageDataList extends Record<string, unknown> {
+    packages: PackageData[];
+}
+
 /////////////
 // SCHEMAS //
 /////////////
@@ -44,5 +48,18 @@ export const PackageDataSchema: Schema = {
             }
         },
 
+    }
+}
+
+export const PackageDataListSchema: Schema = {
+    $id: 'packagedata/package-list',
+    type: 'object',
+    required: ["packages"],
+    properties: {
+        packages: {
+            type: 'array',
+            fieldNumber: 1,
+            items: PackageDataSchema
+        }
     }
 }
