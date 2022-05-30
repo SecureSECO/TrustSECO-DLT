@@ -1,8 +1,6 @@
 import { Schema } from "lisk-sdk";
 
-////////////////
-// INTERFACES //
-////////////////
+// Interfaces
 
 export interface StoreTrustFact extends Record<string, unknown> {
     fact: string,
@@ -23,9 +21,7 @@ export interface TrustFactList extends Record<string, unknown> {
     facts: StoreTrustFact[];
 }
 
-/////////////
-// SCHEMAS //
-/////////////
+// Schemas
 
 export const StoreTrustFactSchema: Schema = {
     $id: 'trustfacts/add-facts',

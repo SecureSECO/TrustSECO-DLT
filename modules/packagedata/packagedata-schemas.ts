@@ -1,8 +1,6 @@
 import { Schema } from "lisk-sdk";
 
-////////////////
-// INTERFACES //
-////////////////
+// Interfaces
 
 export interface PackageData extends Record<string, unknown> {
     packageName: string,
@@ -15,9 +13,7 @@ export interface PackageDataList extends Record<string, unknown> {
     packages: PackageData[];
 }
 
-/////////////
-// SCHEMAS //
-/////////////
+// Schemas
 
 export const PackageDataSchema: Schema = {
     $id: 'packagedata/add-data',

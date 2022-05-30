@@ -3,8 +3,7 @@ import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-sc
 import { CodaJob, CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob} from '../coda-schemas';
 
 export class CodaAddJobAsset extends BaseAsset {
-    static id = 26320;
-    id = CodaAddJobAsset.id;
+    id = 26320;
     name = 'AddJob';
     schema = minimalCodaJobSchema;
 
@@ -16,50 +15,68 @@ export class CodaAddJobAsset extends BaseAsset {
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<MinimalCodaJob>) {
-        // Prevents users from adding duplicate jobs, differentiated by whitespaces
-        asset = this.formatAsset({ asset });
-
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const job = await this.createCodaJob({ asset, stateStore, jobs });
+        
+        jobs.push(job);
+        jobs = this.removeOldJobs(jobs);
+        jobs = this.removeExcessiveJobs(jobs);
+        await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
+    }
 
-        const currentDate = new Date();
+    async createCodaJob({ asset, stateStore, jobs }) {
+        asset = this.formatAsset({ asset });
+        this.checkIfJobAlreadyExists({ asset }, jobs);
+        await this.checkIfPackageAndVersionExist({ asset, stateStore });
+
         const job: CodaJob = {
             package: asset.package,
             version: asset.version,
             fact: asset.fact,
-            date: currentDate.toString(),
+            date: new Date().toString(),
             jobID: this.generateRandomNumber()
         }
         const duplicateIdCheck = jobs.filter(oldJob => oldJob.jobID == job.jobID).length > 0;
         while (duplicateIdCheck) {
             job.jobID = this.generateRandomNumber();
         }
-        
-        // Check if package is in packagedata and if version exist
+        return job;
+    }
+
+    checkIfJobAlreadyExists({ asset }, jobs) {
+        if (jobs.filter(job => job.package == asset.package && 
+            job.fact == asset.fact && job.version == asset.version).length > 0) {
+            throw new Error("There already exists a job for the given package, version and fact!");
+        }
+    }
+
+    async checkIfPackageAndVersionExist({ asset, stateStore }) {
+        // Check if package is in packagedata and if version exists
         const packageDataBuffer = await stateStore.chain.get("packagedata:" + asset.package) as Buffer;
         if (packageDataBuffer === undefined) {
             throw new Error("The given package does not exist in the packageData!");
         }
+
         const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
         const versionFound = packageData.packageReleases.some(version => {
             return asset.version == version;
         }); 
-
         if (!versionFound) {
             throw new Error("The given package version does not exist in the packageData!");
-        } else if (jobs.filter(job => job.package == asset.package && 
-            job.fact == asset.fact && job.version == asset.version).length > 0) {
-            throw new Error("There already exists a job for the given package, version and fact!");
-        }
+        } 
+    }
 
-        // If a job has been longer in the job list for a specified number of days, remove it
+    removeOldJobs(jobs) {
         jobs = jobs.filter(job => {
-            const jobDate = new Date(job.date);
-            const differenceInMilliSeconds = currentDate.getTime() - jobDate.getTime();
+            const differenceInMilliSeconds = new Date().getTime() - new Date(job.date).getTime();
             const differenceInDays = Math.ceil(differenceInMilliSeconds / (1000 * 60 * 60 * 24));
             return differenceInDays <= 365;
         });
+        return jobs;
+    }
 
+    removeExcessiveJobs(jobs) {
         // If the job list exceeds the maximum number of allowed jobs, remove the oldest ones (current jobs - number of allowed jobs).
         const maximumCodaJobs = 100000;
         if (jobs.length > maximumCodaJobs) {
@@ -68,9 +85,7 @@ export class CodaAddJobAsset extends BaseAsset {
             });
             jobs.splice(0, jobs.length - maximumCodaJobs);
         }
-
-        jobs.push(job);
-        await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
+        return jobs;
     }
 
     formatAsset({ asset }) {
