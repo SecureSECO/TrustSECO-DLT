@@ -1,12 +1,18 @@
 import { Schema } from "lisk-sdk";
 
-
-
 ////////////////
 // INTERFACES //
 ////////////////
 
-export interface TrustFact extends Record<string, unknown> {
+export interface StoreTrustFact extends Record<string, unknown> {
+    fact: string,
+    factData: string,
+    version: string,
+    keyURL: string,
+    jobID: number,
+}
+
+export interface AddTrustFact extends Record<string, unknown> {
     jobID: number,
     factData: string,
     gitSignature: string,
@@ -14,16 +20,47 @@ export interface TrustFact extends Record<string, unknown> {
 }
 
 export interface TrustFactList extends Record<string, unknown> {
-    facts: TrustFact[];
+    facts: StoreTrustFact[];
 }
-
-
 
 /////////////
 // SCHEMAS //
 /////////////
 
-export const TrustFactSchema : Schema = {
+export const StoreTrustFactSchema: Schema = {
+    $id: 'trustfacts/add-facts',
+    type: 'object',
+    required: ["fact", "factData", "version", "keyURL"],
+    properties: {
+        // the fact that was spidered
+        fact: {
+            dataType: 'string',
+            fieldNumber: 1
+        },
+        // The data that was spidered
+        factData: {
+            dataType: 'string',
+            fieldNumber: 2
+        },
+        // The version of the package the trustfact was gathered for
+        version: {
+            dataType: 'string',
+            fieldNumber: 3
+        },
+        // URL to the user gpgkey
+        keyURL: {
+            dataType: 'string',
+            fieldNumber: 4
+        },
+        // ID of job in CODA
+        jobID: {
+            dataType: 'uint32',
+            fieldNumber: 5
+        },
+    }
+}
+
+export const AddTrustFactSchema: Schema = {
     $id: 'trustfacts/add-facts',
     type: 'object',
     required: ["jobID", "factData", "gitSignature", "keyURL"],
@@ -33,7 +70,7 @@ export const TrustFactSchema : Schema = {
             dataType: 'uint32',
             fieldNumber: 1
         },
-        // the data that was spidered
+        // The data that was spidered
         factData: {
             dataType: 'string',
             fieldNumber: 2
@@ -43,6 +80,7 @@ export const TrustFactSchema : Schema = {
             dataType: 'string',
             fieldNumber: 3
         },
+        // URL to the user gpgkey
         keyURL: {
             dataType: 'string',
             fieldNumber: 4
@@ -50,7 +88,7 @@ export const TrustFactSchema : Schema = {
     }
 }
 
-export const TrustFactListSchema : Schema = {
+export const TrustFactListSchema: Schema = {
     $id: 'trustfacts/facts-list',
     type: 'object',
     required: ["facts"],
@@ -58,7 +96,7 @@ export const TrustFactListSchema : Schema = {
         facts: {
             type: 'array',
             fieldNumber: 1,
-            items: TrustFactSchema
+            items: StoreTrustFactSchema
         }
     }
 }

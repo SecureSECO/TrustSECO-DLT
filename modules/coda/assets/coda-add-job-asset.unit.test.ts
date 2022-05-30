@@ -1,7 +1,9 @@
+/*
 import { BlockHeader } from '@liskhq/lisk-chain';
 import { Transaction, ValidateAssetContext } from 'lisk-sdk';
 import { CodaJob } from '../coda-schemas';
 import { CodaAddJobAsset } from './coda-add-job-asset';
+
 
 const coda = new CodaAddJobAsset();
 describe('Test the validate function', () => {
@@ -10,7 +12,9 @@ describe('Test the validate function', () => {
             asset: {
                 package: '',
                 source: 'github', 
-                fact: 'stars'
+                fact: 'stars',
+                date: "2000-01-01",
+                jobID: 1
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader
@@ -22,7 +26,9 @@ describe('Test the validate function', () => {
             asset: {
                 package: 'Some package',
                 source: 'Unknown',
-                fact: 'stars'
+                fact: 'stars',
+                date: "2000-01-01",
+                jobID: 1
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader
@@ -34,7 +40,23 @@ describe('Test the validate function', () => {
             asset: {
                 package: 'Some package',
                 source: 'github',
-                fact: 'unknown'
+                fact: 'unknown',
+                date: "2000-01-01",
+                jobID: 1
+            },
+            transaction: {} as Transaction,
+            header: {} as BlockHeader
+        }
+        expect(() => { coda.validate(asset) }).toThrow();
+    })
+    test('Throw an error if an invalid date is given', () => {
+        const asset : ValidateAssetContext<CodaJob> = {
+            asset: {
+                package: 'Some package',
+                source: 'github',
+                fact: 'stars',
+                date: "01-2000-04",
+                jobID: 1
             },
             transaction: {} as Transaction,
             header: {} as BlockHeader
@@ -42,4 +64,5 @@ describe('Test the validate function', () => {
         expect(() => { coda.validate(asset) }).toThrow();
     })
 });
+*/
 
