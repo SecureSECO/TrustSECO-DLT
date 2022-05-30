@@ -1,9 +1,14 @@
-// written by Wilco Verhoef for Fides
+import semver = require('semver');
+import prompt = require('prompt');
 
-const prompt = require('prompt');
-const semver = require('semver');
+import { genesis, passphrase, cryptography } from 'lisk-sdk';
+import config = require('../config/config.json');
+import { writeFileSync } from 'fs';
+import { modules } from '../config/modules';
+import { Account } from '@liskhq/lisk-chain';
 
-prompt.start().get({
+prompt.start();
+prompt.get({
     properties: {
         confirmation: {
             description: 'Have you added all new modules to config/modules.js? (y|n)',
@@ -23,22 +28,16 @@ prompt.start().get({
 
 function createGenesisBlock() {
 
-    const { genesis, passphrase, cryptography } = require('lisk-sdk');
-    const config = require('./config.json');
-    const { writeFileSync } = require('fs');
-    const path = require('path');
-    const { modules } = require('./modules.js');
 
     // NOTE: LIST OF MODULES HAS MOVED TO A SEPARATE FILE
 
     const accountAssetSchemas = {};
 
     let fields = 1;
-    for (let module of modules) {
+    for (const module of modules) {
         if (module.accountSchema !== undefined) {
             const schema = module.accountSchema;
-            schema.fieldNumber = ++fields;
-            accountAssetSchemas[module.name] = schema;
+            accountAssetSchemas[module.name] = { ...schema, fieldNumber: ++fields };
         }
     }
 
@@ -57,14 +56,14 @@ function createGenesisBlock() {
             privateKey: keys.privateKey.toString("hex")
         };
         return credentials;
-    };
+    }
 
-    function newAccount(balance, delegateName = null) {
+    function newAccount(balance, delegateName: string | null = null) {
         const cred = newCredentials();
         const address = Buffer.from(cred.binaryAddress, 'hex');
-        const account = {
+        const account : Partial<Account> & { address: Buffer } = {
             address,
-            token: { balance: BigInt(balance) },
+            token: { balance: BigInt(balance) }
         };
         if (delegateName) {
             account.dpos = { delegate: { username: delegateName } };
@@ -80,7 +79,7 @@ function createGenesisBlock() {
             const hashes = cryptography.hashOnion(seed, count, distance).map(b => b.toString('hex'));
 
             config.forging.delegates.push({
-                address,
+                address: address.toString('hex'),
                 encryptedPassphrase,
                 hashOnion: { count, distance, hashes }
             });
@@ -93,9 +92,9 @@ function createGenesisBlock() {
 
     config.forging.delegates = [];
 
-    credentials = [];
+    const credentials : Account[] = [];
 
-    delegates = [
+    const delegates = [
         newAccount(100000000, 'genesisDelegate1'),
         newAccount(100000000, 'genesisDelegate2'),
         newAccount(100000000, 'genesisDelegate3'),
@@ -103,7 +102,7 @@ function createGenesisBlock() {
         newAccount(100000000, 'genesisDelegate5'),
     ];
 
-    accounts = [
+    const accounts = [
         ...delegates,
         newAccount(25000000000),
         newAccount(25000000000),
@@ -121,20 +120,22 @@ function createGenesisBlock() {
         initRounds: 3,
     });
 
-
-    BigInt.prototype.toJSON = function () { return this.toString() };
     Buffer.prototype.toJSON = function () { return this.toString('hex') };
 
-    writeFileSync(path.resolve(__dirname,'genesis-block.json'), JSON.stringify(genesisBlock, null, 4));
+    const replacer = (_, val) => typeof val === 'bigint' ? val.toString() : val;
+
+    console.log(__dirname);
+
+    writeFileSync('./config/genesis-block.json', JSON.stringify(genesisBlock, replacer, 4));
     console.log('Written genesis-block.json');
 
     const old_version = config.version;
     const random_suffix = Math.random().toString(16).substring(2, 6);
-    config.version = semver.inc(semver.coerce(config.version), 'patch') + '-' + random_suffix;
+    config.version = semver.inc(semver.coerce(config.version) as semver.SemVer, 'patch') + '-' + random_suffix;
 
-    writeFileSync(path.resolve(__dirname,'config.json'), JSON.stringify(config, null, 4));
+    writeFileSync('./config/config.json', JSON.stringify(config, replacer, 4));
     console.log(`Updated config.json, ${old_version} -> ${config.version}`);
     
-    writeFileSync(path.resolve(__dirname,'accounts.json'), JSON.stringify(credentials, null, 4));
+    writeFileSync('./config/accounts.json', JSON.stringify(credentials, replacer, 4));
     console.log('Updated accounts.json');
 }

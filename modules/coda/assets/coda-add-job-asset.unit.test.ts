@@ -1,3 +1,5 @@
+test('Nothing', () => { null });
+
 /*
 import { BlockHeader } from '@liskhq/lisk-chain';
 import { Transaction, ValidateAssetContext } from 'lisk-sdk';
