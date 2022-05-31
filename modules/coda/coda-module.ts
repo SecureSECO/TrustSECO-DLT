@@ -2,6 +2,7 @@ import { BaseModule, codec, TransactionApplyContext } from 'lisk-sdk';
 import { CodaJob, CodaJobList, codaJobSchema, codaJobListSchema, CodaReturnJob } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
+import { coda } from '../test-data';
 
 export class CodaModule extends BaseModule {
     static id = 2632; // the T9 code for "coda"
@@ -11,7 +12,7 @@ export class CodaModule extends BaseModule {
     // INITIALIZE THE JOBS LIST (EMPTY)
 
     async afterGenesisBlockApply({ stateStore }) {
-        const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
+        const jobsBuffer = codec.encode(codaJobListSchema, coda ?? { jobs: [] });
         await stateStore.chain.set("coda:jobs", jobsBuffer);
     }
 
