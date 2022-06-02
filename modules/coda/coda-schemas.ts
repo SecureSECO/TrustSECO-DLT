@@ -36,7 +36,17 @@ export const validFacts: any = {
     ]
 }
 
-// Interfaces
+export interface CodaJob extends Record<string, unknown> {
+    package: string;
+    version: string;
+    fact: string;
+    date: string;
+    jobID: number;
+}
+
+export interface CodaJobList extends Record<string, unknown> {
+    jobs: CodaJob[];
+}
 
 export interface CodaReturnJob extends Record<string, unknown> {
     packageName: string;
@@ -47,25 +57,11 @@ export interface CodaReturnJob extends Record<string, unknown> {
     jobID: number;
 }
 
-export interface CodaJob extends Record<string, unknown> {
-    package: string;
-    version: string;
-    fact: string;
-    date: string;
-    jobID: number;
-}
-
 export interface MinimalCodaJob extends Record<string, unknown> {
     package: string;
     version: string;
     fact: string;
 }
-
-export interface CodaJobList extends Record<string, unknown> {
-    jobs: CodaJob[];
-}
-
-// Schemas
 
 export const codaJobSchema: Schema = {
     $id: 'coda/add-job',
@@ -98,25 +94,18 @@ export const codaJobSchema: Schema = {
     }
 };
 
-export const minimalCodaJobSchema: Schema = {
-    $id: 'coda/add-minimal-job',
+export const codaJobListSchema: Schema = {
+    $id: 'coda/job-list',
     type: 'object',
-    required: ["package", "version", "fact"],
+    required: ["jobs"],
     properties: {
-        package: {
-            dataType: 'string',
-            fieldNumber: 1
-        },
-        version: {
-            dataType: 'string',
-            fieldNumber: 2
-        },
-        fact: {
-            dataType: 'string',
-            fieldNumber: 3
+        jobs: {
+            type: 'array',
+            fieldNumber: 1,
+            items: codaJobSchema
         }
     }
-};
+}
 
 export const codaReturnJobSchema: Schema = {
     $id: 'coda/return-job',
@@ -151,15 +140,22 @@ export const codaReturnJobSchema: Schema = {
     }
 }
 
-export const codaJobListSchema: Schema = {
-    $id: 'coda/job-list',
+export const minimalCodaJobSchema: Schema = {
+    $id: 'coda/add-minimal-job',
     type: 'object',
-    required: ["jobs"],
+    required: ["package", "version", "fact"],
     properties: {
-        jobs: {
-            type: 'array',
-            fieldNumber: 1,
-            items: codaJobSchema
+        package: {
+            dataType: 'string',
+            fieldNumber: 1
+        },
+        version: {
+            dataType: 'string',
+            fieldNumber: 2
+        },
+        fact: {
+            dataType: 'string',
+            fieldNumber: 3
         }
     }
-}
+};

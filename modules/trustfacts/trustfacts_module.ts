@@ -1,4 +1,5 @@
 import { BaseModule, codec, TransactionApplyContext } from 'lisk-sdk';
+//import { CodaJobList, codaJobListSchema } from "../coda/coda-schemas";
 import { AddTrustFact, TrustFactList, AddTrustFactSchema, TrustFactListSchema } from './trustfacts_schema'
 import { TrustFactsAddFactAsset } from './assets/addfact_asset'
 
@@ -30,12 +31,10 @@ export class TrustFactsModule extends BaseModule {
     libraries_ioFactWeights: [factName: string, weight: number][] = []
 
     actions = {
+        // GET ALL THE TRUSTFACTS FOR A SPECIFIC PACKAGE
         getPackageFacts: async ({ packageName }: Record<string, unknown>) => {
-            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
-            if (trustFactsBuffer !== undefined) {
-                return codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-            }
-            else throw new Error("There are no trust-facts available for this package");
+            console.log("Get trustfacts for package: " + packageName);
+            return await this.getTrustFacts(packageName)
         },
         /*
         // Calculate the TrustScore for a specific package
@@ -54,6 +53,20 @@ export class TrustFactsModule extends BaseModule {
             console.log('afterTransactionApply: fact:', fact);
             this._channel.publish('trustfacts:newFact', fact);
         }
+    }
+
+    // Get all the TrustFacts of a package
+    async getTrustFacts(packageName) {
+        console.log(packageName);
+        //get facts buffer for the given package
+        const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
+        //if it is defined, decode facts buffer
+        if (trustFactsBuffer !== undefined) {
+            const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+            //if facts are available, return them
+            return facts;
+        }
+        else throw new Error("There are no trust-facts available for this package");
     }
 
     /*
@@ -109,7 +122,6 @@ export class TrustFactsModule extends BaseModule {
             }
             totalTrustFactCount += trustfact![1];
         });
-
     public async afterTransactionApply({ transaction: { moduleID, assetID, asset } }: TransactionApplyContext) {
         if (moduleID === this.id && assetID === TrustFactsAddFactAsset.id) {
             const fact = codec.decode<TrustFact>(TrustFactSchema, asset);

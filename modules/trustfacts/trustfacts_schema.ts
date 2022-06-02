@@ -1,6 +1,11 @@
 import { Schema } from "lisk-sdk";
 
-// Interfaces
+export interface AddTrustFact extends Record<string, unknown> {
+    jobID: number,
+    factData: string,
+    gitSignature: string,
+    keyURL: string,
+}
 
 export interface StoreTrustFact extends Record<string, unknown> {
     fact: string,
@@ -10,18 +15,37 @@ export interface StoreTrustFact extends Record<string, unknown> {
     jobID: number,
 }
 
-export interface AddTrustFact extends Record<string, unknown> {
-    jobID: number,
-    factData: string,
-    gitSignature: string,
-    keyURL: string,
-}
-
 export interface TrustFactList extends Record<string, unknown> {
     facts: StoreTrustFact[];
 }
 
-// Schemas
+export const AddTrustFactSchema: Schema = {
+    $id: 'trustfacts/add-facts',
+    type: 'object',
+    required: ["jobID", "factData", "gitSignature", "keyURL"],
+    properties: {
+        // ID of job in CODA
+        jobID: {
+            dataType: 'uint32',
+            fieldNumber: 1
+        },
+        // The data that was spidered
+        factData: {
+            dataType: 'string',
+            fieldNumber: 2
+        },
+        // Git signature and gpgkey
+        gitSignature: {
+            dataType: 'string',
+            fieldNumber: 3
+        },
+        // URL to the user gpgkey
+        keyURL: {
+            dataType: 'string',
+            fieldNumber: 4
+        }
+    }
+}
 
 export const StoreTrustFactSchema: Schema = {
     $id: 'trustfacts/add-facts',
@@ -53,34 +77,6 @@ export const StoreTrustFactSchema: Schema = {
             dataType: 'uint32',
             fieldNumber: 5
         },
-    }
-}
-
-export const AddTrustFactSchema: Schema = {
-    $id: 'trustfacts/add-facts',
-    type: 'object',
-    required: ["jobID", "factData", "gitSignature", "keyURL"],
-    properties: {
-        // ID of job in CODA
-        jobID: {
-            dataType: 'uint32',
-            fieldNumber: 1
-        },
-        // The data that was spidered
-        factData: {
-            dataType: 'string',
-            fieldNumber: 2
-        },
-        // Git signature and gpgkey
-        gitSignature: {
-            dataType: 'string',
-            fieldNumber: 3
-        },
-        // URL to the user gpgkey
-        keyURL: {
-            dataType: 'string',
-            fieldNumber: 4
-        }
     }
 }
 
