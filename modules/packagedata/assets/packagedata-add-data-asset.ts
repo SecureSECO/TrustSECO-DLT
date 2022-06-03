@@ -3,8 +3,7 @@ import { PackageDataSchema, PackageData, PackageDataListSchema, PackageDataList 
 import { CodaJobList, codaJobListSchema, CodaJob, validFacts } from '../../coda/coda-schemas';
 
 export class PackageDataAddDataAsset extends BaseAsset {
-    static id = 63280;
-    id = PackageDataAddDataAsset.id;
+    id = 63280;
     name = 'AddPackageData';
     schema = PackageDataSchema;
 

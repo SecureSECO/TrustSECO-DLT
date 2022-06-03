@@ -6,7 +6,9 @@ import { TrustFactsAddFactAsset } from './assets/addfact_asset'
 export class TrustFactsModule extends BaseModule {
     id = 3228;
     name = "trustfacts";
-
+    transactionAssets = [
+        new TrustFactsAddFactAsset()
+    ];
     factWeights: [factName: string, weight: number][] = []
     githubFactWeights: [factName: string, weight: number][] = [
         ["documentation", 5],
@@ -28,11 +30,6 @@ export class TrustFactsModule extends BaseModule {
     ];
     libraries_ioFactWeights: [factName: string, weight: number][] = []
 
-
-    transactionAssets = [
-        new TrustFactsAddFactAsset()
-    ];
-
     actions = {
         // GET ALL THE TRUSTFACTS FOR A SPECIFIC PACKAGE
         getPackageFacts: async ({ packageName }: Record<string, unknown>) => {
@@ -51,7 +48,7 @@ export class TrustFactsModule extends BaseModule {
     events = ['newFact'];
 
     public async afterTransactionApply({ transaction: { moduleID, assetID, asset } }: TransactionApplyContext) {
-        if (moduleID === this.id && assetID === TrustFactsAddFactAsset.id) {
+        if (moduleID === this.id && assetID === this.id) {
             const fact = codec.decode<AddTrustFact>(AddTrustFactSchema, asset);
             console.log('afterTransactionApply: fact:', fact);
             this._channel.publish('trustfacts:newFact', fact);
@@ -125,7 +122,6 @@ export class TrustFactsModule extends BaseModule {
             }
             totalTrustFactCount += trustfact![1];
         });
-
     public async afterTransactionApply({ transaction: { moduleID, assetID, asset } }: TransactionApplyContext) {
         if (moduleID === this.id && assetID === TrustFactsAddFactAsset.id) {
             const fact = codec.decode<TrustFact>(TrustFactSchema, asset);
