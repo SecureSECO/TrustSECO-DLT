@@ -2,7 +2,6 @@ import { BaseModule, codec } from 'lisk-sdk';
 import { CodaJobList, codaJobListSchema, CodaReturnJob } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
-import { coda } from '../test-data';
 
 export class CodaModule extends BaseModule {
 

@@ -3,6 +3,7 @@ dotenv.config();
 
 import { Application, PartialApplicationConfig } from 'lisk-sdk';
 import { DashboardPlugin } from '@liskhq/lisk-framework-dashboard-plugin';
+import { FaucetPlugin } from '@liskhq/lisk-framework-faucet-plugin';
 
 import { NaiveModule } from "./modules/naive/naive_module";
 import { CodaModule } from "./modules/coda/coda-module";
@@ -22,6 +23,7 @@ checkVersion().then(() => {
     app.registerModule(CodaModule);
     app.registerModule(TrustFactsModule);
     app.registerPlugin(DashboardPlugin);
+    app.registerPlugin(FaucetPlugin);
     app.registerModule(PackageDataModule);
     app.run();
 
