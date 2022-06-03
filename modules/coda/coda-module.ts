@@ -4,7 +4,6 @@ import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 
 export class CodaModule extends BaseModule {
-
     id = 2632; 
     name = "coda";
     transactionAssets = [
