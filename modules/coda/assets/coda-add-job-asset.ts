@@ -1,9 +1,9 @@
 import { ApplyAssetContext, BaseAsset, codec, StateStore, ValidateAssetContext } from 'lisk-sdk';
 import { Account, AccountSchema } from '../../accounts/accounts-schemas';
-import { requiredBounty, requiredVerifications } from '../../math';
+import { requiredBounty } from '../../math';
 import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-schemas';
 import { Signed, SignedSchema } from '../../signed-schemas';
-import { StoreTrustFact, TrustFactList, TrustFactListSchema } from '../../trustfacts/trustfacts_schema';
+import { TrustFactList, TrustFactListSchema } from '../../trustfacts/trustfacts_schema';
 import { CodaJob, CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob} from '../coda-schemas';
 
 export class CodaAddJobAsset extends BaseAsset {

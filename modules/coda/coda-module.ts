@@ -4,7 +4,6 @@ import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 import { requiredBounty } from '../math';
 import { TrustFactList, TrustFactListSchema } from '../trustfacts/trustfacts_schema';
-import { AccountId } from '../accounts/accounts-schemas';
 
 export class CodaModule extends BaseModule {
     id = 2632; 
