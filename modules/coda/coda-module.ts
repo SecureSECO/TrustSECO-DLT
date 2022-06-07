@@ -3,6 +3,8 @@ import { CodaJobList, codaJobListSchema, CodaReturnJob } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 import { requiredBounty } from '../math';
+import { TrustFactList, TrustFactListSchema } from '../trustfacts/trustfacts_schema';
+import { AccountId } from '../accounts/accounts-schemas';
 
 export class CodaModule extends BaseModule {
     id = 2632; 
@@ -39,8 +41,23 @@ export class CodaModule extends BaseModule {
             const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
             const totalBounty = jobs.reduce((acc, job) => acc + job.bounty, BigInt(0));
 
-            const activeSpiders = 2; // todo; number of unique spiders that have sent in facts recently
-            const networkCapacity = 100; // todo; amount of facts sent in recently
+            let totalFacts = 0;
+            const accounts: Set<string> = new Set();
+
+            for (const job of jobs) {
+                job.package;
+                const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + job.package);
+                if (trustFactsBuffer != undefined) {
+                    const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                    totalFacts += facts.length;
+                    for (const fact of facts) {
+                        accounts.add(fact.account.uid);
+                    }
+                }
+            }
+
+            const activeSpiders = accounts.size;
+            const networkCapacity = totalFacts;
             
             return requiredBounty(totalBounty, networkCapacity, activeSpiders);
         }

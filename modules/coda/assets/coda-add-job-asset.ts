@@ -26,10 +26,28 @@ export class CodaAddJobAsset extends BaseAsset {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
+        // calculate activeSpiders and networkCapacity
+
+        let totalFacts = 0;
+        const accounts: Set<string> = new Set();
+
+        for (const job of jobs) {
+            job.package;
+            const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
+            if (trustFactsBuffer != undefined) {
+                const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                totalFacts += facts.length;
+                for (const fact of facts) {
+                    accounts.add(fact.account.uid);
+                }
+            }
+        }
+
+        const activeSpiders = accounts.size;
+        const networkCapacity = totalFacts;
+
         // check if bounty is higher than minimum required
         const totalBounty = jobs.reduce((acc, job) => acc + job.bounty, BigInt(0));
-        const activeSpiders = 2; // todo; number of unique spiders that have sent in facts recently
-        const networkCapacity = 100; // todo; amount of facts sent in recently
         const rB = requiredBounty(totalBounty, networkCapacity, activeSpiders);
 
         if (asset.data.bounty < rB) throw new Error("Bounty is too low!");
