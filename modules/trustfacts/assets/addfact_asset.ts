@@ -15,7 +15,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<AddTrustFact>>) {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
-        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         const job = jobs.find(job => job.jobID === asset.data.jobID);
 
         if (job !== undefined) {
@@ -40,14 +40,6 @@ export class TrustFactsAddFactAsset extends BaseAsset {
                 account: { uid: accountUid }
             };
             facts.push(newFact);
-
-            // Count how often the fact has already been spidered for this particular job, remove the job after a certain threshold
-            const count = facts.filter(fact =>
-                fact.fact === asset.data.fact && fact.jobID == asset.data.jobID).length;
-            if (count > 9) {
-                jobs = jobs.filter(job => job.jobID != asset.data.jobID);
-                await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
-            }
 
             await stateStore.chain.set("trustfacts:" + job.package, codec.encode(TrustFactListSchema, { facts }));
         } else {
