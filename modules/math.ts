@@ -16,6 +16,7 @@ export function requiredVerifications(activeSpiders: number) : number {
 }
 
 export function requiredBounty(totalBounty: bigint, networkCapacity: number, activeSpiders: number) {
+    if (networkCapacity <= 0 || activeSpiders <= 0) return BigInt(1000);
     const rV = BigInt(requiredVerifications(activeSpiders));
     const cap = BigInt(networkCapacity);
     return BigInt(1000) + totalBounty * rV / (cap - rV);
