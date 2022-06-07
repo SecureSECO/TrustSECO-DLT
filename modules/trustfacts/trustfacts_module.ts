@@ -42,7 +42,7 @@ export class TrustFactsModule extends BaseModule {
     
     getRelevantFacts(facts, version) {
         return facts.filter(fact => {
-            return this.scores.hasOwnProperty(fact.fact) && fact.version === version;
+            return Object.prototype.hasOwnProperty.call(this.scores, fact.fact) && fact.version === version;
         }); 
     }
 
