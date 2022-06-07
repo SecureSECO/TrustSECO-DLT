@@ -1,5 +1,5 @@
 import { BaseModule, codec } from 'lisk-sdk';
-import { CodaJobList, codaJobListSchema, CodaReturnJob } from './coda-schemas';
+import { CodaJobList, codaJobListSchema, CodaReturnJob, minimalCodaJobSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 
@@ -30,6 +30,9 @@ export class CodaModule extends BaseModule {
                 jobID: jobs[randomNumber].jobID
             };
             return returnJob;
+        },
+        encodeCodaJob: async (asset: Record<string, unknown>) => {
+            return codec.encode(minimalCodaJobSchema, asset).toString('hex');
         }
     }
 
