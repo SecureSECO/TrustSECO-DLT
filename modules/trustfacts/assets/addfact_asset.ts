@@ -1,23 +1,22 @@
 import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
 import { CodaJobList, codaJobListSchema } from '../../coda/coda-schemas';
+import { Signed, SignedSchema } from '../../signed-schemas';
 import { AddTrustFact, StoreTrustFact, TrustFactList, AddTrustFactSchema, TrustFactListSchema } from '../trustfacts_schema';
 
 export class TrustFactsAddFactAsset extends BaseAsset {
     id = 32280;
     name = 'AddFacts';
-    schema = AddTrustFactSchema;
+    schema = SignedSchema(AddTrustFactSchema);
 
-    validate({ asset }: ValidateAssetContext<AddTrustFact>) {
-        if (asset.jobID < 0) throw new Error("JobID can't be negative");
-        if (asset.factData.trim() === "") throw new Error("FactData cannot be empty");
-        if (asset.gitSignature.trim() === "") throw new Error("GitSignature cannot be empty");
-        if (asset.keyURL.trim() === "") throw new Error("KeyUrl cannot be empty");
+    validate({ asset }: ValidateAssetContext<Signed<AddTrustFact>>) {
+        if (asset.data.jobID < 0) throw new Error("JobID can't be negative");
+        if (asset.data.factData.trim() === "") throw new Error("FactData cannot be empty");
     }
 
-    async apply({ asset, stateStore }: ApplyAssetContext<AddTrustFact>) {
+    async apply({ asset, stateStore }: ApplyAssetContext<Signed<AddTrustFact>>) {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-        const job = jobs.find(job => job.jobID === asset.jobID);
+        const job = jobs.find(job => job.jobID === asset.data.jobID);
 
         if (job !== undefined) {
             // get the facts for this package
@@ -28,20 +27,25 @@ export class TrustFactsAddFactAsset extends BaseAsset {
                 facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
             }
 
+            // todo; verify gpg signature (asset.signature)
+            // and get the gpg uid:
+            const accountUid = "test-account";
+
             const newFact: StoreTrustFact = { 
                 fact: job.fact, 
-                factData: asset.factData, 
+                factData: asset.data.factData, 
                 version: job.version, 
-                keyURL: asset.keyURL, 
-                jobID: asset.jobID 
+                keyURL: asset.data.keyURL, 
+                jobID: asset.data.jobID,
+                account: { uid: accountUid }
             };
             facts.push(newFact);
 
             // Count how often the fact has already been spidered for this particular job, remove the job after a certain threshold
             const count = facts.filter(fact =>
-                fact.fact === asset.fact && fact.jobID == asset.jobID).length;
+                fact.fact === asset.data.fact && fact.jobID == asset.data.jobID).length;
             if (count > 9) {
-                jobs = jobs.filter(job => job.jobID != asset.jobID);
+                jobs = jobs.filter(job => job.jobID != asset.data.jobID);
                 await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
             }
 

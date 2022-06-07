@@ -1,4 +1,5 @@
 import { Schema } from "lisk-sdk";
+import { AccountId, AccountIdSchema } from "../accounts/accounts-schemas";
 
 export const validFacts: any = {
     github: [
@@ -42,6 +43,8 @@ export interface CodaJob extends Record<string, unknown> {
     fact: string;
     date: string;
     jobID: number;
+    bounty: bigint;
+    account: AccountId;
 }
 
 export interface CodaJobList extends Record<string, unknown> {
@@ -55,12 +58,15 @@ export interface CodaReturnJob extends Record<string, unknown> {
     packageRelease: string;
     fact: string;
     jobID: number;
+    bounty: bigint;
+    account: AccountId;
 }
 
 export interface MinimalCodaJob extends Record<string, unknown> {
     package: string;
     version: string;
     fact: string;
+    bounty: bigint;
 }
 
 export const codaJobSchema: Schema = {
@@ -90,6 +96,14 @@ export const codaJobSchema: Schema = {
         jobID: {
             dataType: 'uint32',
             fieldNumber: 5
+        },
+        bounty: {
+            dataType: 'uint64',
+            fieldNumber: 6
+        },
+        account: {
+            ...AccountIdSchema,
+            fieldNumber: 7
         }
     }
 };
@@ -136,6 +150,14 @@ export const codaReturnJobSchema: Schema = {
         jobID: {
             dataType: 'uint32',
             fieldNumber: 5
+        },
+        bounty: {
+            dataType: 'uint64',
+            fieldNumber: 6
+        },
+        account: {
+            ...AccountIdSchema,
+            fieldNumber: 7
         }
     }
 }
@@ -156,6 +178,10 @@ export const minimalCodaJobSchema: Schema = {
         fact: {
             dataType: 'string',
             fieldNumber: 3
+        },
+        bounty: {
+            dataType: 'uint64',
+            fieldNumber: 4
         }
     }
 };

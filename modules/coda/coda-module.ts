@@ -2,6 +2,7 @@ import { BaseModule, codec } from 'lisk-sdk';
 import { CodaJobList, codaJobListSchema, CodaReturnJob } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
+import { requiredBounty } from '../math';
 
 export class CodaModule extends BaseModule {
     id = 2632; 
@@ -27,9 +28,21 @@ export class CodaModule extends BaseModule {
                 packageOwner: packageData.packageOwner,
                 packageRelease: jobs[randomNumber].version,
                 fact: jobs[randomNumber].fact,
-                jobID: jobs[randomNumber].jobID
+                jobID: jobs[randomNumber].jobID,
+                bounty: jobs[randomNumber].bounty,
+                account: jobs[randomNumber].account
             };
             return returnJob;
+        },
+        getMinimumRequiredBounty: async () => {
+            const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
+            const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+            const totalBounty = jobs.reduce((acc, job) => acc + job.bounty, BigInt(0));
+
+            const activeSpiders = 2; // todo; number of unique spiders that have sent in facts recently
+            const networkCapacity = 100; // todo; amount of facts sent in recently
+            
+            return requiredBounty(totalBounty, networkCapacity, activeSpiders);
         }
     }
 
