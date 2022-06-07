@@ -1,7 +1,7 @@
 
 export function requiredVerifications(activeSpiders: number) : number {
-    const gamma = 0.577;
-    const f = (c: number) => c * (Math.log(c) + gamma);
+    const gamma = 0.5772156649015328;                   // Euler–Mascheroni constant
+    const f = (c: number) => c * (Math.log(c) + gamma); // Harmonic Series approximation
 
     let c = 1; while (c < activeSpiders) c <<= 1;
     let e = c >> 1;
