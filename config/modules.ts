@@ -5,6 +5,7 @@ import { NaiveModule } from '../modules/naive/naive_module';
 import { CodaModule } from '../modules/coda/coda-module';
 import { TrustFactsModule } from '../modules/trustfacts/trustfacts_module';
 import { PackageDataModule} from '../modules/packagedata/packagedata-module';
+import { AccountsModule } from '../modules/accounts/accounts-module';
 
 
 export const modules = [
@@ -22,4 +23,5 @@ export const modules = [
     new CodaModule(config.genesisConfig),
     new TrustFactsModule(config.genesisConfig),
     new PackageDataModule(config.genesisConfig),
+    new AccountsModule(config.genesisConfig),
 ]
