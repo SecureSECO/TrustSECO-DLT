@@ -165,7 +165,7 @@ export const codaReturnJobSchema: Schema = {
 export const minimalCodaJobSchema: Schema = {
     $id: 'coda/add-minimal-job',
     type: 'object',
-    required: ["package", "version", "fact"],
+    required: ["package", "version", "fact", "bounty"],
     properties: {
         package: {
             dataType: 'string',

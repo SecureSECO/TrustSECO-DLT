@@ -13,6 +13,7 @@ import { checkVersion } from './scripts/check-version';
 
 import genesisBlock = require('./config/genesis-block.json');
 import config from './scripts/config-autofilled';
+import { AccountsModule } from './modules/accounts/accounts-module';
 
 checkVersion().then(() => {
 
@@ -21,8 +22,9 @@ checkVersion().then(() => {
     app.registerModule(NaiveModule);
     app.registerModule(CodaModule);
     app.registerModule(TrustFactsModule);
-    app.registerPlugin(DashboardPlugin);
     app.registerModule(PackageDataModule);
+    app.registerModule(AccountsModule);
+    app.registerPlugin(DashboardPlugin);
     app.run();
 
     console.log("TrustSECO-DLT is running...");
