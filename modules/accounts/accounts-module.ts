@@ -10,8 +10,9 @@ export class AccountsModule extends BaseModule {
     ];
 
     actions = {
-        getAccount: async ({ url }: Record<string, unknown>) => {
-            const accountBuffer = await this._dataAccess.getChainState("account:" + url) as Buffer;
+        getAccount: async ({ uid }: Record<string, unknown>) => {
+            const accountBuffer = await this._dataAccess.getChainState("account:" + uid);
+            if (accountBuffer == undefined) throw new Error("Account not found");
             return codec.decode<Account>(AccountSchema, accountBuffer);
         }
     }

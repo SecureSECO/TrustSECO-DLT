@@ -20,7 +20,7 @@ export const AccountSchema: Schema = {
     properties: {
         slingers: {
             dataType: "uint64",
-            fieldNumber: 2
+            fieldNumber: 1
         }
     }
 };
@@ -31,7 +31,7 @@ export const AccountIdSchema: Schema = {
     required: ["uid"],
     properties: {
         uid: {
-            type: "string",
+            dataType: "string",
             fieldNumber: 1
         }
     }
@@ -43,7 +43,7 @@ export const AccountURLSchema: Schema = {
     required: ["url"],
     properties: {
         url: {
-            type: "string",
+            dataType: "string",
             fieldNumber: 1
         }
     }
