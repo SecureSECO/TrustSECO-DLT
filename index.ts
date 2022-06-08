@@ -6,8 +6,9 @@ import { DashboardPlugin } from '@liskhq/lisk-framework-dashboard-plugin';
 
 import { NaiveModule } from "./modules/naive/naive_module";
 import { CodaModule } from "./modules/coda/coda-module";
-import { TrustFactsModule } from "./modules/trustfacts/trustfacts_module"
+import { TrustFactsModule } from "./modules/trustfacts/trustfacts_module";
 import { PackageDataModule } from './modules/packagedata/packagedata-module';
+import { AccountsModule } from './modules/accounts/accounts-module'
 
 import { checkVersion } from './scripts/check-version';
 
@@ -23,6 +24,7 @@ checkVersion().then(() => {
     app.registerModule(TrustFactsModule);
     app.registerPlugin(DashboardPlugin);
     app.registerModule(PackageDataModule);
+    app.registerModule(AccountsModule);
     app.run();
 
     console.log("TrustSECO-DLT is running...");
