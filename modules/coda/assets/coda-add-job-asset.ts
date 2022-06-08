@@ -32,7 +32,6 @@ export class CodaAddJobAsset extends BaseAsset {
         const accounts: Set<string> = new Set();
 
         for (const job of jobs) {
-            job.package;
             const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
             if (trustFactsBuffer != undefined) {
                 const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
@@ -133,7 +132,6 @@ export class CodaAddJobAsset extends BaseAsset {
                     const reward = job.bounty / BigInt(facts.length); // todo; increase reward when there is a surplus of network capacity??
 
                     for (const fact of facts) {
-                        fact.account.uid
                         const accountBuffer = await stateStore.chain.get("account:" + fact.account.uid) as Buffer;
                         const account = codec.decode<Account>(AccountSchema, accountBuffer);
                         account.slingers += reward;

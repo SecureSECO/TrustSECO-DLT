@@ -44,7 +44,6 @@ export class CodaModule extends BaseModule {
             const accounts: Set<string> = new Set();
 
             for (const job of jobs) {
-                job.package;
                 const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + job.package);
                 if (trustFactsBuffer != undefined) {
                     const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
