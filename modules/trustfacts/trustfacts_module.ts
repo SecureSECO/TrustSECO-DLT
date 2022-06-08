@@ -43,6 +43,9 @@ export class TrustFactsModule extends BaseModule {
                 return await this.calculateTrustScore(facts);
         }       
         */
+        encodeTrustFact: async (asset: Record<string, unknown>) => {
+            return codec.encode(AddTrustFactSchema, asset).toString('hex');
+        }
     }
 
     events = ['newFact'];
