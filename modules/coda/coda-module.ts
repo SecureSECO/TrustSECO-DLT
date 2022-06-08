@@ -38,7 +38,7 @@ export class CodaModule extends BaseModule {
             const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + job.package) as Buffer;
             const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
 
-            return { ...job, ...packageData };
+            return { ...job, bounty: job.bounty.toString(), ...packageData };
         },
         getMinimumRequiredBounty: async () => {
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
@@ -63,7 +63,7 @@ export class CodaModule extends BaseModule {
             const uniqueActiveSpiders = spideringAccounts.size;
             const networkCapacity = totalFacts;
             
-            return requiredBounty(totalBounty, networkCapacity, uniqueActiveSpiders);
+            return requiredBounty(totalBounty, networkCapacity, uniqueActiveSpiders).toString();
         },
         encodeCodaJob: async (asset: Record<string, unknown>) => {
             return codec.encode(minimalCodaJobSchema, asset).toString('hex');
