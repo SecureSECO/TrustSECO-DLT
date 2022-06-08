@@ -11,6 +11,9 @@ export class TrustFactsAddFactAsset extends BaseAsset {
     validate({ asset }: ValidateAssetContext<Signed<AddTrustFact>>) {
         if (asset.data.jobID < 0) throw new Error("JobID can't be negative");
         if (asset.data.factData.trim() === "") throw new Error("FactData cannot be empty");
+
+        // todo; verify gpg signature (asset.signature)
+        if (!asset.signature) throw new Error("Signature is missing!");
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<AddTrustFact>>) {

@@ -8,7 +8,7 @@ export interface Signed<T> {
 export const SignedSchema = (schema: Schema) : Schema => ({
     $id: schema.$id + "/signed",
     type: 'object',
-    required: ["signature, data"],
+    required: ["signature", "data"],
     properties: {
         signature: {
             dataType: 'string',

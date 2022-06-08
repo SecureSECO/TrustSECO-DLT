@@ -17,8 +17,9 @@ export class CodaAddJobAsset extends BaseAsset {
         if (asset.data.version === "") throw new Error("version cannot be empty");
         if (asset.data.fact === "") throw new Error("Fact cannot be empty");
         if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative");
-
-        // todo; check signature (asset.signature)
+        
+        // todo; verify signature (asset.signature)
+        if (!asset.signature) throw new Error("Signature is missing!");
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
