@@ -2,7 +2,6 @@
 import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
 import { AccountSchema, Account, AccountURLSchema, AccountURL } from '../accounts-schemas';
 import { exec } from 'child_process';
-import { resolve } from 'path';
 
 export class AccountsAddAsset extends BaseAsset {
     id = 26660;
@@ -19,18 +18,10 @@ export class AccountsAddAsset extends BaseAsset {
         //import the gpg key from asset.url
         //const { exec } = require("child_process");
 
-        const output = await new Promise<string>((_res,_rej) => {
-            exec(`curl ${asset.url} | gpg --import`, function(error, stdout, stderr) {
-                if (error) {
-                    console.log(`error: ${error.message}`);
-                    return;
-                }
-                if (stderr) {
-                    console.log(`stderr: ${stderr}`);
-                    return;
-                }
-                resolve(stdout);
-                return;
+        const output = await new Promise<string>((res,rej) => {
+            exec(`curl ${asset.url} | gpg --import`, function(error, stdout) {
+                if (error) rej (error)
+                else res(stdout);
             });
         })
 
