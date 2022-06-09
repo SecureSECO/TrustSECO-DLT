@@ -2,7 +2,6 @@
 import {
     BaseModule,
     codec,
-    AfterGenesisBlockApplyContext,
     TransactionApplyContext
 } from 'lisk-sdk';
 import { FactMessageAsset } from "./assets/fact_message_asset";
@@ -61,11 +60,5 @@ export class NaiveModule extends BaseModule {
             naive: trustAsset.TrustFactsJSON
         });
     }
-    }
-
-    public async afterGenesisBlockApply(_input: AfterGenesisBlockApplyContext) {
-        // Get any data from genesis block, for example get all genesis accounts
-        // const genesisAccounts = genesisBlock.header.asset.accounts;
-        console.log(_input);
     }
 }

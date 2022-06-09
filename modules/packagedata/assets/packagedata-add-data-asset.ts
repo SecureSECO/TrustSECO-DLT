@@ -1,6 +1,6 @@
 import { BaseAsset, codec } from 'lisk-sdk';
 import { PackageDataSchema, PackageData, PackageDataListSchema, PackageDataList } from "../packagedata-schemas";
-import { CodaJobList, codaJobListSchema, CodaJob, validFacts } from '../../coda/coda-schemas';
+// import { CodaJobList, codaJobListSchema, CodaJob, validFacts } from '../../coda/coda-schemas';
 
 export class PackageDataAddDataAsset extends BaseAsset {
     id = 63280;
@@ -68,27 +68,34 @@ export class PackageDataAddDataAsset extends BaseAsset {
     }
 
     async addJobsForAllFacts({ asset, stateStore }, version) {
-        const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
-        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        console.error("jobs cannot be added, since no bounty is provided");
+        
+        // make the linter happy:
+        asset; stateStore; version;
 
-        const sources = Object.keys(validFacts);
-        sources.forEach(source => {
-            validFacts[`${source}`].forEach((fact: any) => {
-                const job: CodaJob = {
-                    package: asset.packageName,
-                    version: version,
-                    fact: fact,
-                    date: new Date().toString(),
-                    jobID: this.generateRandomNumber()
-                }
-                const duplicateIdCheck = jobs.filter(oldJob => oldJob.jobID == job.jobID).length > 0;
-                while (duplicateIdCheck) {
-                    job.jobID = this.generateRandomNumber();
-                }
-                jobs.push(job);
-            });
-        });
-        await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
+        return;
+
+        // const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+        // const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+
+        // const sources = Object.keys(validFacts);
+        // sources.forEach(source => {
+        //     validFacts[`${source}`].forEach((fact: any) => {
+        //         const job: CodaJob = {
+        //             package: asset.packageName,
+        //             version: version,
+        //             fact: fact,
+        //             date: new Date().toString(),
+        //             jobID: this.generateRandomNumber()
+        //         }
+        //         const duplicateIdCheck = jobs.filter(oldJob => oldJob.jobID == job.jobID).length > 0;
+        //         while (duplicateIdCheck) {
+        //             job.jobID = this.generateRandomNumber();
+        //         }
+        //         jobs.push(job);
+        //     });
+        // });
+        // await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
     }
     
     formatAsset({ asset }) {

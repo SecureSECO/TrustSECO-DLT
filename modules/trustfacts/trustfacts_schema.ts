@@ -1,18 +1,17 @@
 import { Schema } from "lisk-sdk";
+import { AccountId, AccountIdSchema } from "../accounts/accounts-schemas";
 
 export interface AddTrustFact extends Record<string, unknown> {
     jobID: number,
     factData: string,
-    gitSignature: string,
-    keyURL: string,
 }
 
 export interface StoreTrustFact extends Record<string, unknown> {
     fact: string,
     factData: string,
     version: string,
-    keyURL: string,
     jobID: number,
+    account: AccountId
 }
 
 export interface TrustFactList extends Record<string, unknown> {
@@ -22,7 +21,7 @@ export interface TrustFactList extends Record<string, unknown> {
 export const AddTrustFactSchema: Schema = {
     $id: 'trustfacts/add-facts',
     type: 'object',
-    required: ["jobID", "factData", "gitSignature", "keyURL"],
+    required: ["jobID", "factData"],
     properties: {
         // ID of job in CODA
         jobID: {
@@ -33,16 +32,6 @@ export const AddTrustFactSchema: Schema = {
         factData: {
             dataType: 'string',
             fieldNumber: 2
-        },
-        // Git signature and gpgkey
-        gitSignature: {
-            dataType: 'string',
-            fieldNumber: 3
-        },
-        // URL to the user gpgkey
-        keyURL: {
-            dataType: 'string',
-            fieldNumber: 4
         }
     }
 }
@@ -50,7 +39,7 @@ export const AddTrustFactSchema: Schema = {
 export const StoreTrustFactSchema: Schema = {
     $id: 'trustfacts/add-facts',
     type: 'object',
-    required: ["fact", "factData", "version", "keyURL"],
+    required: ["fact", "factData", "version", "jobID", "account"],
     properties: {
         // the fact that was spidered
         fact: {
@@ -67,16 +56,16 @@ export const StoreTrustFactSchema: Schema = {
             dataType: 'string',
             fieldNumber: 3
         },
-        // URL to the user gpgkey
-        keyURL: {
-            dataType: 'string',
-            fieldNumber: 4
-        },
         // ID of job in CODA
         jobID: {
             dataType: 'uint32',
             fieldNumber: 5
         },
+        // The account that sent in the fact
+        account: {
+            ...AccountIdSchema,
+            fieldNumber: 6
+        }
     }
 }
 
