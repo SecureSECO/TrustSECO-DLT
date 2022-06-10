@@ -45,6 +45,10 @@ export const AccountURLSchema: Schema = {
         url: {
             dataType: "string",
             fieldNumber: 1
+        },
+        uid: {
+            dataType: "string",
+            fieldNumber: 2
         }
     }
 };
