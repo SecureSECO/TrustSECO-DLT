@@ -1,4 +1,4 @@
-# Minimal Non-viable Product
+# TrustSECO DLT
 
 Prerequisites:
 - [nvm](https://github.com/nvm-sh/nvm)  
@@ -21,3 +21,7 @@ When necessary (f.e. after adding a module); the `npm run genesis` command can g
 # Safety
 
 Note that in this development version; the master password for all delegate accounts is very weak, and stored in plain-text in the config.
+
+# Development
+
+![Gitflow Workflow](https://wac-cdn.atlassian.com/dam/jcr:cc0b526e-adb7-4d45-874e-9bcea9898b4a/04%20Hotfix%20branches.svg)

@@ -1,41 +1,52 @@
-import { BaseAsset, codec } from 'lisk-sdk';
-import { codaJobListSchema } from '../../coda/coda-schemas';
-
-import { TrustFactsSchema, trustFactsListSchema } from '../trustfacts_schema';
+import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
+import { CodaJobList, codaJobListSchema } from '../../coda/coda-schemas';
+import { Signed, SignedSchema } from '../../signed-schemas';
+import { AddTrustFact, StoreTrustFact, TrustFactList, AddTrustFactSchema, TrustFactListSchema } from '../trustfacts_schema';
 
 export class TrustFactsAddFactAsset extends BaseAsset {
-    static id = 12340;
-    id = TrustFactsAddFactAsset.id;
+    id = 32280;
     name = 'AddFacts';
-    schema = TrustFactsSchema;
+    schema = SignedSchema(AddTrustFactSchema);
 
-    validate({ asset }) {
-        // for now onlycheck if fields are not empty, TODO more logic
-        
-        //TODO: validate data and gpg key
-        if (asset.factData.trim() === "") throw new Error("Data cannot be empty");
+    validate({ asset }: ValidateAssetContext<Signed<AddTrustFact>>) {
+        if (asset.data.jobID < 0) throw new Error("JobID can't be negative");
+        if (asset.data.factData.trim() === "") throw new Error("FactData cannot be empty");
 
-    };
+        // todo; verify gpg signature (asset.signature)
+        if (!asset.signature) throw new Error("Signature is missing!");
+    }
 
-    async apply({ asset, stateStore }) {
+    async apply({ asset, stateStore }: ApplyAssetContext<Signed<AddTrustFact>>) {
+        const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const job = jobs.find(job => job.jobID === asset.data.jobID);
 
-        // get the job
-        let jobsBuffer = await stateStore.chain.get("coda:jobs");
-        let { jobs } = codec.decode<{jobs:[{package:string}]}>(codaJobListSchema, jobsBuffer);
-        let { package : pack } = jobs[asset.jobID];
+        if (job !== undefined) {
+            // get the facts for this package
+            let facts: StoreTrustFact[] = [];
 
-        // get the facts for this package
-        let facts : {}[] = [];
-        
-        let trustFactsBuffer = await stateStore.chain.get("trustfacts:" + pack);
-        if (trustFactsBuffer !== undefined) {
-            facts = codec.decode<{facts:[]}>(trustFactsListSchema, trustFactsBuffer).facts;
+            const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
+            if (trustFactsBuffer !== undefined) {
+                facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
+            }
+
+            // todo; verify gpg signature (asset.signature)
+            // and get the gpg uid:
+            const accountUid = "test-account";
+
+            const newFact: StoreTrustFact = { 
+                fact: job.fact, 
+                factData: asset.data.factData, 
+                version: job.version, 
+                keyURL: asset.data.keyURL, 
+                jobID: asset.data.jobID,
+                account: { uid: accountUid }
+            };
+            facts.push(newFact);
+
+            await stateStore.chain.set("trustfacts:" + job.package, codec.encode(TrustFactListSchema, { facts }));
+        } else {
+            throw new Error("Job with given job ID does not exist!");
         }
-
-        // add the new fact
-        facts.push(asset);
-
-        // store!
-        await stateStore.chain.set("trustfacts:" + pack, codec.encode(trustFactsListSchema, { facts }));
     }
 }

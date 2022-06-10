@@ -1,61 +1,77 @@
 import { BaseModule, codec } from 'lisk-sdk';
-import { codaJobListSchema, codaJobSchema } from './coda-schemas';
+import { CodaJob, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
+import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
+import { requiredBounty } from '../math';
+import { TrustFactList, TrustFactListSchema } from '../trustfacts/trustfacts_schema';
 
 export class CodaModule extends BaseModule {
-    static id = 2632; // the T9 code for "coda"
-    id = CodaModule.id;
-    name = 'coda';
-
-
-
-    // INITIALIZE THE JOBS LIST (EMPTY)
-
-    async afterGenesisBlockApply({ stateStore }) {
-        let jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
-        await stateStore.chain.set( "coda:jobs", jobsBuffer );
-        
-    }
-
-
-
-    // TRANSACTIONS TO MODIFY THE JOBS LIST
-
+    id = 2632; 
+    name = "coda";
     transactionAssets = [
         new CodaAddJobAsset()
     ];
 
-
-
-    // ACTIONS TO GET THE CURRENT STATE OF THE JOBS LIST
-
     actions = {
-        // GET THE JOBS LIST
         getJobs: async () => {
-            let jobsBuffer:any = await this._dataAccess.getChainState("coda:jobs");
-            return codec.decode(codaJobListSchema, jobsBuffer);
+            const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
+            return codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         },
-
         getRandomJob: async () => {
-            let jobsBuffer:any = await this._dataAccess.getChainState("coda:jobs");
-            let { jobs } = codec.decode<{jobs:{package:string, source:string, fact:string}[]}>(codaJobListSchema, jobsBuffer);
-            let randomNumber = Math.floor(Math.random() * jobs.length);
-            return jobs[randomNumber];
+
+            const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
+            const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+
+            if (jobs.length === 0) throw new Error("No jobs available");
+
+            const totalBounty = jobs.reduce((count, job) => count + job.bounty, BigInt(0));
+
+            // random BigInt less than totalBounty
+            let rand = BigInt(Math.random() * 2**64) * totalBounty / BigInt(2**64);
+
+            let job! : CodaJob;
+            for (job of jobs) {
+                rand -= job.bounty;
+                if (rand < 0) break;
+            }
+
+            const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + job.package) as Buffer;
+            const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
+
+            return { ...job, bounty: job.bounty.toString(), ...packageData };
+        },
+        getMinimumRequiredBounty: async () => {
+            const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
+            const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+
+            let totalBounty = BigInt(0);
+            let totalFacts = 0;
+            const spideringAccounts: Set<string> = new Set();
+
+            for (const job of jobs) {
+                totalBounty += job.bounty;
+                const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + job.package);
+                if (trustFactsBuffer != undefined) {
+                    const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                    totalFacts += facts.length;
+                    for (const fact of facts) {
+                        spideringAccounts.add(fact.account.uid);
+                    }
+                }
+            }
+
+            const uniqueActiveSpiders = spideringAccounts.size;
+            const networkCapacity = totalFacts;
+            
+            return requiredBounty(totalBounty, networkCapacity, uniqueActiveSpiders).toString();
+        },
+        encodeCodaJob: async (asset: Record<string, unknown>) => {
+            return codec.encode(minimalCodaJobSchema, asset).toString('hex');
         }
     }
 
-
-
-    // PUBLISHING EVENTS WHEN NEW JOBS ARE ADDED
-    // (not used in this module, or anywhere afaik)
-
-    events = ['newJob'];
-
-    public async afterTransactionApply({ transaction: {moduleID, assetID, asset} }) {
-        if (moduleID === this.id && assetID === CodaAddJobAsset.id) {
-            let job = codec.decode<{}>(codaJobSchema, asset);
-            console.log('afterTransactionApply: job:', job);
-            this._channel.publish('coda:newJob', job);
-        }
+    async afterGenesisBlockApply({ stateStore }) {
+        const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
+        await stateStore.chain.set("coda:jobs", jobsBuffer);
     }
 }

@@ -1,4 +1,4 @@
-const trustFactAssetSchema = {
+export const trustFactAssetSchema = {
   $id: "lisk/hello/asset",
   type: "object",
   required: ["trustFactJSON"],
@@ -8,8 +8,4 @@ const trustFactAssetSchema = {
       fieldNumber: 1,
     },
   },
-};
-
-module.exports = {
-    trustFactAssetSchema
 };
