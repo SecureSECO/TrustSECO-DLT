@@ -5,6 +5,8 @@ import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-sc
 import { Signed, SignedSchema } from '../../signed-schemas';
 import { TrustFactList, TrustFactListSchema } from '../../trustfacts/trustfacts_schema';
 import { CodaJob, CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob} from '../coda-schemas';
+import { exec, spawnSync } from 'child_process';
+import { writeFileSync } from 'fs';
 
 export class CodaAddJobAsset extends BaseAsset {
     id = 26320;
@@ -19,6 +21,21 @@ export class CodaAddJobAsset extends BaseAsset {
         if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative");
 
         // todo; check signature (asset.signature)
+
+
+        // write asset.signature to file
+        writeFileSync("/tmp/signature.txt", asset.signature);
+        const encoded = codec.encode(minimalCodaJobSchema, asset.data);
+        // write data to fle
+        writeFileSync("/tmp/data.txt", encoded);
+
+        console.log("starting gpg verification");
+        // verify signature
+        const result = spawnSync(`gpg --verify /tmp/signature.txt /tmp/data.txt`);
+        result.stderr.toString();
+
+        console.log(result.stderr.toString());
+        console.log("result.signal: " + result.signal);
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
@@ -53,7 +70,14 @@ export class CodaAddJobAsset extends BaseAsset {
 
         /* todo; get uid from the following gpg signature: */ asset.signature;
         // and get its gpg uid:
-        const accountUid = "test-account";
+
+
+        const accountUid = await new Promise<string>((res,rej) => {
+            exec(`gpg --verify `, function(error, _stdout, stderr) {
+                if (error) rej (error);
+                else res(stderr);
+            });
+        });
 
         // Deduct bounty from account
         const accountBuffer = await stateStore.chain.get("account:" + accountUid) as Buffer;
