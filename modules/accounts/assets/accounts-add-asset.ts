@@ -16,23 +16,17 @@ export class AccountsAddAsset extends BaseAsset {
     async apply({ asset, stateStore }: ApplyAssetContext<AccountURL>) {
 
         //import the gpg key from asset.url
-        //const { exec } = require("child_process");
-
         const output = await new Promise<string>((res,rej) => {
-            exec(`curl ${asset.url} | gpg --import`, function(error, stdout) {
-                if (error) rej (error)
-                else res(stdout);
+            exec(`curl ${asset.url} | gpg --import`, function(error, _stdout, stderr) {
+                if (error) rej (error);
+                else res(stderr);
             });
-        })
+        });
 
-        console.log("output: " + output);
-        const parse1 = output.split('\n');
-        console.log("jemoeder");
-        console.log("parse1[4]: " + parse1[4]);
-
-        // and get UID for this gpg key        
-        
-        const accountUid = 'test-account';
+        //Extract the accountUID from the output
+        const regex = /key (\w*)/;
+        const match = regex.exec(output);
+        const accountUid = match?.[1];
 
         const accountsBuffer = await stateStore.chain.get("account:" + accountUid) as Buffer;
         if (accountsBuffer !== undefined) return;
