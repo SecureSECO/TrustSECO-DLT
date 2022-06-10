@@ -15,7 +15,9 @@ export class CodaModule extends BaseModule {
     actions = {
         getJobs: async () => {
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
-            return codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+            const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+            const jobsFixed = jobs.map(job => ({...job, bounty: job.bounty.toString() }));
+            return jobsFixed;
         },
         getRandomJob: async () => {
 
