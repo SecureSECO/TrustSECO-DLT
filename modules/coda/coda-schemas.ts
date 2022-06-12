@@ -1,7 +1,7 @@
 import { Schema } from "lisk-sdk";
 import { AccountId, AccountIdSchema } from "../accounts/accounts-schemas";
 
-export const validFacts: any = {
+export const validFacts = {
     github: [
         "gh_contributor_count",
         "gh_user_count",
@@ -105,6 +105,18 @@ export const codaJobSchema: Schema = {
         }
     }
 };
+
+export const codaJobIdSchema: Schema = {
+    $id: 'coda/job-id',
+    type: 'object',
+    required: ["jobId"],
+    properties: {
+        jobId: {
+            dataType: 'uint32',
+            fieldNumber: 1
+        }
+    }
+}
 
 export const codaJobListSchema: Schema = {
     $id: 'coda/job-list',

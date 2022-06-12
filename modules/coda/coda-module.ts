@@ -1,5 +1,5 @@
 import { BaseModule, codec } from 'lisk-sdk';
-import { CodaJob, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
+import { CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 import { requiredBounty } from '../math';
@@ -20,7 +20,6 @@ export class CodaModule extends BaseModule {
             return jobsFixed;
         },
         getRandomJob: async () => {
-
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
@@ -74,6 +73,8 @@ export class CodaModule extends BaseModule {
 
     async afterGenesisBlockApply({ stateStore }) {
         const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
+        const jobId = codec.encode(codaJobIdSchema, { jobId: 0 });
         await stateStore.chain.set("coda:jobs", jobsBuffer);
+        await stateStore.chain.set("coda:jobId", jobId);
     }
 }
