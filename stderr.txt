@@ -1,4 +1,0 @@
-gpg: key DB0FF6CA676AD03B: "Wilco Verhoef <gpg@wilcoverhoef.nl>" not changed
-gpg: key 999C9BF0750589FF: "asdf <adsf@asdf.nl>" not changed
-gpg: Total number processed: 2
-gpg:              unchanged: 2

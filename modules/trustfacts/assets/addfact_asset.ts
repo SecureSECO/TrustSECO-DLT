@@ -37,7 +37,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         const accountUid = regex.exec(result.stderr?.toString())?.[1];
 
         // if there is no key, the verification failed
-        if (accountUid == null) {throw new Error("gpg verification failed");}
+        if (result.status || accountUid == null) throw new Error("gpg verification failed");
         //---end of gpg verification---
     }
 
@@ -76,7 +76,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
             const accountUid = regex.exec(result.stderr?.toString())?.[1];
 
             // if there is no key, the verification failed
-            if (accountUid == null) { throw new Error("accountUid (for gpg verification) is null"); } // redundant?
+            if (result.status || accountUid == null) { throw new Error("accountUid (for gpg verification) is null"); } // redundant?
             //---end of gpg verification---
 
             // check if this account already has a fact for this job
