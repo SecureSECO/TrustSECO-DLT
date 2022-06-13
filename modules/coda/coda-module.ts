@@ -1,4 +1,4 @@
-import { BaseModule, codec } from 'lisk-sdk';
+import { BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
 import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
@@ -81,21 +81,15 @@ export class CodaModule extends BaseModule {
         await stateStore.chain.set("coda:blockHeight", blockHeight);
     }
 
-    async beforeBlockApply({ stateStore }) { 
-        const blockHeightBuffer = await stateStore.chain.get("coda:blockHeight") as Buffer;
-        const { blockHeight } = codec.decode(codaBlockHeightSchema, blockHeightBuffer);  
-        if (blockHeight == Math.pow(2, 32)) {
-            await stateStore.chain.set("coda:blockHeight", codec.encode(codaBlockHeightSchema, { blockHeight: 0 }));
-        } else {
-            await stateStore.chain.set("coda:blockHeight", codec.encode(codaBlockHeightSchema, { blockHeight: blockHeight + 1 }));
-        }  
+    async beforeBlockApply({ stateStore, block } : BeforeBlockApplyContext) {
+        await stateStore.chain.set("coda:blockHeight", codec.encode(codaBlockHeightSchema, { blockHeight: block.header.height }));
 
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         const jobsToKeep: CodaJob[] = [];
 
         for (const job of jobs) {
-            const differenceInBlockHeight = blockHeight - parseInt(job.date);
+            const differenceInBlockHeight = block.header.height - parseInt(job.date);
             if (differenceInBlockHeight <= 500) { 
                 jobsToKeep.push(job); 
             }
