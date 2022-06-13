@@ -22,9 +22,9 @@ checkVersion().then(() => {
     app.registerModule(NaiveModule);
     app.registerModule(CodaModule);
     app.registerModule(TrustFactsModule);
-    app.registerPlugin(DashboardPlugin);
     app.registerModule(PackageDataModule);
     app.registerModule(AccountsModule);
+    app.registerPlugin(DashboardPlugin);
     app.run();
 
     console.log("TrustSECO-DLT is running...");

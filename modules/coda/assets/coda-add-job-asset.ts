@@ -18,7 +18,12 @@ export class CodaAddJobAsset extends BaseAsset {
         if (asset.data.package === "") throw new Error("Package cannot be empty");
         if (asset.data.version === "") throw new Error("version cannot be empty");
         if (asset.data.fact === "") throw new Error("Fact cannot be empty");
-        if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative");        
+        if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative"); 
+        
+        if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative");
+        
+        // todo; verify signature (asset.signature)
+        if (!asset.signature) throw new Error("Signature is missing!");
 
         //---start of gpg verification---
         // generate random number that identifies this gpg verification
@@ -93,6 +98,7 @@ export class CodaAddJobAsset extends BaseAsset {
 
         // Deduct bounty from account
         const accountBuffer = await stateStore.chain.get("account:" + accountUid) as Buffer;
+        if (accountBuffer == undefined) throw new Error("Account does not exist in");
         const account = codec.decode<Account>(AccountSchema, accountBuffer);
         account.slingers -= asset.data.bounty;
         if (account.slingers < 0) throw new Error("Bounty is higher than account credit!");

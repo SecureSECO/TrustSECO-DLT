@@ -1,6 +1,5 @@
-import { BaseModule, codec, TransactionApplyContext } from 'lisk-sdk';
-//import { CodaJobList, codaJobListSchema } from "../coda/coda-schemas";
-import { AddTrustFact, TrustFactList, AddTrustFactSchema, TrustFactListSchema } from './trustfacts_schema'
+import { BaseModule, codec } from 'lisk-sdk';
+import { TrustFactList, TrustFactListSchema } from './trustfacts_schema'
 import { TrustFactsAddFactAsset } from './assets/addfact_asset'
 
 export class TrustFactsModule extends BaseModule {
@@ -9,132 +8,77 @@ export class TrustFactsModule extends BaseModule {
     transactionAssets = [
         new TrustFactsAddFactAsset()
     ];
-    factWeights: [factName: string, weight: number][] = []
-    githubFactWeights: [factName: string, weight: number][] = [
-        ["documentation", 5],
-        ["downloads", 4.5],
-        ["stars", 4],
-        ["vulnerabilities", 4],
-        ["release", 4],
-        ["commit frequency", 3],
-        ["closed issue", 3],
-        ["usage", 3],
-        ["test code", 3],
-        ["dependencies", 3],
-        ["contributors", 3],
-        ["build status", 3],
-        ["website", 3],
-        ["watchers", 3],
-        ["badges", 2],
-        ["forks", 2]
-    ];
-    libraries_ioFactWeights: [factName: string, weight: number][] = []
+    scores = {
+        gh_total_download_count: 63,
+        gh_owner_stargazer_count: 24.21,
+        cve_count: -16.47,
+        lib_dependency_count: 8.04,
+        gh_contributor_count: 4.41,
+        lib_release_frequency: 2.32
+    }
+    trustFactOccurence: any = []
 
     actions = {
-        // GET ALL THE TRUSTFACTS FOR A SPECIFIC PACKAGE
         getPackageFacts: async ({ packageName }: Record<string, unknown>) => {
-            console.log("Get trustfacts for package: " + packageName);
-            return await this.getTrustFacts(packageName)
-        },
-        /*
-        // Calculate the TrustScore for a specific package
-        calculateTrustScore: async ({packageName} : Record<string, unknown>) => {
-            const facts = await this.getTrustFacts(packageName);
-                return await this.calculateTrustScore(facts);
-        }       
-        */
-        encodeTrustFact: async (asset: Record<string, unknown>) => {
-            return codec.encode(AddTrustFactSchema, asset).toString('hex');
-        }
-    }
-
-    events = ['newFact'];
-
-    public async afterTransactionApply({ transaction: { moduleID, assetID, asset } }: TransactionApplyContext) {
-        if (moduleID === this.id && assetID === this.id) {
-            const fact = codec.decode<AddTrustFact>(AddTrustFactSchema, asset);
-            console.log('afterTransactionApply: fact:', fact);
-            this._channel.publish('trustfacts:newFact', fact);
-        }
-    }
-
-    // Get all the TrustFacts of a package
-    async getTrustFacts(packageName) {
-        console.log(packageName);
-        //get facts buffer for the given package
-        const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
-        //if it is defined, decode facts buffer
-        if (trustFactsBuffer !== undefined) {
-            const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-            //if facts are available, return them
-            return facts;
-        }
-        else throw new Error("There are no trust-facts available for this package");
-    }
-
-    /*
-    async calculateTrustScore(facts: TrustFact[]){
-        let totalScore = 0.0;
-        let totalTrustFactCount = 0.0;
-        const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
-        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-        facts.forEach(({jobID, factData}) => {
-            const { source, fact } = jobs[jobID];
-            if(source == "github")
-                this.factWeights = this.githubFactWeights;
-            else if (source == "libraries_io")
-                this.factWeights = this.libraries_ioFactWeights;
-            const trustfact = this.factWeights.find((factWeightTable)=>{return factWeightTable[0] == fact})
-            switch(trustfact![0])
-            {
-                case "stars":
-                    // Calculation for github stars score
-                    // Number of stars * weight of the fact
-                                //  Score                       * Weight
-                    totalScore +=   Number.parseFloat(factData) * trustfact![1];
-                    console.log("stars");
-                    break;
-                case "forks":
-                    // Calculation for forks score
-                    const countForks = Number.parseInt(factData);
-                    switch(true)
-                    {
-                        case countForks > 50:
-                            // Add score * weight
-                            totalScore += 5 * trustfact![1];
-                            break;
-                        case countForks > 25:
-                            totalScore += 4 * trustfact![1];
-                            break;
-                        case countForks > 10:
-                            totalScore += 3 * trustfact![1];
-                            break;
-                        case countForks > 5:
-                            totalScore += 2 * trustfact![1];
-                            break;
-                        case countForks > 0:
-                            totalScore += 1 * trustfact![1];
-                            break;
-                        default:
-                            console.log("0 forks");
-                    }
-                    console.log("forks")
-                    break;
-                default:
-                    throw new Error("Calculation for trustscore missing for this fact");
+            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
+            if (trustFactsBuffer !== undefined) {
+                return codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
             }
-            totalTrustFactCount += trustfact![1];
-        });
-    public async afterTransactionApply({ transaction: { moduleID, assetID, asset } }: TransactionApplyContext) {
-        if (moduleID === this.id && assetID === TrustFactsAddFactAsset.id) {
-            const fact = codec.decode<TrustFact>(TrustFactSchema, asset);
-            console.log('afterTransactionApply: fact:', fact);
-            this._channel.publish('trustfacts:newFact', fact);
+            else throw new Error("There are no trust-facts available for this package");
+        },
+        calculateTrustScore: async ({ packageName, version }: Record<string, unknown>) => {
+            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);   
+            if (trustFactsBuffer !== undefined) {
+                let { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                facts = this.getRelevantFacts(facts, version);
+                this.findOccurenceOfTrustFacts(facts);
+                const score = this.calculateTrustScore(facts);
+                const squashedScore = this.squashTrustScore(score);
+                return squashedScore;
+            }
+            else throw new Error("The given package does not exist"); 
         }
-        // Check for dividing by 0 in case no facts were found
-        if(totalTrustFactCount > 0)
-            return totalScore / totalTrustFactCount;
-        return 0;
     }
-    */
+    
+    getRelevantFacts(facts, version) {
+        return facts.filter(fact => {
+            return Object.prototype.hasOwnProperty.call(this.scores, fact.fact) && fact.version === version;
+        }); 
+    }
+
+    findOccurenceOfTrustFacts(facts) {
+        // Count how often data is added for a trust fact contained in the scores object
+        // Store the results in the trustFactOccurance array
+        Object.keys(this.scores).forEach(score => {
+            const occurence = facts.filter(factObject => {
+                return factObject.fact === score
+            }).length;
+            
+            const obj: any = {}
+            obj[score] = occurence;
+            this.trustFactOccurence.push(obj);
+        });
+    }
+
+    calculateTrustScore(facts) {
+        let score = 0;
+        facts.map(fact => {
+            const occurenceObject = this.trustFactOccurence.find((x: any) => x[fact.fact]);
+            const occurenceValue: any = Object.values(occurenceObject)[0];
+            const factValue = parseInt(fact.factData);
+            console.log(this.trustFactOccurence);
+            score += (factValue * this.scores[fact.fact]) / occurenceValue;
+        });
+        return score;       
+    }
+
+    squashTrustScore(score) {
+        // Reduce a score to a number between 0 and 100 using the logistic function:
+        // f(x) = 200/(1 + e^-x) - 100. For f(5) = ~98.66. The trust score can get large
+        // very quickly, so we take g(x) = log(x) / log(10000) first. This way, the trust score has to 
+        // approach 10000^5 before it gets a rating of around 100. So trust score = f(g(x)).
+        const g = Math.log(score) / Math.log(10000);
+        const f = 200/(1 + Math.pow(Math.E, -g)) - 100;
+        return f;
+    }
 }

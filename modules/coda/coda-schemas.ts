@@ -9,10 +9,8 @@ export const validFacts: any = {
         "gh_release_download_count",
         "gh_yearly_commit_count",
         "gh_repository_language",
-        "gh_gitstar_ranking",
         "gh_open_issues_count",
         "gh_zero_response_issues_count",
-        "gh_release_issues_count",
         "gh_issue_ratio",
         "gh_average_resolution_time",
         "gh_owner_stargazer_count"
@@ -165,7 +163,7 @@ export const codaReturnJobSchema: Schema = {
 export const minimalCodaJobSchema: Schema = {
     $id: 'coda/add-minimal-job',
     type: 'object',
-    required: ["package", "version", "fact"],
+    required: ["package", "version", "fact", "bounty"],
     properties: {
         package: {
             dataType: 'string',

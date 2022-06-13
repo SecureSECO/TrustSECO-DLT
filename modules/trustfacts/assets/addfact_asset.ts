@@ -14,6 +14,8 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         if (asset.data.jobID < 0) throw new Error("JobID can't be negative");
         if (asset.data.factData.trim() === "") throw new Error("FactData cannot be empty");
 
+        if (!asset.signature) throw new Error("Signature is missing!");
+
         //---start of gpg verification---
         // generate random number that identifies this gpg verification
         const random = Math.random().toString().slice(2);
@@ -68,6 +70,10 @@ export class TrustFactsAddFactAsset extends BaseAsset {
             // if there is no key, the verification failed
             if (accountUid == null) { throw new Error("accountUid (for gpg verification) is null"); } // redundant?
             //---end of gpg verification---
+
+            // check if this account already has a fact for this job
+            const existingFact = facts.find(fact => fact.account.uid === accountUid && fact.jobID === asset.data.jobID);
+            if (existingFact !== undefined) throw new Error("Account already has a fact for this job");
 
             const newFact: StoreTrustFact = { 
                 fact: job.fact, 
