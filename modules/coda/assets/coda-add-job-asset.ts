@@ -4,21 +4,19 @@ import { requiredBounty } from '../../math';
 import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-schemas';
 import { Signed, SignedSchema } from '../../signed-schemas';
 import { TrustFactList, TrustFactListSchema } from '../../trustfacts/trustfacts_schema';
-import { CodaJob, CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob, codaJobIdSchema, validFacts } from '../coda-schemas';
+import { CodaJob, CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob, codaJobIdSchema, validFacts, codaBlockHeightSchema } from '../coda-schemas';
 
 export class CodaAddJobAsset extends BaseAsset {
     id = 26320;
     name = 'AddJob';
     schema = SignedSchema(minimalCodaJobSchema);
-    header;
     
-    validate({ asset, header }: ValidateAssetContext<Signed<MinimalCodaJob>>) {
-        this.header = header;   
+    validate({ asset }: ValidateAssetContext<Signed<MinimalCodaJob>>) {
         asset = this.formatAsset({ asset });   
         if (asset.data.package === "") throw new Error("Package cannot be empty");
         if (asset.data.version === "") throw new Error("version cannot be empty");
         if (asset.data.fact === "") throw new Error("Fact cannot be empty");
-        if (!Object.keys(validFacts).includes(asset.data.fact)) throw new Error("Fact is not valid");
+        if (!Object.values(validFacts).flat().includes(asset.data.fact)) throw new Error("Fact is not valid");
         if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative");
 
         // todo; verify signature (asset.signature)
@@ -81,7 +79,7 @@ export class CodaAddJobAsset extends BaseAsset {
             package: asset.data.package,
             version: asset.data.version,
             fact: asset.data.fact,
-            date: this.header.height.toString(),
+            date: (await this.getBlockHeight({ stateStore })).toString(),
             jobID: await this.generateJobId({ stateStore }),
             bounty: asset.data.bounty,
             account: account
@@ -119,7 +117,7 @@ export class CodaAddJobAsset extends BaseAsset {
     async removeOldJobs(jobs: CodaJob[], stateStore: StateStore) {
         const jobsToKeep: CodaJob[] = [];
         for (const job of jobs) {
-            const differenceInBlockHeight = this.header.height - parseInt(job.date);
+            const differenceInBlockHeight = await this.getBlockHeight({ stateStore }) - parseInt(job.date);
             if (differenceInBlockHeight <= 500) { 
                 jobsToKeep.push(job); 
             }
@@ -165,5 +163,11 @@ export class CodaAddJobAsset extends BaseAsset {
             await stateStore.chain.set("coda:jobId", codec.encode(codaJobIdSchema, { jobId: jobId + 1 }));
         }
         return jobId;
+    }
+
+    async getBlockHeight({ stateStore }) {
+        const blockHeightBuffer = await stateStore.chain.get("coda:blockHeight") as Buffer;
+        const { blockHeight } = codec.decode(codaBlockHeightSchema, blockHeightBuffer);
+        return blockHeight;
     }
 }

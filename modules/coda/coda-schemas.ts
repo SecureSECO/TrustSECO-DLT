@@ -67,6 +67,18 @@ export interface MinimalCodaJob extends Record<string, unknown> {
     bounty: bigint;
 }
 
+export const codaBlockHeightSchema: Schema = {
+    $id: 'coda/blockheight',
+    type: 'object',
+    required: ["blockHeight"],
+    properties: {
+        blockHeight: {
+            dataType: 'uint32',
+            fieldNumber: 1
+        }
+    }
+}
+
 export const codaJobSchema: Schema = {
     $id: 'coda/add-job',
     type: 'object',
