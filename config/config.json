@@ -1,5 +1,5 @@
 {
-    "version": "1.0.7-be0d",
+    "version": "1.0.8-7e2f",
     "rootPath": "~/.lisk",
     "networkVersion": "1.0",
     "label": "TrustSECO",
@@ -69,107 +69,107 @@
         "waitThreshold": 2,
         "delegates": [
             {
-                "address": "85ddea3b88bc0bac7ebb40e66d85d76fd0ce0188",
-                "encryptedPassphrase": "iterations=1000000&cipherText=058c65050c6d7ea02021beafdb375f505e729c6efa82f5c0f8d818556b2165b408f92bf75e9d37edb90ad849b4f51532fb8c443d5c8d46824dda284e4763a19a60dfa8287d781ab996ae&iv=2e9fe8466a17fdb55052d933&salt=f36904692ad09d6670379b8041957cef&tag=d186f294a14607b344dbc29a591e34d5&version=1",
+                "address": "e3899a4bc88e43447c44b383b9d349f47b04477f",
+                "encryptedPassphrase": "iterations=1000000&cipherText=c293b6053d9d06a9a0169a2fd69982964fdefbde7191bf4ab7eb1f58766c32ffb10333995046ec0c18c16bc67b42ca72e0ca3c7e68eb04f99306d194186f69a8b6b69f4b182652301fbb37261436da328143&iv=b74d1c319f905db8446675e3&salt=87cbc0163e6743c35a178dc00a03cee5&tag=31ff8e715ce2b8455d1494b411d056bf&version=1",
                 "hashOnion": {
                     "count": 10000,
                     "distance": 1000,
                     "hashes": [
-                        "e651804455df16cb2dbfdba64f258cc2",
-                        "4883e3f34f93ac8d2f0de0d2921bfffc",
-                        "8dd650d3c7af0bdc6ead7af75b0b9545",
-                        "2ea92aae91dd694a6bfce0b58d025008",
-                        "ad29280bfc9b3732462c2f196c117070",
-                        "9cff9cc290e11dcd6b6072edad7c7cc7",
-                        "698a3365e5fd6a267965120313c28c4c",
-                        "c8744bb7c04e63fb8d87602291e12112",
-                        "24a2f1104ae0ee9a07996742ac6a6090",
-                        "83055c78ec1f43c651e32be003d81df1",
-                        "f5d5361604829bb24700cf3873423200"
+                        "b41beb6bc52c7208359efbadac73f5d1",
+                        "1797a0c424e9313aa03aa430e388bcd4",
+                        "bb4e149557de92e9e5a1dea6952d0cee",
+                        "67b4134349cb7b04f5a19b6f334197dc",
+                        "aef6c3e7ec13fa98c56f95a0a747f548",
+                        "bc6b48c6e1221f891c0bb3769689cc69",
+                        "00a7cbec9deec97b967c8c2765aa99fc",
+                        "cf14fb5e6aa814ff879d1ea3f438b7eb",
+                        "77f9552b1334ae91b78676cf1ce7626b",
+                        "3084222a0243fff88852e0fb96be8c84",
+                        "c7486f618266a937d06e054128e3c350"
                     ]
                 }
             },
             {
-                "address": "2d71478fb1f7c59da6bc5bb4768cd8a853feefa9",
-                "encryptedPassphrase": "iterations=1000000&cipherText=e6185876a5564964ccca481e47d25700e3c5cfe9fff07b99fdfc4f48d893f272825f774e51e0f984c6d9fa986db3b00be1f1e997610e1feb9d4558cdd25f207fc3f0eb7ead5a9cdce270d1b327f3&iv=638ed7a1f74962107ddab278&salt=00f8fe9bcd37b8e6864342a77d5776be&tag=ac5050e61126f41e60ebe89f87c95c6f&version=1",
+                "address": "02e79688bf894b3be3d1678b24388c99c455c508",
+                "encryptedPassphrase": "iterations=1000000&cipherText=4ac22e281490971879e6cc7eb25701c39454e9b213522010c43759ee38504e6200cf3bfc4c1a6c6534985a28b4ee8c43b6493ec179a0d3f7c753d879756273ac5a0497d20cb16c2f0207&iv=3bbf9a9c6b624b4b02dddc98&salt=57e430ebf3d922f965bba3a50e203898&tag=b276baf02ef414c4250c5d8d13ad6e45&version=1",
                 "hashOnion": {
                     "count": 10000,
                     "distance": 1000,
                     "hashes": [
-                        "77be2c8047c4395a3e99db0e0b58662d",
-                        "9d7402d6cf71ec7b682cb5e5ae38d2b7",
-                        "26594b0f4aa11247e21acc60baae0d7a",
-                        "a119c46f3f26128120c2a1e99f69a297",
-                        "1f4b610a38ebd45d644dc247067e51b5",
-                        "ec73df007e79bf05413aeb742e6fce07",
-                        "30d1cdd207ec310ceb9bfb0bb632d590",
-                        "a235046ea0c77a664d22ac68f6626428",
-                        "3fe3262993f45ae9c662448595672073",
-                        "eead4e6039d8baf1cead670602675ce5",
-                        "006819bdd4cf0c3e89092753c634f898"
+                        "f18b5e843bd57cd9af59e0869a51caf9",
+                        "f90978cd5c890eb2cf3edc018758f8ab",
+                        "e4bbeee1bd0de9e7a5a303b494b70ef8",
+                        "15aed715053422f2234ba63fb9659c93",
+                        "7beda8c757f97fd5a82c0823c684da50",
+                        "4f0a8c15fc55bf0bd5e4b2cdc2ceb6e4",
+                        "cb186c4a9a5ea613cecf0162cb98db8a",
+                        "3a7e8e0b0f84311c73ad0ebae99834ee",
+                        "e91cb5d663289456621eee3dae06907b",
+                        "88cddb10d386351f1213e41877d84229",
+                        "3cb577758e3819a042034744c34c2579"
                     ]
                 }
             },
             {
-                "address": "c697536cc808dcd759d537bd6c2ba17ff9ac9a3b",
-                "encryptedPassphrase": "iterations=1000000&cipherText=e8b7975184b072ae0f63e67b8ec142435f2c0a8b24a1c3e9345f2e4d8da33da0197c19a159af3c33470ab6ee841da06357bed143d1cc3fffe53124c961c4ad2d3a73523936cf6b89c9&iv=b1e2df01166a62d2fd1645f5&salt=485c7be6ffc6755ebb7fbf9340c148b5&tag=d015aa3dfcb33def2bd56cec09130ec4&version=1",
+                "address": "07fc6e27de11e4ada8e44221b5b21abe5ccb6255",
+                "encryptedPassphrase": "iterations=1000000&cipherText=ece107c93f981c0326875f178f06092ba025659003bcfb7cfa488925d07bfd01f1c16191cbb071d266ecad20961b5a0eaedb6cfd2f5f4c6bfd13ecf3cf1d221309e99a731a5b7edddb04ca35&iv=f474e6fbf73711413f86df08&salt=8d71818fda92cceaac35d1c4044eddbe&tag=13604d079e104a3a79eea2568aa63f0d&version=1",
                 "hashOnion": {
                     "count": 10000,
                     "distance": 1000,
                     "hashes": [
-                        "533c9fe4b8085130801a9517236bf187",
-                        "d62dfbb3d6baa40a28a915b44610fcf8",
-                        "6be17a4261fb7f1e7b7dc38cd4a1dafe",
-                        "9d32281aebce32c65c45905a2678b59a",
-                        "22201038a132bb0eaf06f90b0519c841",
-                        "d87f40ec823b986f098a5da76544b649",
-                        "a6f3f12dc33dd34d19b281bf30fe45ee",
-                        "898b863716ad7d91a424745dc12fe2c1",
-                        "3ead94ed7a7cd73a345d3f27bcf3859e",
-                        "03fe554f92c3d59a2c813ee84ccfb0b4",
-                        "c1e8bf296d9c53b53238387877ce74e1"
+                        "3bc49355bf4ed59adad92478b5e14e30",
+                        "f308f5546eeabb5fef09a0433d70eee0",
+                        "d4da04a48c35165e9c8cd1358bb22d31",
+                        "eb7379b9d827264caf33322b21c883d4",
+                        "4c201fa403cd8473fae02cddd82e0c94",
+                        "8107e5d04cba73c6adf5ee0178e6a728",
+                        "41fe841c608073dc922fa97a3b3c5434",
+                        "e1517f36411b2b29ec68410f155f2a87",
+                        "ceb630bc553eb202c3f94b9756ba78bd",
+                        "a56f8bcc6af00f48073c0844d188d2c6",
+                        "210a2fcb9fd92c8ba1b824633a579241"
                     ]
                 }
             },
             {
-                "address": "92730bc09b9c625dcdc4246772b7aa723c30dab2",
-                "encryptedPassphrase": "iterations=1000000&cipherText=c9ba40bc1c4f547e7b8118d8fa709cf24424e72a11452377ed30e8a42db708bb272e0ae907dbd21ea9369f64fcc0074ef9676f4cd182aa0dd7f19b16a7542cb852ef1a4d13c68c263e&iv=35a326a57df2a1be77c8c0a9&salt=ffbf61122ccee1bc7965ba88accd4ffe&tag=40536edf602a4622bdea6bcfc02cac9e&version=1",
+                "address": "cfd7e90c492e26b3621b2989949e840b706e0b9c",
+                "encryptedPassphrase": "iterations=1000000&cipherText=4cbf5de847cbb2e4131e14df61999d42a94ddcda5190a893199f8a27bd81a0c2a75f85fd979f6682de2904c3424551c2733c80e87b18af7d13c64be28a52b639330de7d416624cdf8e05bf98cb6a&iv=c7104a527e0e941c59c10308&salt=3c73a8595aa66870c99389b60174775a&tag=c7028e6ddb5a5606f2f8b19b6d361464&version=1",
                 "hashOnion": {
                     "count": 10000,
                     "distance": 1000,
                     "hashes": [
-                        "51163de00b805868f6240c867b3c5c22",
-                        "ca8d1e51e5026c733a16d85aa38beba1",
-                        "cf856593b948e99b00b5ccf0799e5d1f",
-                        "c3a6b8751cea55a0491462e88083540c",
-                        "984d7bbc99ead80db472d172c0aabab2",
-                        "4c5ce70b8a5bcccc17b395ab5516c78d",
-                        "bcefbaf407189ba7d81ec72671b025c4",
-                        "1605a0cca415398e1173dfb5e3f82a1c",
-                        "03da173cd1c0c39372873663a01c58ce",
-                        "e9335c72c1fee00236d90bef74a5f593",
-                        "9296948d06662304b92cc94c365f3f7a"
+                        "f6dc359f2e343bbc27f28ba90642c932",
+                        "3fdac1ed9c396c9818fc64048b45864f",
+                        "a7312d5c4e29237860efae096d3a4443",
+                        "ccb1eb85c3b401016a4e2af842b3b6fa",
+                        "3e86548a7b56c80e119190c85a15dbd8",
+                        "e310e9c09df0cec6166c2b0fa0c47a4b",
+                        "eba7cd7fd249524c524900c934c8d2f0",
+                        "06626a090741dc648ed103cdc1b1db26",
+                        "6ad76168c08f2aa63d9c990bdb4c4e74",
+                        "bc655ae2bed674c3c9bf16f45086d2d3",
+                        "57e43eb8c337d73599647fadce526570"
                     ]
                 }
             },
             {
-                "address": "4f887fc238d4302b0b0b62fbfe13c19439dae358",
-                "encryptedPassphrase": "iterations=1000000&cipherText=082285d7ead4dc624d903e8931ceff66c76077420254b62fa4d8a4c43dd636c6449e4b9c5efbcd45317ed94057768e272310db42bc092896bd1e2099994e70d62ea72b8b&iv=4321d99132d708befec6434c&salt=cd9e2e388286ccc7c0a697ddb86d26ec&tag=2c0d65f68526885fba2c38eb96fcf081&version=1",
+                "address": "cde57d9bf26ed18b8799c7a88f6e102869608444",
+                "encryptedPassphrase": "iterations=1000000&cipherText=12fb0d9ba6b65a71909515cc3548083481fac7fb66c7f58d5d79c123a9ff430a68b54bf48fa5a7ee1c96bb6e6daae3c32ddee2a856f544c6f811e02dcec372c258bd5d472e5a6655e0fe&iv=2b09b0275c850c8bc9510d8d&salt=b3faa295dd4c35b73f2e59d42c7ccd1d&tag=5d9ccb85fb950526ba0c7401cb04ac0d&version=1",
                 "hashOnion": {
                     "count": 10000,
                     "distance": 1000,
                     "hashes": [
-                        "682f0c253d6528ed52f02aa6627d392c",
-                        "d2498f9e282e48973178f323b4c8f657",
-                        "a8289499e335917f9d73e1943e8fcb3e",
-                        "9a0444377f7cb2a8354060f7ab6d44ba",
-                        "82467f246e10a347d148d68635332bdf",
-                        "cf21266c70509367bcef955497845b28",
-                        "db6db08dc7c26c6a12a48c1231b93275",
-                        "60d47488cf698dcb541b10fdd0daa5ff",
-                        "06a8e1f56c622936071ff93f813a05e8",
-                        "3e8ef6c95bb03f5d35fe58746f40a55e",
-                        "a78de3614f4876c57d7d00f8960bb0de"
+                        "2a69be34b026ebfa6c5234e05b6c55d5",
+                        "3a79792a3e323c3f3fd6473851feaed2",
+                        "70110f36c0d466e1576d50cfdd04d4c8",
+                        "7441d9bc57463d1aea910c4fa2a8a3fb",
+                        "d51e0fafcc0c71c080feaa93a3bca6c7",
+                        "a4e828f1addf58ccfcd81b51e8828d59",
+                        "70e57beb8f3c16a829869e39609dbc79",
+                        "6c3190b4653adcb63e02512d7569cd50",
+                        "177618de3a9701a38f89b06ef3199233",
+                        "bbd30ee6739471323ec50f94454ae8b6",
+                        "54168c38e3d33c7b9b2730c93f3cb62b"
                     ]
                 }
             }
