@@ -13,6 +13,26 @@ export class TrustFactsAddFactAsset extends BaseAsset {
     validate({ asset }: ValidateAssetContext<Signed<AddTrustFact>>) {
         if (asset.data.jobID < 0) throw new Error("JobID can't be negative");
         if (asset.data.factData.trim() === "") throw new Error("FactData cannot be empty");
+
+        //---start of gpg verification---
+        // generate random number that identifies this gpg verification
+        const random = Math.random().toString().slice(2);
+        // write asset.signature to file
+        writeFileSync("/tmp/signature-" + random, asset.signature);
+        const encoded = codec.encode(AddTrustFactSchema, asset.data);
+        // write data to fle
+        writeFileSync("/tmp/data-" + random, encoded);
+
+        // verify signature        
+        const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
+
+        // extract the key
+        const regex = /key (\w*)/;        
+        const accountUid = regex.exec(result.stderr?.toString())?.[1];
+
+        // if there is no key, the verification failed
+        if (accountUid == null) {throw new Error("gpg verification failed");}
+        //---end of gpg verification---
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<AddTrustFact>>) {
