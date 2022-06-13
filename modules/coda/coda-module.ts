@@ -1,4 +1,4 @@
-import { BaseModule, codec } from 'lisk-sdk';
+import { BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
 import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
