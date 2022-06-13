@@ -91,8 +91,6 @@ export class CodaModule extends BaseModule {
 
     async afterGenesisBlockApply({ stateStore }) {
         const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
-        //await stateStore.chain.set("coda:jobs", jobsBuffer);
-
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
         for (const pack of coda.jobs) {
