@@ -2,6 +2,8 @@ import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-
 import { CodaJobList, codaJobListSchema } from '../../coda/coda-schemas';
 import { Signed, SignedSchema } from '../../signed-schemas';
 import { AddTrustFact, StoreTrustFact, TrustFactList, AddTrustFactSchema, TrustFactListSchema } from '../trustfacts_schema';
+import { spawnSync } from 'child_process';
+import { unlink, writeFileSync } from 'fs';
 
 export class TrustFactsAddFactAsset extends BaseAsset {
     id = 32280;
@@ -12,8 +14,31 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         if (asset.data.jobID < 0) throw new Error("JobID can't be negative");
         if (asset.data.factData.trim() === "") throw new Error("FactData cannot be empty");
 
-        // todo; verify gpg signature (asset.signature)
         if (!asset.signature) throw new Error("Signature is missing!");
+
+        //---start of gpg verification---
+        // generate random number that identifies this gpg verification
+        const random = Math.random().toString().slice(2);
+        // write asset.signature to file
+        writeFileSync("/tmp/signature-" + random, asset.signature);
+        const encoded = codec.encode(AddTrustFactSchema, asset.data).toString('hex');
+        // write data to file
+        writeFileSync("/tmp/data-" + random, encoded);
+
+        // verify signature        
+        const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
+
+        // delete the files
+        unlink("/tmp/signature-" + random, () => 0);
+        unlink("/tmp/data-" + random, () => 0);
+
+        // extract the key
+        const regex = /key \w*(\w{16})/;        
+        const accountUid = regex.exec(result.stderr?.toString())?.[1];
+
+        // if there is no key, the verification failed
+        if (result.status != 2 || accountUid == null) throw new Error("gpg verification failed");
+        //---end of gpg verification---
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<AddTrustFact>>) {
@@ -30,9 +55,33 @@ export class TrustFactsAddFactAsset extends BaseAsset {
                 facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
             }
 
-            // todo; verify gpg signature (asset.signature)
-            // and get the gpg uid:
-            const accountUid = "test-account";
+            //---start of gpg verification (for accountUid extraction)---
+            // generate random number that identifies this gpg verification
+            const random = Math.random().toString().slice(2);
+            // write asset.signature to file
+            writeFileSync("/tmp/signature-" + random, asset.signature);
+            const encoded = codec.encode(AddTrustFactSchema, asset.data);
+            // write data to fle
+            writeFileSync("/tmp/data-" + random, encoded);
+
+            // verify signature        
+            const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
+
+            // delete the files
+            unlink("/tmp/signature-" + random, () => 0);
+            unlink("/tmp/data-" + random, () => 0);
+
+            // extract the key
+            const regex = /key \w*(\w{16})/;
+            const accountUid = regex.exec(result.stderr?.toString())?.[1];
+
+            // if there is no key, the verification failed
+            if (result.status != 2 || accountUid == null) { throw new Error("accountUid (for gpg verification) is null"); } // redundant?
+            //---end of gpg verification---
+
+            // check if this account already has a fact for this job
+            const existingFact = facts.find(fact => fact.account.uid === accountUid && fact.jobID === asset.data.jobID);
+            if (existingFact !== undefined) throw new Error("Account already has a fact for this job");
 
             const newFact: StoreTrustFact = { 
                 fact: job.fact, 

@@ -3,6 +3,8 @@ import { Account, AccountSchema } from '../../accounts/accounts-schemas';
 import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-schemas';
 import { Signed, SignedSchema } from '../../signed-schemas';
 import { CodaModule } from '../coda-module';
+import { spawnSync } from 'child_process';
+import { unlink, writeFileSync } from 'fs';
 import { CodaJob, CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob, codaJobIdSchema, validFacts, codaBlockHeightSchema } from '../coda-schemas';
 
 export class CodaAddJobAsset extends BaseAsset {
@@ -11,7 +13,7 @@ export class CodaAddJobAsset extends BaseAsset {
     schema = SignedSchema(minimalCodaJobSchema);
     
     validate({ asset }: ValidateAssetContext<Signed<MinimalCodaJob>>) {
-        asset = this.formatAsset({ asset });   
+        asset = this.formatAsset({ asset });
         if (asset.data.package === "") throw new Error("Package cannot be empty");
         if (asset.data.version === "") throw new Error("version cannot be empty");
         if (asset.data.fact === "") throw new Error("Fact cannot be empty");
@@ -20,6 +22,30 @@ export class CodaAddJobAsset extends BaseAsset {
 
         // todo; verify signature (asset.signature)
         if (!asset.signature) throw new Error("Signature is missing!");
+
+        //---start of gpg verification---
+        // generate random number that identifies this gpg verification
+        const random = Math.random().toString().slice(2);
+        // write asset.signature to file
+        writeFileSync("/tmp/signature-" + random, asset.signature);
+        const encoded = codec.encode(minimalCodaJobSchema, asset.data).toString('hex');
+        // write data to fle
+        writeFileSync("/tmp/data-" + random, encoded);
+
+        // verify signature        
+        const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
+
+        // delete the files
+        unlink("/tmp/signature-" + random, () => 0);
+        unlink("/tmp/data-" + random, () => 0);
+
+        // extract the key
+        const regex = /key \w*(\w{16})/;        
+        const accountUid = regex.exec(result.stderr?.toString())?.[1];
+
+        // if there is no key, the verification failed
+        if (result.status != 2 || accountUid == null) {throw new Error("gpg verification failed");}
+        //---end of gpg verification---
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
@@ -30,10 +56,30 @@ export class CodaAddJobAsset extends BaseAsset {
         const rB = await CodaModule.requiredBounty( key => stateStore.chain.get(key) );
         if (asset.data.bounty < rB) throw new Error("Bounty is too low!");
 
-        /* todo; get uid from the following gpg signature: */ asset.signature;
-        // and get its gpg uid:
-        const accountUid = "test-account";
-        
+        //---start of gpg verification (for accountUid extraction)---
+        // generate random number that identifies this gpg verification
+        const random = Math.random().toString().slice(2);
+        // write asset.signature to file
+        writeFileSync("/tmp/signature-" + random, asset.signature);
+        const encoded = codec.encode(minimalCodaJobSchema, asset.data);
+        // write data to fle
+        writeFileSync("/tmp/data-" + random, encoded);
+
+        // verify signature        
+        const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
+
+        // delete the files
+        unlink("/tmp/signature-" + random, () => 0);
+        unlink("/tmp/data-" + random, () => 0);
+
+        // extract the key
+        const regex = /key \w*(\w{16})/;        
+        const accountUid = regex.exec(result.stderr?.toString())?.[1];
+
+        // if there is no key, the verification failed
+        if (result.status != 2 || accountUid == null) throw new Error("gpg verification failed");
+        //---end of gpg verification---
+
         // Deduct bounty from account
         const accountBuffer = await stateStore.chain.get("account:" + accountUid) as Buffer;
         if (accountBuffer == undefined) throw new Error("Account does not exist in");

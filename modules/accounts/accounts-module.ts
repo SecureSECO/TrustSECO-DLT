@@ -12,7 +12,7 @@ export class AccountsModule extends BaseModule {
     actions = {
         getAccount: async ({ uid }: Record<string, unknown>) => {
             const accountBuffer = await this._dataAccess.getChainState("account:" + uid);
-            if (accountBuffer == undefined) throw new Error("Account not found");
+            if (accountBuffer === undefined) throw new Error("Account not found");
             const account = codec.decode<Account>(AccountSchema, accountBuffer);
             return { ...account,  slingers: account.slingers.toString() };
         }

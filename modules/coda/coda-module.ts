@@ -2,9 +2,10 @@ import { BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
 import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
-import { requiredBounty, requiredVerifications } from '../math';
+import { randomBigInt, requiredBounty, requiredVerifications } from '../math';
 import { TrustFactList, TrustFactListSchema } from '../trustfacts/trustfacts_schema';
 import { Account, AccountSchema } from '../accounts/accounts-schemas';
+import { coda } from '../test-data';
 
 export class CodaModule extends BaseModule {
     id = 2632; 
@@ -16,27 +17,43 @@ export class CodaModule extends BaseModule {
     actions = {
         getJobs: async () => {
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
-            const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-            const jobsFixed = jobs.map(job => ({...job, bounty: job.bounty.toString() }));
-            return jobsFixed;
+            const { jobs } =  codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+            return jobs.map(job => ({...job, bounty: job.bounty.toString()}));
         },
-        getRandomJob: async () => {
+        getRandomJob: async ({ uid } : Record<string,unknown>) => {
+
+            // retrieve all current jobs
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+            if (jobs.length === 0) throw new Error("The jobs list is empty");
 
-            if (jobs.length === 0) throw new Error("No jobs available");
+            // filter out all jobs that are already done by this user
+            if (uid) {
+                let j = 0;
+                for (let i = 0; i < jobs.length; i++) {
+                    const job = jobs[i];
+                    const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + job.package);
+                    if (trustFactsBuffer !== undefined) {
+                        const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                        for (const fact of facts) if (fact.account.uid === uid) continue;
+                    }
+                    jobs[j++] = job;
+                }
 
+                if (jobs.length === 0) throw new Error("You've done all jobs in the list");
+            }
+
+
+            // get a random job, weighted by bounty
             const totalBounty = jobs.reduce((count, job) => count + job.bounty, BigInt(0));
-
-            // random BigInt less than totalBounty
-            let rand = BigInt(Math.random() * 2**64) * totalBounty / BigInt(2**64);
-
+            let rand = randomBigInt(totalBounty);
             let job! : CodaJob;
             for (job of jobs) {
                 rand -= job.bounty;
                 if (rand < 0) break;
             }
 
+            // fetch this random job´s package data
             const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + job.package) as Buffer;
             const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
 
@@ -49,7 +66,7 @@ export class CodaModule extends BaseModule {
     }
 
     async afterGenesisBlockApply({ stateStore }) {
-        const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
+        const jobsBuffer = codec.encode(codaJobListSchema, coda);
         const jobId = codec.encode(codaJobIdSchema, { jobId: 0 });
         const blockHeight = codec.encode(codaJobIdSchema, { blockHeight: 0 });
         await stateStore.chain.set("coda:jobs", jobsBuffer);
