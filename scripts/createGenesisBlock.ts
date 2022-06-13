@@ -58,12 +58,12 @@ function createGenesisBlock() {
         return credentials;
     }
 
-    function newAccount(balance, delegateName: string | null = null) {
+    function newAccount(balance: bigint, delegateName: string | null = null) {
         const cred = newCredentials();
         const address = Buffer.from(cred.binaryAddress, 'hex');
         const account : Partial<Account> & { address: Buffer } = {
             address,
-            token: { balance: BigInt(balance) }
+            token: { balance: balance }
         };
         if (delegateName) {
             account.dpos = { delegate: { username: delegateName } };
@@ -94,19 +94,21 @@ function createGenesisBlock() {
 
     const credentials : Account[] = [];
 
+    const numberOfTokens = BigInt("1000000000000000000");
+
     const delegates = [
-        newAccount(100000000, 'genesisDelegate1'),
-        newAccount(100000000, 'genesisDelegate2'),
-        newAccount(100000000, 'genesisDelegate3'),
-        newAccount(100000000, 'genesisDelegate4'),
-        newAccount(100000000, 'genesisDelegate5'),
+        newAccount(numberOfTokens, 'genesisDelegate1'),
+        newAccount(numberOfTokens, 'genesisDelegate2'),
+        newAccount(numberOfTokens, 'genesisDelegate3'),
+        newAccount(numberOfTokens, 'genesisDelegate4'),
+        newAccount(numberOfTokens, 'genesisDelegate5'),
     ];
 
     const accounts = [
         ...delegates,
-        newAccount(25000000000),
-        newAccount(25000000000),
-        newAccount(25000000000),
+        newAccount(numberOfTokens),
+        newAccount(numberOfTokens),
+        newAccount(numberOfTokens),
     ];
 
 
