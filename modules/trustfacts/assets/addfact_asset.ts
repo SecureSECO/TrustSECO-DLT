@@ -2,6 +2,8 @@ import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-
 import { CodaJobList, codaJobListSchema } from '../../coda/coda-schemas';
 import { Signed, SignedSchema } from '../../signed-schemas';
 import { AddTrustFact, StoreTrustFact, TrustFactList, AddTrustFactSchema, TrustFactListSchema } from '../trustfacts_schema';
+import { spawnSync } from 'child_process';
+import { writeFileSync } from 'fs';
 
 export class TrustFactsAddFactAsset extends BaseAsset {
     id = 32280;
@@ -27,9 +29,25 @@ export class TrustFactsAddFactAsset extends BaseAsset {
                 facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
             }
 
-            // todo; verify gpg signature (asset.signature)
-            // and get the gpg uid:
-            const accountUid = "test-account";
+            //---start of gpg verification (for accountUid extraction)---
+            // generate random number that identifies this gpg verification
+            const random = Math.random().toString().slice(2);
+            // write asset.signature to file
+            writeFileSync("/tmp/signature-" + random, asset.signature);
+            const encoded = codec.encode(AddTrustFactSchema, asset.data);
+            // write data to fle
+            writeFileSync("/tmp/data-" + random, encoded);
+
+            // verify signature        
+            const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
+
+            // extract the key
+            const regex = /key (\w*)/;
+            const accountUid = regex.exec(result.stderr?.toString())?.[1];
+
+            // if there is no key, the verification failed
+            if (accountUid == null) { throw new Error("accountUid (for gpg verification) is null"); } // redundant?
+            //---end of gpg verification---
 
             const newFact: StoreTrustFact = { 
                 fact: job.fact, 

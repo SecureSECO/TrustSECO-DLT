@@ -5,7 +5,7 @@ import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-sc
 import { Signed, SignedSchema } from '../../signed-schemas';
 import { TrustFactList, TrustFactListSchema } from '../../trustfacts/trustfacts_schema';
 import { CodaJob, CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob} from '../coda-schemas';
-import { exec, spawnSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import { writeFileSync } from 'fs';
 
 export class CodaAddJobAsset extends BaseAsset {
@@ -18,17 +18,19 @@ export class CodaAddJobAsset extends BaseAsset {
         if (asset.data.package === "") throw new Error("Package cannot be empty");
         if (asset.data.version === "") throw new Error("version cannot be empty");
         if (asset.data.fact === "") throw new Error("Fact cannot be empty");
-        if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative");
+        if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative");        
 
         //---start of gpg verification---
+        // generate random number that identifies this gpg verification
+        const random = Math.random().toString().slice(2);
         // write asset.signature to file
-        writeFileSync("signature.txt", asset.signature);
+        writeFileSync("/tmp/signature-" + random, asset.signature);
         const encoded = codec.encode(minimalCodaJobSchema, asset.data);
         // write data to fle
-        writeFileSync("data.txt", encoded);
+        writeFileSync("/tmp/data-" + random, encoded);
 
         // verify signature        
-        const result = spawnSync(`gpg`, ["--verify", "/tmp/signature.txt", "/tmp/data.txt"]);
+        const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
 
         // extract the key
         const regex = /key (\w*)/;        
@@ -36,6 +38,7 @@ export class CodaAddJobAsset extends BaseAsset {
 
         // if there is no key, the verification failed
         if (accountUid == null) {throw new Error("gpg verification failed");}
+        //---end of gpg verification---
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
@@ -68,16 +71,25 @@ export class CodaAddJobAsset extends BaseAsset {
 
         if (asset.data.bounty < rB) throw new Error("Bounty is too low!");
 
-        /* todo; get uid from the following gpg signature: */ asset.signature;
-        // and get its gpg uid:
+        //---start of gpg verification (for accountUid extraction)---
+        // generate random number that identifies this gpg verification
+        const random = Math.random().toString().slice(2);
+        // write asset.signature to file
+        writeFileSync("/tmp/signature-" + random, asset.signature);
+        const encoded = codec.encode(minimalCodaJobSchema, asset.data);
+        // write data to fle
+        writeFileSync("/tmp/data-" + random, encoded);
 
+        // verify signature        
+        const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
 
-        const accountUid = await new Promise<string>((res,rej) => {
-            exec(`gpg --verify `, function(error, _stdout, stderr) {
-                if (error) rej (error);
-                else res(stderr);
-            });
-        });
+        // extract the key
+        const regex = /key (\w*)/;        
+        const accountUid = regex.exec(result.stderr?.toString())?.[1];
+
+        // if there is no key, the verification failed
+        if (accountUid == null) {throw new Error("accountUid (for gpg verification) is null");} // redundant?
+        //---end of gpg verification---
 
         // Deduct bounty from account
         const accountBuffer = await stateStore.chain.get("account:" + accountUid) as Buffer;
