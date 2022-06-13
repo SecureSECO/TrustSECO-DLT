@@ -1,6 +1,5 @@
 import { BaseAsset, codec } from 'lisk-sdk';
 import { PackageDataSchema, PackageData, PackageDataListSchema, PackageDataList } from "../packagedata-schemas";
-// import { CodaJobList, codaJobListSchema, CodaJob, validFacts } from '../../coda/coda-schemas';
 
 export class PackageDataAddDataAsset extends BaseAsset {
     id = 63280;
