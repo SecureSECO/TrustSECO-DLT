@@ -20,22 +20,22 @@ export class CodaAddJobAsset extends BaseAsset {
         if (asset.data.fact === "") throw new Error("Fact cannot be empty");
         if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative");
 
-        // todo; check signature (asset.signature)
-
-
+        //---start of gpg verification---
         // write asset.signature to file
-        writeFileSync("/tmp/signature.txt", asset.signature);
+        writeFileSync("signature.txt", asset.signature);
         const encoded = codec.encode(minimalCodaJobSchema, asset.data);
         // write data to fle
-        writeFileSync("/tmp/data.txt", encoded);
+        writeFileSync("data.txt", encoded);
 
-        console.log("starting gpg verification");
-        // verify signature
-        const result = spawnSync(`gpg --verify /tmp/signature.txt /tmp/data.txt`);
-        result.stderr.toString();
+        // verify signature        
+        const result = spawnSync(`gpg`, ["--verify", "/tmp/signature.txt", "/tmp/data.txt"]);
 
-        console.log(result.stderr.toString());
-        console.log("result.signal: " + result.signal);
+        // extract the key
+        const regex = /key (\w*)/;        
+        const accountUid = regex.exec(result.stderr?.toString())?.[1];
+
+        // if there is no key, the verification failed
+        if (accountUid == null) {throw new Error("gpg verification failed");}
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
