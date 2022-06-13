@@ -34,6 +34,10 @@ export class TrustFactsAddFactAsset extends BaseAsset {
             // and get the gpg uid:
             const accountUid = "test-account";
 
+            // check if this account already has a fact for this job
+            const existingFact = facts.find(fact => fact.account.uid === accountUid && fact.jobID === asset.data.jobID);
+            if (existingFact !== undefined) throw new Error("Account already has a fact for this job");
+
             const newFact: StoreTrustFact = { 
                 fact: job.fact, 
                 factData: asset.data.factData, 
