@@ -30,7 +30,7 @@ export class CodaAddJobAsset extends BaseAsset {
         const random = Math.random().toString().slice(2);
         // write asset.signature to file
         writeFileSync("/tmp/signature-" + random, asset.signature);
-        const encoded = codec.encode(minimalCodaJobSchema, asset.data);
+        const encoded = codec.encode(minimalCodaJobSchema, asset.data).toString('hex');
         // write data to fle
         writeFileSync("/tmp/data-" + random, encoded);
 
@@ -46,7 +46,7 @@ export class CodaAddJobAsset extends BaseAsset {
         const accountUid = regex.exec(result.stderr?.toString())?.[1];
 
         // if there is no key, the verification failed
-        if (result.status || accountUid == null) {throw new Error("gpg verification failed");}
+        if (result.status != 2 || accountUid == null) {throw new Error("gpg verification failed");}
         //---end of gpg verification---
     }
 
@@ -101,7 +101,7 @@ export class CodaAddJobAsset extends BaseAsset {
         const accountUid = regex.exec(result.stderr?.toString())?.[1];
 
         // if there is no key, the verification failed
-        if (result.status || accountUid == null) throw new Error("gpg verification failed");
+        if (result.status != 2 || accountUid == null) throw new Error("gpg verification failed");
         //---end of gpg verification---
 
         // Deduct bounty from account

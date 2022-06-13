@@ -21,8 +21,8 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         const random = Math.random().toString().slice(2);
         // write asset.signature to file
         writeFileSync("/tmp/signature-" + random, asset.signature);
-        const encoded = codec.encode(AddTrustFactSchema, asset.data);
-        // write data to fle
+        const encoded = codec.encode(AddTrustFactSchema, asset.data).toString('hex');
+        // write data to file
         writeFileSync("/tmp/data-" + random, encoded);
 
         // verify signature        
@@ -37,7 +37,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         const accountUid = regex.exec(result.stderr?.toString())?.[1];
 
         // if there is no key, the verification failed
-        if (result.status || accountUid == null) throw new Error("gpg verification failed");
+        if (result.status != 2 || accountUid == null) throw new Error("gpg verification failed");
         //---end of gpg verification---
     }
 
@@ -76,7 +76,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
             const accountUid = regex.exec(result.stderr?.toString())?.[1];
 
             // if there is no key, the verification failed
-            if (result.status || accountUid == null) { throw new Error("accountUid (for gpg verification) is null"); } // redundant?
+            if (result.status != 2 || accountUid == null) { throw new Error("accountUid (for gpg verification) is null"); } // redundant?
             //---end of gpg verification---
 
             // check if this account already has a fact for this job
