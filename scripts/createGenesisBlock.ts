@@ -63,7 +63,7 @@ function createGenesisBlock() {
         const address = Buffer.from(cred.binaryAddress, 'hex');
         const account : Partial<Account> & { address: Buffer } = {
             address,
-            token: { balance: BigInt(balance) }
+            token: { balance: balance }
         };
         if (delegateName) {
             account.dpos = { delegate: { username: delegateName } };
