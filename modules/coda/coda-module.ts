@@ -4,6 +4,7 @@ import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 import { randomBigInt, requiredBounty } from '../math';
 import { TrustFactList, TrustFactListSchema } from '../trustfacts/trustfacts_schema';
+import { coda } from '../test-data';
 
 export class CodaModule extends BaseModule {
     id = 2632; 
@@ -90,6 +91,14 @@ export class CodaModule extends BaseModule {
 
     async afterGenesisBlockApply({ stateStore }) {
         const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
-        await stateStore.chain.set("coda:jobs", jobsBuffer);
+        //await stateStore.chain.set("coda:jobs", jobsBuffer);
+
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+
+        for (const pack of coda.jobs) {
+            jobs.push(pack);
+            
+        }
+        await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
     }
 }
