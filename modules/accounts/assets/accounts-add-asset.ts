@@ -24,14 +24,14 @@ export class AccountsAddAsset extends BaseAsset {
         });
 
         //Extract the accountUID from the output
-        const regex = /key (\w*)/;
+        const regex = /key \w*(\w{16})/;
         const match = regex.exec(output);
         const accountUid = match?.[1];
 
         const accountsBuffer = await stateStore.chain.get("account:" + accountUid) as Buffer;
         if (accountsBuffer !== undefined) return;
 
-        const account : Account = { slingers: BigInt(0) };
+        const account : Account = { slingers: BigInt(5000) };
         await stateStore.chain.set("account:" + accountUid, codec.encode(AccountSchema, account));
     }
 }

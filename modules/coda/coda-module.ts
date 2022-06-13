@@ -15,7 +15,8 @@ export class CodaModule extends BaseModule {
     actions = {
         getJobs: async () => {
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
-            return codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+            const { jobs } =  codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+            return jobs.map(job => ({...job, bounty: job.bounty.toString()}));
         },
         getRandomJob: async () => {
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
@@ -57,7 +58,7 @@ export class CodaModule extends BaseModule {
             const activeSpiders = accounts.size;
             const networkCapacity = totalFacts;
             
-            return requiredBounty(totalBounty, networkCapacity, activeSpiders);
+            return requiredBounty(totalBounty, networkCapacity, activeSpiders).toString();
         },
         encodeCodaJob: async (asset: Record<string, unknown>) => {
             return codec.encode(minimalCodaJobSchema, asset).toString('hex');
