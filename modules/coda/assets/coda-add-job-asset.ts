@@ -1,4 +1,4 @@
-import { ApplyAssetContext, BaseAsset, codec, StateStore, ValidateAssetContext } from 'lisk-sdk';
+import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
 import { Account, AccountSchema } from '../../accounts/accounts-schemas';
 import { requiredBounty } from '../../math';
 import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-schemas';
@@ -67,7 +67,6 @@ export class CodaAddJobAsset extends BaseAsset {
         // Add job to list
         const job = await this.createCodaJob({ asset: asset.data, stateStore, jobs, account: { uid: accountUid } });
         jobs.push(job);
-        jobs = await this.removeOldJobs(jobs, stateStore);
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
     }
 
@@ -113,37 +112,6 @@ export class CodaAddJobAsset extends BaseAsset {
         if (!versionFound) {
             throw new Error("The given package version does not exist in the packageData!");
         } 
-    }
-
-    async removeOldJobs(jobs: CodaJob[], stateStore: StateStore) {
-
-        const jobsToKeep: CodaJob[] = [];
-        for (const job of jobs) {
-            const differenceInMilliSeconds = new Date().getTime() - new Date(job.date).getTime();
-            const differenceInMinutes = Math.ceil(differenceInMilliSeconds / (1000 * 60));
-            if (differenceInMinutes <= 10) jobsToKeep.push(job);
-            
-            else {
-                // this job is too old; discard it, and payout all rewards!
-
-                const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
-                if (trustFactsBuffer !== undefined) {
-                    const { facts: allFacts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-                    const facts = allFacts.filter(fact => fact.jobID == job.jobID);
-
-                    const reward = job.bounty / BigInt(facts.length); // todo; increase reward when there is a surplus of network capacity??
-
-                    for (const fact of facts) {
-                        const accountBuffer = await stateStore.chain.get("account:" + fact.account.uid) as Buffer;
-                        const account = codec.decode<Account>(AccountSchema, accountBuffer);
-                        account.slingers += reward;
-                        await stateStore.chain.set("account:" + fact.account.uid, codec.encode(AccountSchema, account));
-                    }
-                }
-            }
-        }
-
-        return jobsToKeep;
     }
 
     formatAsset({ asset }) {

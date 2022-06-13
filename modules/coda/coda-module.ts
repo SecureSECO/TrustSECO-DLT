@@ -1,3 +1,4 @@
+import { Account, AccountSchema } from '../accounts/accounts-schemas';
 import { BaseModule, codec } from 'lisk-sdk';
 import { CodaJob, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
@@ -91,5 +92,37 @@ export class CodaModule extends BaseModule {
     async afterGenesisBlockApply({ stateStore }) {
         const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
         await stateStore.chain.set("coda:jobs", jobsBuffer);
+    }
+
+    async beforeBlockApply({ stateStore }) {
+        const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const jobsToKeep: CodaJob[] = [];
+
+        for (const job of jobs) {
+            const differenceInMilliSeconds = new Date().getTime() - new Date(job.date).getTime();
+            const differenceInMinutes = Math.ceil(differenceInMilliSeconds / (1000 * 60));
+            if (differenceInMinutes <= 10) {
+                jobsToKeep.push(job);
+            }
+            else {
+                // this job is too old; discard it, and payout all rewards!
+                const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
+                if (trustFactsBuffer !== undefined) {
+                    const { facts: allFacts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                    const facts = allFacts.filter(fact => fact.jobID == job.jobID);
+
+                    const reward = job.bounty / BigInt(facts.length); // todo; increase reward when there is a surplus of network capacity??
+
+                    for (const fact of facts) {
+                        const accountBuffer = await stateStore.chain.get("account:" + fact.account.uid) as Buffer;
+                        const account = codec.decode<Account>(AccountSchema, accountBuffer);
+                        account.slingers += reward;
+                        await stateStore.chain.set("account:" + fact.account.uid, codec.encode(AccountSchema, account));
+                    }
+                }
+            }
+        }
+        await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobsToKeep }));
     }
 }
