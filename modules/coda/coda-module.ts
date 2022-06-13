@@ -1,9 +1,10 @@
-import { BaseModule, codec } from 'lisk-sdk';
-import { CodaJob, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
+import { BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
+import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 import { randomBigInt, requiredBounty } from '../math';
 import { TrustFactList, TrustFactListSchema } from '../trustfacts/trustfacts_schema';
+import { Account, AccountSchema } from '../accounts/accounts-schemas';
 import { coda } from '../test-data';
 
 export class CodaModule extends BaseModule {
@@ -89,13 +90,44 @@ export class CodaModule extends BaseModule {
     }
 
     async afterGenesisBlockApply({ stateStore }) {
-        const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
-        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const jobsBuffer = codec.encode(codaJobListSchema, coda);
+        const jobId = codec.encode(codaJobIdSchema, { jobId: 0 });
+        const blockHeight = codec.encode(codaJobIdSchema, { blockHeight: 0 });
+        await stateStore.chain.set("coda:jobs", jobsBuffer);
+        await stateStore.chain.set("coda:jobId", jobId);
+        await stateStore.chain.set("coda:blockHeight", blockHeight);
+    }
 
-        for (const pack of coda.jobs) {
-            jobs.push(pack);
-            
+    async beforeBlockApply({ stateStore, block } : BeforeBlockApplyContext) {
+        await stateStore.chain.set("coda:blockHeight", codec.encode(codaBlockHeightSchema, { blockHeight: block.header.height }));
+
+        const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const jobsToKeep: CodaJob[] = [];
+
+        for (const job of jobs) {
+            const differenceInBlockHeight = block.header.height - parseInt(job.date);
+            if (differenceInBlockHeight <= 500) { 
+                jobsToKeep.push(job); 
+            }
+            else {
+                // this job is too old; discard it, and payout all rewards!
+                const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
+                if (trustFactsBuffer !== undefined) {
+                    const { facts: allFacts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                    const facts = allFacts.filter(fact => fact.jobID == job.jobID);
+
+                    const reward = job.bounty / BigInt(facts.length); // todo; increase reward when there is a surplus of network capacity??
+
+                    for (const fact of facts) {
+                        const accountBuffer = await stateStore.chain.get("account:" + fact.account.uid) as Buffer;
+                        const account = codec.decode<Account>(AccountSchema, accountBuffer);
+                        account.slingers += reward;
+                        await stateStore.chain.set("account:" + fact.account.uid, codec.encode(AccountSchema, account));
+                    }
+                }
+            }
         }
-        await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
+        await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobsToKeep }));
     }
 }
