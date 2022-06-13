@@ -1,5 +1,5 @@
 import { BaseModule, codec } from 'lisk-sdk';
-import { TrustFactList, TrustFactListSchema } from './trustfacts_schema'
+import { AddTrustFactSchema, TrustFactList, TrustFactListSchema } from './trustfacts_schema'
 import { TrustFactsAddFactAsset } from './assets/addfact_asset'
 
 export class TrustFactsModule extends BaseModule {
@@ -37,6 +37,9 @@ export class TrustFactsModule extends BaseModule {
                 return squashedScore;
             }
             else throw new Error("The given package does not exist"); 
+        },
+        encodeTrustFact: async (asset: Record<string, unknown>) => {
+            return codec.encode(AddTrustFactSchema, asset).toString('hex');
         }
     }
     
