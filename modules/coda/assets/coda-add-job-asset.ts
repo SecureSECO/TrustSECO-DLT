@@ -25,7 +25,7 @@ export class CodaAddJobAsset extends BaseAsset {
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
-        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
         // calculate activeSpiders and networkCapacity
         let totalFacts = 0;
