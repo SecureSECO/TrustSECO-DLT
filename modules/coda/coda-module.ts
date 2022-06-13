@@ -96,7 +96,7 @@ export class CodaModule extends BaseModule {
 
     async beforeBlockApply({ stateStore }) {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
-        let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         const jobsToKeep: CodaJob[] = [];
 
         for (const job of jobs) {
