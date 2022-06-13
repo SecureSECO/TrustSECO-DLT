@@ -6,7 +6,7 @@ import { Signed, SignedSchema } from '../../signed-schemas';
 import { TrustFactList, TrustFactListSchema } from '../../trustfacts/trustfacts_schema';
 import { CodaJob, CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob} from '../coda-schemas';
 import { spawnSync } from 'child_process';
-import { writeFileSync } from 'fs';
+import { unlink, writeFileSync } from 'fs';
 
 export class CodaAddJobAsset extends BaseAsset {
     id = 26320;
@@ -36,6 +36,10 @@ export class CodaAddJobAsset extends BaseAsset {
 
         // verify signature        
         const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
+
+        // delete the files
+        unlink("/tmp/signature-" + random, () => 0);
+        unlink("/tmp/data-" + random, () => 0);
 
         // extract the key
         const regex = /key \w*(\w{16})/;        
@@ -87,6 +91,10 @@ export class CodaAddJobAsset extends BaseAsset {
 
         // verify signature        
         const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
+
+        // delete the files
+        unlink("/tmp/signature-" + random, () => 0);
+        unlink("/tmp/data-" + random, () => 0);
 
         // extract the key
         const regex = /key \w*(\w{16})/;        
