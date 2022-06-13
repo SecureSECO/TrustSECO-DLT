@@ -33,7 +33,7 @@ export class CodaAddJobAsset extends BaseAsset {
         const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
 
         // extract the key
-        const regex = /key (\w*)/;        
+        const regex = /key \w*(\w{16})/;        
         const accountUid = regex.exec(result.stderr?.toString())?.[1];
 
         // if there is no key, the verification failed
@@ -84,7 +84,7 @@ export class CodaAddJobAsset extends BaseAsset {
         const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
 
         // extract the key
-        const regex = /key (\w*)/;        
+        const regex = /key \w*(\w{16})/;        
         const accountUid = regex.exec(result.stderr?.toString())?.[1];
 
         // if there is no key, the verification failed
