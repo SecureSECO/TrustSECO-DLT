@@ -65,8 +65,7 @@ export class CodaModule extends BaseModule {
             codec.encode(minimalCodaJobSchema, asset).toString('hex'),
         //return a string of all valid facts
         listAllFacts: async () => {
-            const factsString = Object.values(validFacts).reduce((acc, cur) => acc.concat(cur), []).join("\n");
-            return factsString;
+            return validFacts;
         }
     }
 

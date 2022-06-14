@@ -17,7 +17,7 @@ export class CodaAddJobAsset extends BaseAsset {
         if (asset.data.package === "") throw new Error("Package cannot be empty");
         if (asset.data.version === "") throw new Error("version cannot be empty");
         if (asset.data.fact === "") throw new Error("Fact cannot be empty");
-        if (!Object.values(validFacts).flat().includes(asset.data.fact)) throw new Error("Fact is not valid");
+        if (!validFacts.flatMap(a => a.facts).includes(asset.data.fact)) throw new Error("Fact is not valid");
         if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative");
 
         // todo; verify signature (asset.signature)
