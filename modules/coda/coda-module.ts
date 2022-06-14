@@ -128,6 +128,6 @@ export class CodaModule extends BaseModule {
                 }
             }
         }
-        await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobsToKeep }));
+        await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs : jobsToKeep }));
     }
 }
