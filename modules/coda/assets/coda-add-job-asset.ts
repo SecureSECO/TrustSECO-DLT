@@ -1,9 +1,8 @@
 import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
 import { Account, AccountSchema } from '../../accounts/accounts-schemas';
-import { requiredBounty } from '../../math';
 import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-schemas';
 import { Signed, SignedSchema } from '../../signed-schemas';
-import { TrustFactList, TrustFactListSchema } from '../../trustfacts/trustfacts_schema';
+import { CodaModule } from '../coda-module';
 import { spawnSync } from 'child_process';
 import { unlink, writeFileSync } from 'fs';
 import { CodaJob, CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob, codaJobIdSchema, validFacts, codaBlockHeightSchema } from '../coda-schemas';
@@ -53,28 +52,8 @@ export class CodaAddJobAsset extends BaseAsset {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
-        // calculate activeSpiders and networkCapacity
-        let totalFacts = 0;
-        const accounts: Set<string> = new Set();
-
-        for (const job of jobs) {
-            const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
-            if (trustFactsBuffer != undefined) {
-                const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-                totalFacts += facts.length;
-                for (const fact of facts) {
-                    accounts.add(fact.account.uid);
-                }
-            }
-        }
-
-        const activeSpiders = accounts.size;
-        const networkCapacity = totalFacts;
-
         // check if bounty is higher than minimum required
-        const totalBounty = jobs.reduce((acc, job) => acc + job.bounty, BigInt(0));
-        const rB = requiredBounty(totalBounty, networkCapacity, activeSpiders);
-
+        const rB = await CodaModule.requiredBounty( key => stateStore.chain.get(key) );
         if (asset.data.bounty < rB) throw new Error("Bounty is too low!");
 
         //---start of gpg verification (for accountUid extraction)---

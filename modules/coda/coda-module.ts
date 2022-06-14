@@ -2,7 +2,7 @@ import { BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
 import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
-import { randomBigInt, requiredBounty } from '../math';
+import { randomBigInt, requiredBounty, requiredVerifications } from '../math';
 import { TrustFactList, TrustFactListSchema } from '../trustfacts/trustfacts_schema';
 import { Account, AccountSchema } from '../accounts/accounts-schemas';
 import { coda } from '../test-data';
@@ -59,34 +59,10 @@ export class CodaModule extends BaseModule {
 
             return { ...job, bounty: job.bounty.toString(), ...packageData };
         },
-        getMinimumRequiredBounty: async () => {
-            const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
-            const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-
-            let totalBounty = BigInt(0);
-            let totalFacts = 0;
-            const spideringAccounts: Set<string> = new Set();
-
-            for (const job of jobs) {
-                totalBounty += job.bounty;
-                const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + job.package);
-                if (trustFactsBuffer != undefined) {
-                    const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-                    totalFacts += facts.length;
-                    for (const fact of facts) {
-                        spideringAccounts.add(fact.account.uid);
-                    }
-                }
-            }
-
-            const uniqueActiveSpiders = spideringAccounts.size;
-            const networkCapacity = totalFacts;
-            
-            return requiredBounty(totalBounty, networkCapacity, uniqueActiveSpiders).toString();
-        },
-        encodeCodaJob: async (asset: Record<string, unknown>) => {
-            return codec.encode(minimalCodaJobSchema, asset).toString('hex');
-        }
+        getMinimumRequiredBounty: async () =>
+            (await CodaModule.requiredBounty( key => this._dataAccess.getChainState(key) )).toString(),
+        encodeCodaJob: async (asset: Record<string, unknown>) =>
+            codec.encode(minimalCodaJobSchema, asset).toString('hex'),
     }
 
     async afterGenesisBlockApply({ stateStore }) {
@@ -117,7 +93,29 @@ export class CodaModule extends BaseModule {
                     const { facts: allFacts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
                     const facts = allFacts.filter(fact => fact.jobID == job.jobID);
 
-                    const reward = job.bounty / BigInt(facts.length); // todo; increase reward when there is a surplus of network capacity??
+                    // calculate network capacity (total facts)
+                    const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
+                    const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+                    
+                    let totalFacts = 0;
+                    const spideringAccounts: Set<string> = new Set();
+
+                    for (const job of jobs) {
+                        const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
+                        if (trustFactsBuffer !== undefined) {
+                            const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                            totalFacts += facts.length;
+                            for (const fact of facts) {
+                                spideringAccounts.add(fact.account.uid);
+                            }
+                        }
+                    }
+
+                    const networkCapacity = totalFacts;
+                    const networkDemand = requiredVerifications(spideringAccounts.size) * jobs.length;
+
+                    // reward is increased or decreased proportionally to the network capacity-demand ratio
+                    const reward = (BigInt(networkCapacity) * job.bounty) / (BigInt(facts.length * networkDemand));
 
                     for (const fact of facts) {
                         const accountBuffer = await stateStore.chain.get("account:" + fact.account.uid) as Buffer;
@@ -129,5 +127,31 @@ export class CodaModule extends BaseModule {
             }
         }
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs : jobsToKeep }));
+    }
+
+    static async requiredBounty( getChainState: (key: string) => Promise<Buffer | undefined> ) {
+        const jobsBuffer = await getChainState("coda:jobs") as Buffer;
+        const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        
+        let totalFacts = 0;
+        let totalBounty = BigInt(0);
+        const spideringAccounts: Set<string> = new Set();
+
+        for (const job of jobs) {
+            totalBounty += job.bounty;
+            const trustFactsBuffer = await getChainState("trustfacts:" + job.package);
+            if (trustFactsBuffer !== undefined) {
+                const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                totalFacts += facts.length;
+                for (const fact of facts) {
+                    spideringAccounts.add(fact.account.uid);
+                }
+            }
+        }
+
+        const uniqueActiveSpiders = spideringAccounts.size;
+        const networkCapacity = totalFacts;
+
+        return requiredBounty(totalBounty, networkCapacity, uniqueActiveSpiders);
     }
 }
