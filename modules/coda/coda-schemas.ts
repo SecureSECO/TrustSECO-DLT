@@ -36,7 +36,7 @@ export const validFacts = {
         "so_popularity"
     ],
     virusscanner: [
-        "virus_ratio"
+        "vs_virus_ratio"
     ]
 }
 
