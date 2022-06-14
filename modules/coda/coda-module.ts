@@ -1,5 +1,5 @@
 import { BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
-import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema, validFacts } from './coda-schemas';
+import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 import { randomBigInt, requiredBounty } from '../math';
