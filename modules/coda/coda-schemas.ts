@@ -9,8 +9,10 @@ export const validFacts = {
         "gh_release_download_count",
         "gh_yearly_commit_count",
         "gh_repository_language",
+        "gh_gitstar_ranking",
         "gh_open_issues_count",
         "gh_zero_response_issues_count",
+        "gh_release_issues_count",
         "gh_issue_ratio",
         "gh_average_resolution_time",
         "gh_owner_stargazer_count"
@@ -32,6 +34,9 @@ export const validFacts = {
     ],
     stackoverflow: [
         "so_popularity"
+    ],
+    virusscanner: [
+        "virus_ratio"
     ]
 }
 
