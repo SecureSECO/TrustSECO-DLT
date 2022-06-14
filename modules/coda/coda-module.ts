@@ -86,6 +86,10 @@ export class CodaModule extends BaseModule {
         },
         encodeCodaJob: async (asset: Record<string, unknown>) => {
             return codec.encode(minimalCodaJobSchema, asset).toString('hex');
+        },
+        listAllFacts: async () => {
+            const factsString = Object.values(validFacts).reduce((acc, cur) => acc.concat(cur), []).join("\n");
+            return factsString;
         }
     }
 
@@ -128,6 +132,6 @@ export class CodaModule extends BaseModule {
                 }
             }
         }
-        await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobsToKeep }));
+        //await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobsToKeep })); // temp comment out to test
     }
 }
