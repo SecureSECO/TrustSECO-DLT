@@ -1,5 +1,5 @@
 import { BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
-import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema } from './coda-schemas';
+import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema, validFacts } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 import { randomBigInt, requiredBounty, requiredVerifications } from '../math';
@@ -63,6 +63,11 @@ export class CodaModule extends BaseModule {
             (await CodaModule.requiredBounty( key => this._dataAccess.getChainState(key) )).toString(),
         encodeCodaJob: async (asset: Record<string, unknown>) =>
             codec.encode(minimalCodaJobSchema, asset).toString('hex'),
+        //return a string of all valid facts
+        listAllFacts: async () => {
+            const factsString = Object.values(validFacts).reduce((acc, cur) => acc.concat(cur), []).join("\n");
+            return factsString;
+        }
     }
 
     async afterGenesisBlockApply({ stateStore }) {
