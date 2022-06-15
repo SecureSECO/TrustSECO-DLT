@@ -39,11 +39,11 @@ export class CodaAddJobAsset extends BaseAsset {
         const account = codec.decode<Account>(AccountSchema, accountBuffer);
         account.slingers -= asset.data.bounty;
         if (account.slingers < 0) throw new Error("Bounty is higher than account credit!");
-        await stateStore.chain.set("account:" + uid, codec.encode(AccountSchema, account));
         
         // Add job to list
         const job = await this.createCodaJob({ asset, stateStore, jobs, account: { uid } });
         jobs.push(job);
+        await stateStore.chain.set("account:" + uid, codec.encode(AccountSchema, account));
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
     }
 
