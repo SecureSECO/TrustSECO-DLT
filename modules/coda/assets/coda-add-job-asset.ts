@@ -24,7 +24,7 @@ export class CodaAddJobAsset extends BaseAsset {
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
-        const { uid: accountUid } = GPG.verify(asset, minimalCodaJobSchema);
+        const uid = GPG.verify(asset, minimalCodaJobSchema);
 
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
@@ -34,15 +34,15 @@ export class CodaAddJobAsset extends BaseAsset {
         if (asset.data.bounty < rB) throw new Error("Bounty is too low!");
 
         // Deduct bounty from account
-        const accountBuffer = await stateStore.chain.get("account:" + accountUid) as Buffer;
+        const accountBuffer = await stateStore.chain.get("account:" + uid) as Buffer;
         if (accountBuffer == undefined) throw new Error("Account does not exist");
         const account = codec.decode<Account>(AccountSchema, accountBuffer);
         account.slingers -= asset.data.bounty;
         if (account.slingers < 0) throw new Error("Bounty is higher than account credit!");
-        await stateStore.chain.set("account:" + accountUid, codec.encode(AccountSchema, account));
+        await stateStore.chain.set("account:" + uid, codec.encode(AccountSchema, account));
         
         // Add job to list
-        const job = await this.createCodaJob({ asset, stateStore, jobs, account: { uid: accountUid } });
+        const job = await this.createCodaJob({ asset, stateStore, jobs, account: { uid } });
         jobs.push(job);
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
     }

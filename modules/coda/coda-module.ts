@@ -61,8 +61,10 @@ export class CodaModule extends BaseModule {
         },
         getMinimumRequiredBounty: async () =>
             (await CodaModule.requiredBounty( key => this._dataAccess.getChainState(key) )).toString(),
-        encodeCodaJob: async (asset: Record<string, unknown>) =>
-            codec.encode(minimalCodaJobSchema, asset).toString('hex'),
+        encodeCodaJob: async function(asset: Record<string, unknown>) {
+            asset.bounty = BigInt(asset.bounty as string | number);
+            return codec.encode(minimalCodaJobSchema, asset).toString('hex');
+        },
         //return a string of all valid facts
         listAllFacts: async () => {
             return validFacts;
