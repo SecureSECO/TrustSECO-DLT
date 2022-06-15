@@ -22,7 +22,7 @@
     "@liskhq/lisk-framework-dashboard-plugin": "^0.1.7",
     "dotenv": "^16.0.1",
     "lisk-sdk": "^5.2.2",
-    "node-fetch": "^3.2.5"
+    "node-fetch": "^3.2.6"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.18.2",
