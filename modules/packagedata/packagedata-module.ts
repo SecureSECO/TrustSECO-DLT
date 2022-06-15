@@ -16,14 +16,14 @@ export class PackageDataModule extends BaseModule {
             if (packageDataBuffer !== undefined) {
                 return codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
             }
-            else throw new Error("No info is available for this package");
+            else return [];
         },
         getAllPackages: async () => {
             const packageDataBuffer = await this._dataAccess.getChainState("packagedata:allPackages") as Buffer;
             if (packageDataBuffer !== undefined) {
                 return codec.decode<PackageDataList>(PackageDataListSchema, packageDataBuffer);
             }
-            else throw new Error("There are no packages added yet");
+            else return [];
         } 
     }
 

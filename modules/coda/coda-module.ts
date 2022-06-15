@@ -25,7 +25,7 @@ export class CodaModule extends BaseModule {
             // retrieve all current jobs
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-            if (jobs.length === 0) throw new Error("The jobs list is empty");
+            if (jobs.length === 0) return [];
 
             // filter out all jobs that are already done by this user
             if (uid) {
