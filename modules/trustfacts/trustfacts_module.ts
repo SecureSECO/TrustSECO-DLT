@@ -12,9 +12,24 @@ export class TrustFactsModule extends BaseModule {
         gh_total_download_count: 63,
         gh_owner_stargazer_count: 24.21,
         cve_count: -16.47,
+        virus_ratio: -16.47,
         lib_dependency_count: 8.04,
         gh_contributor_count: 4.41,
-        lib_release_frequency: 2.32
+        lib_release_frequency: 2.32,
+
+        // These scores aren't based on the paper but are made up
+        gh_user_count: 60,
+        gh_release_download_count: 48,
+        gh_yearly_commit_count: 15,
+        gh_repository_language: 3,
+        gh_open_issues_count: 34,
+        gh_zero_response_issues_count: -12,
+        gh_issue_ratio: -15,
+        lib_contributor_count: 6,
+        lib_dependent_count: 7,
+        lib_latest_release_date: 1,
+        lib_release_count: 2,
+        so_popularity: 30,
     }
     trustFactOccurence: any = []
 
@@ -24,7 +39,7 @@ export class TrustFactsModule extends BaseModule {
             if (trustFactsBuffer !== undefined) {
                 return codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
             }
-            else throw new Error("There are no trust-facts available for this package");
+            else return [];
         },
         calculateTrustScore: async ({ packageName, version }: Record<string, unknown>) => {
             const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);   
@@ -36,7 +51,7 @@ export class TrustFactsModule extends BaseModule {
                 const squashedScore = this.squashTrustScore(score);
                 return squashedScore;
             }
-            else throw new Error("The given package does not exist"); 
+            else return [];
         },
         encodeTrustFact: async (asset: Record<string, unknown>) => {
             return codec.encode(AddTrustFactSchema, asset).toString('hex');
@@ -75,13 +90,13 @@ export class TrustFactsModule extends BaseModule {
         return score;       
     }
 
-    squashTrustScore(score) {
+    squashTrustScore(score: number) {
         // Reduce a score to a number between 0 and 100 using the logistic function:
-        // f(x) = 200/(1 + e^-x) - 100. For f(5) = ~98.66. The trust score can get large
-        // very quickly, so we take g(x) = log(x) / log(10000) first. This way, the trust score has to 
-        // approach 10000^5 before it gets a rating of around 100. So trust score = f(g(x)).
-        const g = Math.log(score) / Math.log(10000);
-        const f = 200/(1 + Math.pow(Math.E, -g)) - 100;
+        // f(x) = 200/(1 + e^(-x * 0.8)) - 100. The trust score can get large
+        // very quickly given the many variables involed in calculating the score, so we 
+        // take g(x) = log(x) / log(100) first. So trust score = f(g(x)).
+        const g = Math.log(score) / Math.log(100);
+        const f = 200/(1 + Math.pow(Math.E, -g*0.8)) - 100;
         return f;
     }
 }
