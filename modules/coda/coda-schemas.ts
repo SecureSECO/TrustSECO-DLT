@@ -1,39 +1,59 @@
 import { Schema } from "lisk-sdk";
 import { AccountId, AccountIdSchema } from "../accounts/accounts-schemas";
 
-export const validFacts = {
-    github: [
-        "gh_contributor_count",
-        "gh_user_count",
-        "gh_total_download_count",
-        "gh_release_download_count",
-        "gh_yearly_commit_count",
-        "gh_repository_language",
-        "gh_open_issues_count",
-        "gh_zero_response_issues_count",
-        "gh_issue_ratio",
-        "gh_average_resolution_time",
-        "gh_owner_stargazer_count"
-    ],
-    libraries_io: [
-        "lib_release_frequency",
-        "lib_contributor_count",
-        "lib_dependency_count",
-        "lib_dependent_count",
-        "lib_latest_release_date",
-        "lib_first_release_date",
-        "lib_release_count",
-        "lib_sourcerank"
-    ],
-    cve: [
-        "cve_count",
-        "cve_vulnerabilities",
-        "cve_codes"
-    ],
-    stackoverflow: [
-        "so_popularity"
-    ]
-}
+export const validFacts: {source:string, facts:string[]}[] = [
+    {
+        source: "github",
+        facts: [
+            "gh_contributor_count",
+            "gh_user_count",
+            "gh_total_download_count",
+            "gh_release_download_count",
+            "gh_yearly_commit_count",
+            "gh_repository_language",
+            "gh_gitstar_ranking",
+            "gh_open_issues_count",
+            "gh_zero_response_issues_count",
+            "gh_release_issues_count",
+            "gh_issue_ratio",
+            "gh_average_resolution_time",
+            "gh_owner_stargazer_count"
+        ]
+    },
+    {
+        source: "libraries_io",
+        facts: [
+            "lib_release_frequency",
+            "lib_contributor_count",
+            "lib_dependency_count",
+            "lib_dependent_count",
+            "lib_latest_release_date",
+            "lib_first_release_date",
+            "lib_release_count",
+            "lib_sourcerank"
+        ]
+    },
+    {
+        source: "cve",
+        facts: [            
+            "cve_count",
+            "cve_vulnerabilities",
+            "cve_codes"
+        ]
+    },
+    {
+        source: "stackoverflow",
+        facts: [
+            "so_popularity"
+        ]
+    },
+    {
+        source: "virusscanner",
+        facts: [
+            "vs_virus_ratio"
+        ]
+    }
+]
 
 export interface CodaJob extends Record<string, unknown> {
     package: string;
