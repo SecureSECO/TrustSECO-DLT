@@ -3,9 +3,8 @@ import { Account, AccountSchema } from '../../accounts/accounts-schemas';
 import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-schemas';
 import { Signed, SignedSchema } from '../../signed-schemas';
 import { CodaModule } from '../coda-module';
-import { spawnSync } from 'child_process';
-import { unlink, writeFileSync } from 'fs';
 import { CodaJob, CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob, codaJobIdSchema, validFacts, codaBlockHeightSchema } from '../coda-schemas';
+import { GPG } from '../../../common/gpg-verification';
 
 export class CodaAddJobAsset extends BaseAsset {
     id = 26320;
@@ -18,67 +17,21 @@ export class CodaAddJobAsset extends BaseAsset {
         if (asset.data.version === "") throw new Error("version cannot be empty");
         if (asset.data.fact === "") throw new Error("Fact cannot be empty");
         if (!validFacts.flatMap(a => a.facts).includes(asset.data.fact)) throw new Error("Fact is not valid");
-        if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative");
-
-        // todo; verify signature (asset.signature)
         if (!asset.signature) throw new Error("Signature is missing!");
-
-        //---start of gpg verification---
-        // generate random number that identifies this gpg verification
-        const random = Math.random().toString().slice(2);
-        // write asset.signature to file
-        writeFileSync("/tmp/signature-" + random, asset.signature);
-        const encoded = codec.encode(minimalCodaJobSchema, asset.data).toString('hex');
-        // write data to fle
-        writeFileSync("/tmp/data-" + random, encoded);
-
-        // verify signature        
-        const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
-
-        // delete the files
-        unlink("/tmp/signature-" + random, () => 0);
-        unlink("/tmp/data-" + random, () => 0);
-
-        // extract the key
-        const regex = /key \w*(\w{16})/;        
-        const accountUid = regex.exec(result.stderr?.toString())?.[1];
-
-        // if there is no key, the verification failed
-        if (result.status != 2 || accountUid == null) {throw new Error("gpg verification failed");}
-        //---end of gpg verification---
+        
+        // will throw an error when the signature is invalid
+        GPG.verify(asset, minimalCodaJobSchema);
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
+        const { uid: accountUid } = GPG.verify(asset, minimalCodaJobSchema);
+
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
         // check if bounty is higher than minimum required
         const rB = await CodaModule.requiredBounty( key => stateStore.chain.get(key) );
         if (asset.data.bounty < rB) throw new Error("Bounty is too low!");
-
-        //---start of gpg verification (for accountUid extraction)---
-        // generate random number that identifies this gpg verification
-        const random = Math.random().toString().slice(2);
-        // write asset.signature to file
-        writeFileSync("/tmp/signature-" + random, asset.signature);
-        const encoded = codec.encode(minimalCodaJobSchema, asset.data);
-        // write data to fle
-        writeFileSync("/tmp/data-" + random, encoded);
-
-        // verify signature        
-        const result = spawnSync(`gpg`, ["--verify", "/tmp/signature-" + random, "/tmp/data-" + random]);
-
-        // delete the files
-        unlink("/tmp/signature-" + random, () => 0);
-        unlink("/tmp/data-" + random, () => 0);
-
-        // extract the key
-        const regex = /key \w*(\w{16})/;        
-        const accountUid = regex.exec(result.stderr?.toString())?.[1];
-
-        // if there is no key, the verification failed
-        if (result.status != 2 || accountUid == null) throw new Error("gpg verification failed");
-        //---end of gpg verification---
 
         // Deduct bounty from account
         const accountBuffer = await stateStore.chain.get("account:" + accountUid) as Buffer;
