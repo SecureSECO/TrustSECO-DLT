@@ -1,37 +1,33 @@
 //import { Http2ServerRequest } from 'http2';
 import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
 import { AccountSchema, Account, AccountURLSchema, AccountURL } from '../accounts-schemas';
-import { exec } from 'child_process';
+import { GPG } from '../../../common/gpg-verification';
 
 export class AccountsAddAsset extends BaseAsset {
     id = 26660;
     name = 'AccountsAdd';
     schema = AccountURLSchema;
 
-    validate({ asset }: ValidateAssetContext<AccountURL>) {
-        const regex = /^https:\/\/github\.com\/([a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38})\.gpg$/; // https://github.com/[username].gpg
-        if (!regex.test(asset.url)) throw new Error('url should be of the form https://github.com/[username].gpg');
+    validate({ asset : { url } }: ValidateAssetContext<AccountURL>) {
+        if (!GPG.validateURL(url)) throw new Error('url should be of the form https://github.com/[username].gpg');
     }
 
-    async apply({ asset, stateStore }: ApplyAssetContext<AccountURL>) {
+    async apply({ asset : { url }, stateStore }: ApplyAssetContext<AccountURL>) {
+        console.log(`Adding GPG key from ${url}`);
 
-        //import the gpg key from asset.url
-        const output = await new Promise<string>((res,rej) => {
-            exec(`curl ${asset.url} | gpg --import`, function(error, _stdout, stderr) {
-                if (error) rej (error);
-                else res(stderr);
-            });
-        });
+        const uid = await GPG.import( url );
 
-        //Extract the accountUID from the output
-        const regex = /key \w*(\w{16})/;
-        const match = regex.exec(output);
-        const accountUid = match?.[1];
+        // when the account is already known, we don't need to do anything
+        const accountsBuffer = await stateStore.chain.get("account:" + uid) as Buffer;
+        if (accountsBuffer !== undefined) {
+            console.log(`Account from ${url} already known as ${uid}`);
+            return;
+        }
 
-        const accountsBuffer = await stateStore.chain.get("account:" + accountUid) as Buffer;
-        if (accountsBuffer !== undefined) return;
-
+        // create a new account with 5000 reward tokens
         const account : Account = { slingers: BigInt(5000) };
-        await stateStore.chain.set("account:" + accountUid, codec.encode(AccountSchema, account));
+        await stateStore.chain.set("account:" + uid, codec.encode(AccountSchema, account));
+
+        console.log(`Added account ${uid} from ${url}`);
     }
 }
