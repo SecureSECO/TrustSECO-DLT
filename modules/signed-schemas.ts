@@ -1,6 +1,6 @@
 import { Schema } from "lisk-sdk";
 
-export interface Signed<T> {
+export interface Signed<T extends object> {
     signature: string;
     data: T;
 }

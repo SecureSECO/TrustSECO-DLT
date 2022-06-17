@@ -25,7 +25,7 @@ export class CodaModule extends BaseModule {
             // retrieve all current jobs
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-            if (jobs.length === 0) throw new Error("The jobs list is empty");
+            if (jobs.length === 0) return [];
 
             // filter out all jobs that are already done by this user
             if (uid) {
@@ -61,8 +61,10 @@ export class CodaModule extends BaseModule {
         },
         getMinimumRequiredBounty: async () =>
             (await CodaModule.requiredBounty( key => this._dataAccess.getChainState(key) )).toString(),
-        encodeCodaJob: async (asset: Record<string, unknown>) =>
-            codec.encode(minimalCodaJobSchema, asset).toString('hex'),
+        encodeCodaJob: async function(asset: Record<string, unknown>) {
+            asset.bounty = BigInt(asset.bounty as string | number);
+            return codec.encode(minimalCodaJobSchema, asset).toString('hex');
+        },
         //return a string of all valid facts
         listAllFacts: async () => {
             return validFacts;
