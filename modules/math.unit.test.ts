@@ -8,7 +8,7 @@ describe('Test the requiredVerifications function', () => {
     test('0 active spiders require 1 verification', () => {
         expect(requiredVerifications(0)).toBe(1);
     });
-    test('100 active spiders require 1 verification', () => {
+    test('100 active spiders require 27 verification', () => {
         expect(requiredVerifications(100)).toBe(27);
     });
 });
