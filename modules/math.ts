@@ -1,6 +1,5 @@
 import { randomBytes } from 'crypto';
 
-
 export function requiredVerifications(activeSpiders: number) : number {
     const gamma = 0.5772156649015328;                   // Euler–Mascheroni constant
     const f = (c: number) => c * (Math.log(c) + gamma); // Harmonic Series approximation
@@ -25,7 +24,6 @@ export function requiredBounty(totalBounty: bigint, networkCapacity: number, act
 }
 
 export function randomBigInt(max: bigint) {
-
     let n: bigint;
 
     do {
