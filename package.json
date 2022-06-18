@@ -1,6 +1,7 @@
 {
   "name": "trust_seco_dlt",
   "jest": {
+    "testPathIgnorePatterns": ["./dist"],
     "transform": {
       "^.+\\.(t|j)sx?$": "ts-jest"
     }
