@@ -11,7 +11,8 @@ export class PackageDataAddDataAsset extends BaseAsset {
         if (asset.packageName === "") throw new Error("package name is required and cannot be empty");
         if (asset.packagePlatform === "") throw new Error("package platform is required and cannot be empty");
         if (asset.packageOwner === "") throw new Error("package owner is required and cannot be empty");
-        if (asset.packageReleases === []) throw new Error("at least one release is required, the list can not be empty");
+        if (asset.packageReleases.length === 0 ||
+            asset.packageReleases.join(' ').trim() === '') throw new Error("at least one release is required, the list can not be empty");
     }
 
     async apply({ asset, stateStore }) {

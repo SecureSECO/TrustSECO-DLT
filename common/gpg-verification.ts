@@ -7,7 +7,6 @@ import { Signed } from '../modules/signed-schemas';
 const exec$ = promisify(exec);
 
 export class GPG {
-
     // all GPG key URLs should be provided by github.com
     static readonly urlPattern = /^https:\/\/github\.com\/([a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38})\.gpg$/;
 
