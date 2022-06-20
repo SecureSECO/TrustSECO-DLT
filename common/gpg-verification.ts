@@ -37,11 +37,14 @@ export class GPG {
         unlink("/tmp/data-" + random);
 
         const accountUid = /key \w*(\w{16})/.exec(stderr.toString())?.[1];
+
         if (status !== 0) {
             console.log(stderr.toString());
-            throw new Error("GPG signature verification failed");
+            if (process.env.ACCEPT_BAD_SIGNATURES) console.error("GPG signature verification failed! ACCEPT_BAD_SIGNATURES is set, so continuing anyway.");
+            else throw new Error("GPG signature verification failed");
         }
-        if (accountUid === undefined) throw new Error("GPG key is unknown");
+
+        if (accountUid === undefined) throw new Error("Unable to find the uid for the provided GPG key");
 
         return accountUid;
     }
