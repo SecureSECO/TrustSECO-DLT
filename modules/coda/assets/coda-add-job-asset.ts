@@ -38,8 +38,14 @@ export class CodaAddJobAsset extends BaseAsset {
         }
 
         // Deduct bounty from account
-        const accountBuffer = await stateStore.chain.get("account:" + uid) as Buffer;
-        if (accountBuffer == undefined) throw new Error("Account does not exist");
+        let accountBuffer = await stateStore.chain.get("account:" + uid);
+        if (accountBuffer == undefined) {
+            if (process.env.ACCEPT_INVALID_ACCOUNT) {
+                console.error("Account does not exist! ACCEPT_INVALID_ACCOUNT is set, so creating a new throwaway account.");
+                accountBuffer = codec.encode(AccountSchema, {slingers: 5000});
+            }
+            else throw new Error("Account does not exist");
+        }
         const account = codec.decode<Account>(AccountSchema, accountBuffer);
         account.slingers -= asset.data.bounty;
         if (account.slingers < 0) {
