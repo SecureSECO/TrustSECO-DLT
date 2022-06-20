@@ -15,13 +15,9 @@ if (!existsSync(dataPath)) {
     console.log(`${dataPath} does not exist. You probably already resetted :D`);
 }
 
-
-
 else if (options.yes) {
     reset();
 }
-
-
 
 else {
     prompt.start();
@@ -40,8 +36,6 @@ else {
         else console.log('Okay, goodbye!');
     });
 }
-
-
 
 function reset() {
     console.log(`Removing ${dataPath} ...`);

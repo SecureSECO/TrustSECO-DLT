@@ -6,9 +6,7 @@ import { TrustFactsModule } from '../modules/trustfacts/trustfacts_module';
 import { PackageDataModule} from '../modules/packagedata/packagedata-module';
 import { AccountsModule } from '../modules/accounts/accounts-module';
 
-
 export const modules = [
-
     // Default Modules
     new TokenModule(config.genesisConfig),
     new DPoSModule(config.genesisConfig),

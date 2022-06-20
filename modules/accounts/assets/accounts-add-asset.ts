@@ -1,4 +1,3 @@
-//import { Http2ServerRequest } from 'http2';
 import { ApplyAssetContext, BaseAsset, codec, ValidateAssetContext } from 'lisk-sdk';
 import { AccountSchema, Account, AccountURLSchema, AccountURL } from '../accounts-schemas';
 import { GPG } from '../../../common/gpg-verification';
