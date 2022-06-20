@@ -37,16 +37,10 @@ export class PackageDataAddDataAsset extends BaseAsset {
                 return !packageData.packageReleases.includes(release)});
 
             newReleases.forEach(release => packageData.packageReleases.push(release));
-            for (const release of newReleases) {
-                await this.addJobsForAllFacts({ asset, stateStore}, release);
-            }
         }
         // If package is new, add it
         else {
             packageData = asset;
-            for (const release of packageData.packageReleases) {
-                await this.addJobsForAllFacts({ asset, stateStore}, release);
-            }
         }
 
         const { packages } = codec.decode<PackageDataList>(PackageDataListSchema, allPackagesBuffer);
@@ -67,37 +61,6 @@ export class PackageDataAddDataAsset extends BaseAsset {
         ]);
     }
 
-    async addJobsForAllFacts({ asset, stateStore }, version) {
-        console.error("jobs cannot be added, since no bounty is provided");
-        
-        // make the linter happy:
-        asset; stateStore; version;
-
-        return;
-
-        // const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
-        // const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-
-        // const sources = Object.keys(validFacts);
-        // sources.forEach(source => {
-        //     validFacts[`${source}`].forEach((fact: any) => {
-        //         const job: CodaJob = {
-        //             package: asset.packageName,
-        //             version: version,
-        //             fact: fact,
-        //             date: new Date().toString(),
-        //             jobID: this.generateRandomNumber()
-        //         }
-        //         const duplicateIdCheck = jobs.filter(oldJob => oldJob.jobID == job.jobID).length > 0;
-        //         while (duplicateIdCheck) {
-        //             job.jobID = this.generateRandomNumber();
-        //         }
-        //         jobs.push(job);
-        //     });
-        // });
-        // await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
-    }
-    
     formatAsset({ asset }) {
         asset.packageName = asset.packageName.trim();
         asset.packageName = asset.packageName.toLowerCase();
@@ -108,9 +71,5 @@ export class PackageDataAddDataAsset extends BaseAsset {
         asset.packageReleases = asset.packageReleases.map(version =>
             version.replace(/[^\d.-]/g, ''));
         return asset;
-    }
-
-    generateRandomNumber() {
-        return Math.floor(Math.random() * (Math.pow(2, 32) - 1));
     }
 }

@@ -7,12 +7,10 @@ The environment variable RESET_ON_VERSION_MISMATCH can be set to true to uninter
 
 */
 
-
 import { writeFileSync, readFileSync, existsSync, mkdirSync, rmSync } from 'fs';
 import { systemDirs } from 'lisk-sdk';
 import prompt = require('prompt');
 import config from '../scripts/config-autofilled'
-
 
 export async function checkVersion() {
     const { dataPath } = systemDirs(config.label as string, config.rootPath as string);
@@ -49,8 +47,6 @@ export async function checkVersion() {
         }
     }
 
-
     mkdirSync(dataPath, { recursive: true });
     writeFileSync(versionPath, config.version as string);
 }
-
