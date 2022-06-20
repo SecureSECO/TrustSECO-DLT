@@ -31,14 +31,22 @@ export class CodaAddJobAsset extends BaseAsset {
 
         // check if bounty is higher than minimum required
         const rB = await CodaModule.requiredBounty( key => stateStore.chain.get(key) );
-        if (asset.data.bounty < rB) throw new Error("Bounty is too low!");
+        if (asset.data.bounty < rB) {
+            if (process.env.ACCEPT_INSUFFICIENT_BOUNTY)
+                console.error("Bounty is lower than minimum required bounty! ACCEPT_INSUFFICIENT_BOUNTY is set, so continuing anyway.");
+            else throw new Error("Bounty is lower than minimum required bounty!");
+        }
 
         // Deduct bounty from account
         const accountBuffer = await stateStore.chain.get("account:" + uid) as Buffer;
         if (accountBuffer == undefined) throw new Error("Account does not exist");
         const account = codec.decode<Account>(AccountSchema, accountBuffer);
         account.slingers -= asset.data.bounty;
-        if (account.slingers < 0) throw new Error("Bounty is higher than account credit!");
+        if (account.slingers < 0) {
+            if (process.env.ACCEPT_INSUFFICIENT_BOUNTY)
+                console.error("Bounty is higher than account credit! ACCEPT_INSUFFICIENT_BOUNTY is set, so continuing anyway.");
+            else throw new Error("Bounty is higher than account credit!");
+        }
         
         // Add job to list
         const job = await this.createCodaJob({ asset, stateStore, jobs, account: { uid } });
