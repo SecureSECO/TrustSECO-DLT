@@ -21,7 +21,6 @@ export class CodaModule extends BaseModule {
             return jobs.map(job => ({...job, bounty: job.bounty.toString()}));
         },
         getRandomJob: async ({ uid } : Record<string,unknown>) => {
-
             // retrieve all current jobs
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
@@ -65,7 +64,6 @@ export class CodaModule extends BaseModule {
             asset.bounty = BigInt(asset.bounty as string | number);
             return codec.encode(minimalCodaJobSchema, asset).toString('hex');
         },
-        //return a string of all valid facts
         listAllFacts: async () => {
             return validFacts;
         }

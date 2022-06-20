@@ -84,7 +84,6 @@ export class TrustFactsModule extends BaseModule {
             const occurenceObject = this.trustFactOccurence.find((x: any) => x[fact.fact]);
             const occurenceValue: any = Object.values(occurenceObject)[0];
             const factValue = parseInt(fact.factData);
-            console.log(this.trustFactOccurence);
             score += (factValue * this.scores[fact.fact]) / occurenceValue;
         });
         return score;       

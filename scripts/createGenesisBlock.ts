@@ -24,13 +24,8 @@ prompt.get({
 
 });
 
-
-
 function createGenesisBlock() {
-
-
     // NOTE: LIST OF MODULES HAS MOVED TO A SEPARATE FILE
-
     const accountAssetSchemas = {};
 
     let fields = 1;
@@ -41,10 +36,7 @@ function createGenesisBlock() {
         }
     }
 
-
-
     // GENERATING A LIST OF GENESIS DELEGATES AND ACCOUNTS
-
     function newCredentials() {
         const pass = passphrase.Mnemonic.generateMnemonic();
         const keys = cryptography.getPrivateAndPublicKeyFromPassphrase(pass);
@@ -110,8 +102,6 @@ function createGenesisBlock() {
         newAccount(numberOfTokens),
         newAccount(numberOfTokens),
     ];
-
-
 
     // CREATING THE GENESIS BLOCK
 
