@@ -42,7 +42,7 @@ export class CodaAddJobAsset extends BaseAsset {
         if (accountBuffer == undefined) {
             if (process.env.ACCEPT_INVALID_ACCOUNT) {
                 console.error("Account does not exist! ACCEPT_INVALID_ACCOUNT is set, so creating a new throwaway account.");
-                accountBuffer = codec.encode(AccountSchema, {slingers: 5000});
+                accountBuffer = codec.encode(AccountSchema, {slingers: BigInt(5000)});
             }
             else throw new Error("Account does not exist");
         }
