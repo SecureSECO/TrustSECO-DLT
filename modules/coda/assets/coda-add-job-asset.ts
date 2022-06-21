@@ -52,6 +52,7 @@ export class CodaAddJobAsset extends BaseAsset {
         }
         console.log("EEEEEEEEE");
         const account = codec.decode<Account>(AccountSchema, accountBuffer);
+        console.log("EEEEEEEEE-en-een-half")
         account.slingers -= asset.data.bounty;
         if (account.slingers < 0) {
             if (process.env.ACCEPT_INSUFFICIENT_BOUNTY)
