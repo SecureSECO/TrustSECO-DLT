@@ -1,5 +1,5 @@
 import { BaseModule, codec } from 'lisk-sdk';
-import { AddTrustFactSchema, TrustFactList, TrustFactListSchema } from './trustfacts_schema'
+import { AddTrustFactSchema, StoreTrustFact, TrustFactList, TrustFactListSchema } from './trustfacts_schema'
 import { TrustFactsAddFactAsset } from './assets/addfact_asset'
 
 export class TrustFactsModule extends BaseModule {
@@ -58,7 +58,7 @@ export class TrustFactsModule extends BaseModule {
         }
     }
     
-    getRelevantFacts(facts, version) {
+    getRelevantFacts(facts : StoreTrustFact[], version) {
         return facts.filter(fact => {
             return Object.prototype.hasOwnProperty.call(this.scores, fact.fact) && fact.version === version;
         }); 

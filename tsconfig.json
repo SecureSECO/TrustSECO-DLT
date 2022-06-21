@@ -17,7 +17,7 @@
 		"strict": true,
 		"composite": true,
 		"declaration": true,
-		"noImplicitAny": false,
+		// "noImplicitAny": false,
 		"rootDir": "./",
 		"outDir": "./dist",
 		"skipLibCheck": true
