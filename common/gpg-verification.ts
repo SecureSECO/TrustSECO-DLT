@@ -29,6 +29,8 @@ export class GPG {
     static verify<T extends object>(asset : Signed<T>, schema : Schema) : string {
         const encoded = codec.encode(schema, asset.data).toString('hex');
 
+        console.log("ENCODED: " + encoded);
+
         const random = Math.random().toString().slice(2);
         writeFileSync("/tmp/signature-" + random, asset.signature);
         writeFileSync("/tmp/data-" + random, encoded);
