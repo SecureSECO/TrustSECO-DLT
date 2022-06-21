@@ -44,7 +44,13 @@ export class GPG {
             else throw new Error("GPG signature verification failed");
         }
 
-        if (accountUid === undefined) throw new Error("Unable to find the uid for the provided GPG key");
+        if (accountUid === undefined) {
+            if (process.env.ACCEPT_INVALID_ACCOUNT) {
+                console.error("Unable to find the uid for the provided GPG key! ACCEPT_INVALID_ACCOUNT is set, so continuing anyway with throwaway account");
+                return "throwaway";
+            }
+            else throw new Error("Unable to find the uid for the provided GPG key");
+        }
 
         return accountUid;
     }
