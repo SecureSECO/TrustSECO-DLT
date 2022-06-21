@@ -27,8 +27,8 @@ export class GPG {
     // verify the signature of a signed object
     // returns the account UID of the key used to sign the object
     static verify<T extends object>(asset : Signed<T>, schema : Schema) : string {
+        console.log("UNENCODED", asset);
         const encoded = codec.encode(schema, asset.data).toString('hex');
-
         console.log("ENCODED: " + encoded);
 
         const random = Math.random().toString().slice(2);
