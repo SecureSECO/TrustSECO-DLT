@@ -1,4 +1,4 @@
-import { BaseModule, codec } from 'lisk-sdk';
+import { AfterGenesisBlockApplyContext, BaseModule, codec } from 'lisk-sdk';
 import { Account, AccountSchema } from './accounts-schemas';
 import { AccountsAddAsset } from './assets/accounts-add-asset';
 
@@ -19,7 +19,7 @@ export class AccountsModule extends BaseModule {
     }
 
     // todo; remove test-account
-    async afterGenesisBlockApply({ stateStore }) {
+    async afterGenesisBlockApply({ stateStore } : AfterGenesisBlockApplyContext) {
         const account: Account = { slingers: BigInt(10000000) };
         const accountBuffer = codec.encode(AccountSchema, account);
         await stateStore.chain.set("account:test-account", accountBuffer);

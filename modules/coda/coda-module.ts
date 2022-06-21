@@ -1,4 +1,4 @@
-import { BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
+import { AfterGenesisBlockApplyContext, BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
 import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema, validFacts } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
@@ -68,7 +68,7 @@ export class CodaModule extends BaseModule {
         }
     }
 
-    async afterGenesisBlockApply({ stateStore }) {
+    async afterGenesisBlockApply({ stateStore } : AfterGenesisBlockApplyContext) {
         const jobsBuffer = codec.encode(codaJobListSchema, coda);
         const jobId = codec.encode(codaJobIdSchema, { jobId: 0 });
         const blockHeight = codec.encode(codaJobIdSchema, { blockHeight: 0 });
