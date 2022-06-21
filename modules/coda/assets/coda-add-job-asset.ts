@@ -24,10 +24,13 @@ export class CodaAddJobAsset extends BaseAsset {
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
+        console.log("AAAAAAAAA");
         const uid = GPG.verify(asset, minimalCodaJobSchema);
+        console.log("BBBBBBBBB");
 
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+        console.log("CCCCCCCCC");
 
         // check if bounty is higher than minimum required
         const rB = await CodaModule.requiredBounty( key => stateStore.chain.get(key) );
@@ -36,6 +39,7 @@ export class CodaAddJobAsset extends BaseAsset {
                 console.error("Bounty is lower than minimum required bounty! ACCEPT_INSUFFICIENT_BOUNTY is set, so continuing anyway.");
             else throw new Error("Bounty is lower than minimum required bounty!");
         }
+        console.log("DDDDDDDDD");
 
         // Deduct bounty from account
         let accountBuffer = await stateStore.chain.get("account:" + uid);
@@ -46,6 +50,7 @@ export class CodaAddJobAsset extends BaseAsset {
             }
             else throw new Error("Account does not exist");
         }
+        console.log("EEEEEEEEE");
         const account = codec.decode<Account>(AccountSchema, accountBuffer);
         account.slingers -= asset.data.bounty;
         if (account.slingers < 0) {
@@ -53,12 +58,14 @@ export class CodaAddJobAsset extends BaseAsset {
                 console.error("Bounty is higher than account credit! ACCEPT_INSUFFICIENT_BOUNTY is set, so continuing anyway.");
             else throw new Error("Bounty is higher than account credit!");
         }
+        console.log("FFFFFFFF");
         
         // Add job to list
         const job = await this.createCodaJob({ asset, stateStore, jobs, account: { uid } });
         jobs.push(job);
         await stateStore.chain.set("account:" + uid, codec.encode(AccountSchema, account));
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
+        console.log("GGGGGGGG");
     }
 
     async createCodaJob({ asset, stateStore, jobs, account }) {
