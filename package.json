@@ -4,7 +4,8 @@
     "testPathIgnorePatterns": ["./dist"],
     "transform": {
       "^.+\\.(t|j)sx?$": "ts-jest"
-    }
+    },
+    "maxWorkers": 1
   },
   "version": "1.0.0",
   "description": "",
