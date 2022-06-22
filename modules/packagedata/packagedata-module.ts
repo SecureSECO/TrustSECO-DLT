@@ -9,22 +9,21 @@ export class PackageDataModule extends BaseModule {
     transactionAssets = [
         new PackageDataAddDataAsset()
     ];
-
     actions = {
-        getPackageInfo: async ({ packageName }: Record<string, unknown>) => {
-            const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + packageName);
-            if (packageDataBuffer !== undefined) {
-                return codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
-            }
-            else return [];
-        },
         getAllPackages: async () => {
             const packageDataBuffer = await this._dataAccess.getChainState("packagedata:allPackages") as Buffer;
             if (packageDataBuffer !== undefined) {
                 return codec.decode<PackageDataList>(PackageDataListSchema, packageDataBuffer);
             }
             else return [];
-        } 
+        },
+        getPackageInfo: async ({ packageName }: Record<string, unknown>) => {
+            const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + packageName);
+            if (packageDataBuffer !== undefined) {
+                return codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
+            }
+            else return [];
+        }
     }
 
     async afterGenesisBlockApply({ stateStore } : AfterGenesisBlockApplyContext) {
