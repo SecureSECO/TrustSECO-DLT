@@ -17,11 +17,4 @@ export class AccountsModule extends BaseModule {
             return { ...account,  slingers: account.slingers.toString() };
         }
     }
-
-    // todo; remove test-account
-    async afterGenesisBlockApply({ stateStore }) {
-        const account: Account = { slingers: BigInt(10000000) };
-        const accountBuffer = codec.encode(AccountSchema, account);
-        await stateStore.chain.set("account:test-account", accountBuffer);
-    }
 }
