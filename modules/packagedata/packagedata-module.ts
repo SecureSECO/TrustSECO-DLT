@@ -1,4 +1,4 @@
-import { BaseModule, codec } from 'lisk-sdk';
+import { AfterGenesisBlockApplyContext, BaseModule, codec } from 'lisk-sdk';
 import { PackageDataAddDataAsset } from './assets/packagedata-add-data-asset';
 import { PackageDataSchema, PackageData, PackageDataListSchema, PackageDataList } from './packagedata-schemas';
 import { packagedata } from '../test-data';
@@ -27,7 +27,7 @@ export class PackageDataModule extends BaseModule {
         } 
     }
 
-    async afterGenesisBlockApply({ stateStore }) {
+    async afterGenesisBlockApply({ stateStore } : AfterGenesisBlockApplyContext) {
         const allPackagesBuffer = codec.encode(PackageDataListSchema, packagedata ?? { packages: [] });
         await stateStore.chain.set("packagedata:allPackages", allPackagesBuffer);
 

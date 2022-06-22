@@ -1,4 +1,4 @@
-import { BaseModule, codec } from 'lisk-sdk';
+import { Actions, BaseModule, codec } from 'lisk-sdk';
 import { AddTrustFactSchema, StoreTrustFact, TrustFactList, TrustFactListSchema } from './trustfacts_schema'
 import { TrustFactsAddFactAsset } from './assets/addfact_asset'
 
@@ -8,41 +8,45 @@ export class TrustFactsModule extends BaseModule {
     transactionAssets = [
         new TrustFactsAddFactAsset()
     ];
-    scores = {
-        gh_total_download_count: 63,
-        gh_owner_stargazer_count: 24.21,
-        cve_count: -16.47,
-        virus_ratio: -16.47,
-        lib_dependency_count: 8.04,
-        gh_contributor_count: 4.41,
-        lib_release_frequency: 2.32,
+
+    scores = [
+        { fact: "gh_total_download_count", weight: 63 },
+        { fact: "gh_owner_stargazer_count", weight: 24.21 },
+        { fact: "cve_count", weight: -16.47 },
+        { fact: "virus_ratio", weight: -16.47 },
+        { fact: "lib_dependency_count", weight: 8.04 },
+        { fact: "gh_contributor_count", weight: 4.41 },
+        { fact: "lib_release_frequency", weight: 2.32 },
 
         // These scores aren't based on the paper but are made up
-        gh_user_count: 60,
-        gh_release_download_count: 48,
-        gh_yearly_commit_count: 15,
-        gh_repository_language: 3,
-        gh_open_issues_count: 34,
-        gh_zero_response_issues_count: -12,
-        gh_issue_ratio: -15,
-        lib_contributor_count: 6,
-        lib_dependent_count: 7,
-        lib_latest_release_date: 1,
-        lib_release_count: 2,
-        so_popularity: 30,
-    }
-    trustFactOccurence: any = []
+        { fact: "gh_user_count", weight: 60 },
+        { fact: "gh_release_download_count", weight: 48 },
+        { fact: "gh_yearly_commit_count", weight: 15 },
+        { fact: "gh_repository_language", weight: 3 },
+        { fact: "gh_open_issues_count", weight: 34 },
+        { fact: "gh_zero_response_issues_count", weight: -12 },
+        { fact: "gh_issue_ratio", weight: -15 },
+        { fact: "lib_contributor_count", weight: 6 },
+        { fact: "lib_dependent_count", weight: 7 },
+        { fact: "lib_latest_release_date", weight: 1 },
+        { fact: "lib_release_count", weight: 2 },
+        { fact: "so_popularity", weight: 30 },
+    ]
 
-    actions = {
-        getPackageFacts: async ({ packageName }: Record<string, unknown>) => {
+    trustFactOccurence: {[x: string]: number}[] = []
+
+    actions: Actions = {
+        getPackageFacts: async (record: Record<string, unknown>) => {
+            const { packageName } = record as { packageName: string };
             const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
             if (trustFactsBuffer !== undefined) {
                 return codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
             }
             else return [];
         },
-        calculateTrustScore: async ({ packageName, version }: Record<string, unknown>) => {
-            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);   
+        calculateTrustScore: async (record: Record<string, unknown>) => {
+            const { packageName, version } = record as { packageName: string, version: string };
+            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
             if (trustFactsBuffer !== undefined) {
                 let { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
                 facts = this.getRelevantFacts(facts, version);
@@ -58,34 +62,32 @@ export class TrustFactsModule extends BaseModule {
         }
     }
     
-    getRelevantFacts(facts : StoreTrustFact[], version) {
-        return facts.filter(fact => {
-            return Object.prototype.hasOwnProperty.call(this.scores, fact.fact) && fact.version === version;
-        }); 
+    getRelevantFacts(facts: StoreTrustFact[], version: string) {
+        return facts.filter(fact =>
+            fact.version === version &&
+            this.scores.some(score => score.fact === fact.fact)
+        );
     }
 
-    findOccurenceOfTrustFacts(facts) {
+    findOccurenceOfTrustFacts(facts: StoreTrustFact[]) {
         // Count how often data is added for a trust fact contained in the scores object
         // Store the results in the trustFactOccurance array
-        Object.keys(this.scores).forEach(score => {
-            const occurence = facts.filter(factObject => {
-                return factObject.fact === score
-            }).length;
-            
-            const obj: any = {}
-            obj[score] = occurence;
-            this.trustFactOccurence.push(obj);
-        });
+        for (const score of this.scores) {
+            const occurence = facts.filter(fact => fact.fact === score.fact).length;
+            this.trustFactOccurence.push({[score.fact]: occurence});
+        }
     }
 
-    calculateTrustScore(facts) {
+    calculateTrustScore(facts: StoreTrustFact[]) {
         let score = 0;
-        facts.map(fact => {
-            const occurenceObject = this.trustFactOccurence.find((x: any) => x[fact.fact]);
-            const occurenceValue: any = Object.values(occurenceObject)[0];
+        for (const fact of facts) {
+            const occurenceObject = this.trustFactOccurence.find(occ => occ[fact.fact]);
+            if (occurenceObject == undefined) throw new Error("Could not find occurence of trust fact " + fact.fact);
+            const occurenceValue = Object.values(occurenceObject)[0];
             const factValue = parseInt(fact.factData);
-            score += (factValue * this.scores[fact.fact]) / occurenceValue;
-        });
+            const weight = this.scores.find(score => score.fact === fact.fact)?.weight ?? 0;
+            score += (factValue * weight) / occurenceValue;
+        }
         return score;       
     }
 

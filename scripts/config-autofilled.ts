@@ -17,14 +17,16 @@ if (config.rootPath == "auto") {
 
 checkauto(config);
 
-function checkauto(object, path='') {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function checkauto(object : any, path='') {
     for (const key in object) {
         path = path + key;
-        if (object[key] === 'auto') {
+        const value = object[key];
+        if (value === 'auto') {
             throw new Error(`./config/config.json : ${path} is set to 'auto', but ./scripts/config-autofill.ts does not now how to set this value.`);
         }
-        else if (typeof object[key] === 'object') {
-            checkauto(object[key], path);
+        else if (typeof value === 'object') {
+            checkauto(value, path);
         }
     }
 }

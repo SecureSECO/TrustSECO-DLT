@@ -1,7 +1,7 @@
 import semver = require('semver');
 import prompt = require('prompt');
 
-import { genesis, passphrase, cryptography } from 'lisk-sdk';
+import { genesis, passphrase, cryptography, AccountSchema } from 'lisk-sdk';
 import config = require('../config/config.json');
 import { writeFileSync } from 'fs';
 import { modules } from '../config/modules';
@@ -27,7 +27,7 @@ prompt.get({
 function createGenesisBlock() {
     // NOTE: LIST OF MODULES HAS MOVED TO A SEPARATE FILE
 
-    const accountAssetSchemas = {};
+    const accountAssetSchemas: {[key:string] : AccountSchema & {fieldNumber: number}} = {};
 
     let fields = 1;
     for (const module of modules) {
@@ -114,9 +114,7 @@ function createGenesisBlock() {
 
     Buffer.prototype.toJSON = function () { return this.toString('hex') };
 
-    const replacer = (_, val) => typeof val === 'bigint' ? val.toString() : val;
-
-    console.log(__dirname);
+    const replacer = (_:string, val:unknown) => typeof val === 'bigint' ? val.toString() : val;
 
     writeFileSync('./config/genesis-block.json', JSON.stringify(genesisBlock, replacer, 4));
     console.log('Written genesis-block.json');
