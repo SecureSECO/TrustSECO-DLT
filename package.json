@@ -30,7 +30,7 @@
     "@babel/preset-env": "^7.18.2",
     "@types/command-line-args": "^5.2.0",
     "@types/jest": "^28.1.1",
-    "@types/node": "^17.0.42",
+    "@types/node": "^18.0.0",
     "@types/prompt": "^1.1.2",
     "@types/semver": "^7.3.9",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
