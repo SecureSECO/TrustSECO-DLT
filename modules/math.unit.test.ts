@@ -28,7 +28,7 @@ describe('Test the requiredBounty function', () => {
         expect(requiredBounty(BigInt(0), 100, 100)).toBe(BigInt(1000));
     });
 
-    test('If total bounty is 5000, 50 network capacity and 25 spiders, return BigInt(2097)', () => {
-        expect(requiredBounty(BigInt(5000), 50, 25)).toBe(BigInt(2097));
+    test('If total bounty is 5000, 50 network capacity and 25 spiders, return BigInt(2046)', () => {
+        expect(requiredBounty(BigInt(5000), 50, 25)).toBe(BigInt(2046));
     });
 });
