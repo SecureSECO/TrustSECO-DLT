@@ -86,6 +86,7 @@ export class CodaAddJobAsset extends BaseAsset {
             else throw new Error("Account does not exist");
         }
         const account = codec.decode<Account>(AccountSchema, accountBuffer);
+        console.log("EEEEEEEEE-en-een-half")
         account.slingers -= asset.data.bounty;
         if (account.slingers < 0) {
             if (process.env.ACCEPT_INSUFFICIENT_BOUNTY)
