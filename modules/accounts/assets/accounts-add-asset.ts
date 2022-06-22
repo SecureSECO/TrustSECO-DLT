@@ -17,7 +17,7 @@ export class AccountsAddAsset extends BaseAsset {
         const uid = await GPG.import( url );
 
         // when the account is already known, we don't need to do anything
-        const accountsBuffer = await stateStore.chain.get("account:" + uid) as Buffer;
+        const accountsBuffer = await stateStore.chain.get("account:" + uid);
         if (accountsBuffer !== undefined) {
             console.log(`Account from ${url} already known as ${uid}`);
             return;

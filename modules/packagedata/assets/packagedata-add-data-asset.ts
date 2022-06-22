@@ -28,9 +28,9 @@ export class PackageDataAddDataAsset extends BaseAsset {
 
         // Get the buffers for the package data and all packages in parallel
         const packageDataBuffer$ = stateStore.chain.get("packagedata:" + asset.packageName);
-        const allPackagesBuffer$ = stateStore.chain.get("packagedata:allPackages");
+        const allPackagesBuffer$ = stateStore.chain.get("packagedata:allPackages") as Promise<Buffer>;
         const packageDataBuffer = await packageDataBuffer$;
-        const allPackagesBuffer = await allPackagesBuffer$ as Buffer;
+        const allPackagesBuffer = await allPackagesBuffer$;
 
         let packageData: PackageData = { packageName: "", packagePlatform: "", packageOwner: "", packageReleases: [""] };
         let packageIsNew = true;

@@ -57,7 +57,8 @@ export class CodaModule extends BaseModule {
             }
 
             // fetch this random job´s package data
-            const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + job.package) as Buffer;
+            const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + job.package);
+            if (packageDataBuffer === undefined) throw new Error("This should never happen. Found a job for a package that doesn't exist");
             const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
 
             return { ...job, bounty: job.bounty.toString(), ...packageData };
@@ -119,7 +120,8 @@ export class CodaModule extends BaseModule {
                     const reward = (BigInt(networkCapacity) * job.bounty) / (BigInt(facts.length * networkDemand));
 
                     for (const fact of facts) {
-                        const accountBuffer = await stateStore.chain.get("account:" + fact.account.uid) as Buffer;
+                        const accountBuffer = await stateStore.chain.get("account:" + fact.account.uid);
+                        if (accountBuffer === undefined) throw new Error("This should never happen. Found a fact for an account that doesn't exist");
                         const account = codec.decode<Account>(AccountSchema, accountBuffer);
                         account.slingers += reward;
                         await stateStore.chain.set("account:" + fact.account.uid, codec.encode(AccountSchema, account));
