@@ -8,7 +8,6 @@ export class AccountsModule extends BaseModule {
     transactionAssets = [
         new AccountsAddAsset()
     ];
-
     actions = {
         getAccount: async ({ uid }: Record<string, unknown>) => {
             const accountBuffer = await this._dataAccess.getChainState("account:" + uid);

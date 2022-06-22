@@ -32,7 +32,6 @@ export class TrustFactsModule extends BaseModule {
         so_popularity: 30,
     }
     trustFactOccurence: any = []
-
     actions = {
         calculateTrustScore: async ({ packageName, version }: Record<string, unknown>) => {
             const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);   

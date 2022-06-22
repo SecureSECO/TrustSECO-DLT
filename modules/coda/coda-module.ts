@@ -13,7 +13,6 @@ export class CodaModule extends BaseModule {
     transactionAssets = [
         new CodaAddJobAsset()
     ];
-
     actions = {
         encodeCodaJob: async function(asset: Record<string, unknown>) {
             asset.bounty = BigInt(asset.bounty as string | number);

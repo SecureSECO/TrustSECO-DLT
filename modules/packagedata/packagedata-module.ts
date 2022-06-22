@@ -9,7 +9,6 @@ export class PackageDataModule extends BaseModule {
     transactionAssets = [
         new PackageDataAddDataAsset()
     ];
-
     actions = {
         getAllPackages: async () => {
             const packageDataBuffer = await this._dataAccess.getChainState("packagedata:allPackages") as Buffer;
