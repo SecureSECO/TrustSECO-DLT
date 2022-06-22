@@ -26,12 +26,12 @@ export class PackageDataAddDataAsset extends BaseAsset {
 
     async apply({ asset, stateStore } : ApplyAssetContext<PackageData>) {
 
-        // Get the buffers for the package data and all packages
-        const [packageDataBuffer, allPackagesBuffer] = await Promise.all([
-            stateStore.chain.get("packagedata:" + asset.packageName),
-            stateStore.chain.get("packagedata:allPackages") as Promise<Buffer>
-        ]);
-        
+        // Get the buffers for the package data and all packages in parallel
+        const packageDataBuffer$ = stateStore.chain.get("packagedata:" + asset.packageName);
+        const allPackagesBuffer$ = stateStore.chain.get("packagedata:allPackages");
+        const packageDataBuffer = await packageDataBuffer$;
+        const allPackagesBuffer = await allPackagesBuffer$ as Buffer;
+
         let packageData: PackageData = { packageName: "", packagePlatform: "", packageOwner: "", packageReleases: [""] };
         let packageIsNew = true;
         let newReleases : string[] = []
