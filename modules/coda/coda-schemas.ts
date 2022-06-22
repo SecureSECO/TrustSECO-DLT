@@ -69,17 +69,6 @@ export interface CodaJobList extends Record<string, unknown> {
     jobs: CodaJob[];
 }
 
-export interface CodaReturnJob extends Record<string, unknown> {
-    packageName: string;
-    packagePlatform: string;
-    packageOwner: string;
-    packageRelease: string;
-    fact: string;
-    jobID: number;
-    bounty: bigint;
-    account: AccountId;
-}
-
 export interface MinimalCodaJob extends Record<string, unknown> {
     package: string;
     version: string;
@@ -159,47 +148,6 @@ export const codaJobListSchema: Schema = {
             type: 'array',
             fieldNumber: 1,
             items: codaJobSchema
-        }
-    }
-}
-
-export const codaReturnJobSchema: Schema = {
-    $id: 'coda/return-job',
-    type: 'object',
-    required: [],
-    properties: {
-        // ID name of package
-        packageName: {
-            dataType: 'string',
-            fieldNumber: 1
-        },
-        // Platform the package is hosted on (e.g. GitHub)
-        packagePlatform: {
-            dataType: 'string',
-            fieldNumber: 2
-        },
-        // Owner (account name) of the package on the platform
-        packageOwner: {
-            dataType: 'string',
-            fieldNumber: 3
-        },
-        // Release version 
-        packageRelease: {
-            dataType: 'string',
-            fieldNumber: 4            
-        },
-        // The ID corresponding to the job
-        jobID: {
-            dataType: 'uint32',
-            fieldNumber: 5
-        },
-        bounty: {
-            dataType: 'uint64',
-            fieldNumber: 6
-        },
-        account: {
-            ...AccountIdSchema,
-            fieldNumber: 7
         }
     }
 }

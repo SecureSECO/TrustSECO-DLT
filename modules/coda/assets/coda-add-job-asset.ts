@@ -15,8 +15,7 @@ export class CodaAddJobAsset extends BaseAsset {
         asset = this.formatAsset({ asset });
         if (asset.data.package === "") throw new Error("Package cannot be empty");
         if (asset.data.version === "") throw new Error("version cannot be empty");
-        if (asset.data.fact === "") throw new Error("Fact cannot be empty");
-        if (!validFacts.flatMap(a => a.facts).includes(asset.data.fact)) throw new Error("Fact is not valid");
+        if (!validFacts.flatMap(a => a.facts).includes(asset.data.fact)) throw new Error("Invalid fact provided");
         if (!asset.signature) throw new Error("Signature is missing!");
         
         // will throw an error when the signature is invalid
@@ -24,10 +23,6 @@ export class CodaAddJobAsset extends BaseAsset {
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
-        console.log("AAAAAAAAA");
-        const uid = GPG.verify(asset, minimalCodaJobSchema);
-        console.log("BBBBBBBBB");
-
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         console.log("CCCCCCCCC");
@@ -42,6 +37,7 @@ export class CodaAddJobAsset extends BaseAsset {
         console.log("DDDDDDDDD");
 
         // Deduct bounty from account
+        const uid = GPG.verify(asset, minimalCodaJobSchema);
         let accountBuffer = await stateStore.chain.get("account:" + uid);
         if (accountBuffer == undefined) {
             if (process.env.ACCEPT_INVALID_ACCOUNT) {

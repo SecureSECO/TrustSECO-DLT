@@ -10,7 +10,6 @@ export class TrustFactsAddFactAsset extends BaseAsset {
     schema = SignedSchema(AddTrustFactSchema);
 
     validate({ asset }: ValidateAssetContext<Signed<AddTrustFact>>) {
-        if (asset.data.jobID < 0) throw new Error("JobID can't be negative");
         if (asset.data.factData.trim() === "") throw new Error("FactData cannot be empty");
         if (!asset.signature) throw new Error("Signature is missing!");
 
@@ -23,7 +22,6 @@ export class TrustFactsAddFactAsset extends BaseAsset {
         const job = jobs.find(job => job.jobID === asset.data.jobID);
 
         if (job !== undefined) {
-            // get the facts for this package
             let facts: StoreTrustFact[] = [];
 
             const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
@@ -31,21 +29,19 @@ export class TrustFactsAddFactAsset extends BaseAsset {
                 facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
             }
 
-            const uid = GPG.verify(asset, AddTrustFactSchema);
-
             // check if this account already has a fact for this job
+            const uid = GPG.verify(asset, AddTrustFactSchema);
             const existingFact = facts.find(fact => fact.account.uid === uid && fact.jobID === asset.data.jobID);
             if (existingFact !== undefined) throw new Error("Account already has a fact for this job");
 
-            const newFact: StoreTrustFact = { 
+            facts.push({ 
                 fact: job.fact, 
                 factData: asset.data.factData, 
                 version: job.version, 
                 keyURL: asset.data.keyURL, 
                 jobID: asset.data.jobID,
                 account: { uid }
-            };
-            facts.push(newFact);
+            });
 
             await stateStore.chain.set("trustfacts:" + job.package, codec.encode(TrustFactListSchema, { facts }));
         } else {
