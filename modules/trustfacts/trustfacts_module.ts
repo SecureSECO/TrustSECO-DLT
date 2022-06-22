@@ -34,13 +34,6 @@ export class TrustFactsModule extends BaseModule {
     trustFactOccurence: any = []
 
     actions = {
-        getPackageFacts: async ({ packageName }: Record<string, unknown>) => {
-            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
-            if (trustFactsBuffer !== undefined) {
-                return codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-            }
-            else return [];
-        },
         calculateTrustScore: async ({ packageName, version }: Record<string, unknown>) => {
             const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);   
             if (trustFactsBuffer !== undefined) {
@@ -55,6 +48,13 @@ export class TrustFactsModule extends BaseModule {
         },
         encodeTrustFact: async (asset: Record<string, unknown>) => {
             return codec.encode(AddTrustFactSchema, asset).toString('hex');
+        },
+        getPackageFacts: async ({ packageName }: Record<string, unknown>) => {
+            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
+            if (trustFactsBuffer !== undefined) {
+                return codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+            }
+            else return [];
         }
     }
     

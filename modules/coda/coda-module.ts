@@ -15,6 +15,13 @@ export class CodaModule extends BaseModule {
     ];
 
     actions = {
+        encodeCodaJob: async function(asset: Record<string, unknown>) {
+            asset.bounty = BigInt(asset.bounty as string | number);
+            return codec.encode(minimalCodaJobSchema, asset).toString('hex');
+        },
+        getAllFacts: async () => {
+            return validFacts;
+        },
         getJobs: async () => {
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             const { jobs } =  codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
@@ -58,14 +65,7 @@ export class CodaModule extends BaseModule {
             return { ...job, bounty: job.bounty.toString(), ...packageData };
         },
         getMinimumRequiredBounty: async () =>
-            (await CodaModule.requiredBounty( key => this._dataAccess.getChainState(key) )).toString(),
-        encodeCodaJob: async function(asset: Record<string, unknown>) {
-            asset.bounty = BigInt(asset.bounty as string | number);
-            return codec.encode(minimalCodaJobSchema, asset).toString('hex');
-        },
-        listAllFacts: async () => {
-            return validFacts;
-        }
+            (await CodaModule.requiredBounty( key => this._dataAccess.getChainState(key) )).toString()
     }
 
     async afterGenesisBlockApply({ stateStore }) {
