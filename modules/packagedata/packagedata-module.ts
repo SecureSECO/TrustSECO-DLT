@@ -1,7 +1,6 @@
 import { AfterGenesisBlockApplyContext, BaseModule, codec } from 'lisk-sdk';
 import { PackageDataAddDataAsset } from './assets/packagedata-add-data-asset';
 import { PackageDataSchema, PackageData, PackageDataListSchema, PackageDataList } from './packagedata-schemas';
-import { packagedata } from '../test-data';
 
 export class PackageDataModule extends BaseModule {
     id = 6328;
@@ -27,11 +26,7 @@ export class PackageDataModule extends BaseModule {
     }
 
     async afterGenesisBlockApply({ stateStore } : AfterGenesisBlockApplyContext) {
-        const allPackagesBuffer = codec.encode(PackageDataListSchema, packagedata ?? { packages: [] });
+        const allPackagesBuffer = codec.encode(PackageDataListSchema, { packages: [] });
         await stateStore.chain.set("packagedata:allPackages", allPackagesBuffer);
-
-        for (const pack of packagedata.packages) {
-            await stateStore.chain.set("packagedata:" + pack.packageName, codec.encode(PackageDataSchema, pack));
-        }
     }
 }
