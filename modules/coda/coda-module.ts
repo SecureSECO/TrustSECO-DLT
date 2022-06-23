@@ -29,19 +29,16 @@ export class CodaModule extends BaseModule {
             const { uid } = record as AccountId;
             if (!uid) throw new Error("uid is required");
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
-            const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
+            let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
-            // filter out all jobs that are already done by this user
-            let j = 0;
-            skipjob: for (const job of jobs) {
+            const jobsIsDone = await Promise.all(jobs.map(async job => {
                 const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + job.package);
-                if (trustFactsBuffer !== undefined) {
-                    const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-                    for (const fact of facts) if (fact.account.uid === uid) continue skipjob;
-                }
-                jobs[j++] = job;
-            }
-            jobs.length = j;
+                if (trustFactsBuffer === undefined) return false;
+                const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                return facts.some(fact => fact.jobID === job.jobId && fact.account.uid === uid);
+            }));
+
+            jobs = jobs.filter((_,i) => !jobsIsDone[i]);
 
             if (jobs.length === 0) throw new Error("You've done all jobs in the list");
 
