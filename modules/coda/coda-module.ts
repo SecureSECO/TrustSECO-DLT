@@ -30,23 +30,20 @@ export class CodaModule extends BaseModule {
             if (!uid) throw new Error("uid is required");
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-            if (jobs.length === 0) return [];
 
             // filter out all jobs that are already done by this user
-            if (uid) {
-                let j = 0;
-                for (let i = 0; i < jobs.length; i++) {
-                    const job = jobs[i];
-                    const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + job.package);
-                    if (trustFactsBuffer !== undefined) {
-                        const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-                        for (const fact of facts) if (fact.account.uid === uid) continue;
-                    }
-                    jobs[j++] = job;
+            let j = 0;
+            skipjob: for (const job of jobs) {
+                const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + job.package);
+                if (trustFactsBuffer !== undefined) {
+                    const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+                    for (const fact of facts) if (fact.account.uid === uid) continue skipjob;
                 }
-
-                if (jobs.length === 0) throw new Error("You've done all jobs in the list");
+                jobs[j++] = job;
             }
+            jobs.length = j;
+
+            if (jobs.length === 0) throw new Error("You've done all jobs in the list");
 
             // get a random job, weighted by bounty
             const totalBounty = jobs.reduce((count, job) => count + job.bounty, BigInt(0));
