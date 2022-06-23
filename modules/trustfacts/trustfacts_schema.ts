@@ -37,7 +37,7 @@ export const AddTrustFactSchema: Schema = {
 }
 
 export const StoreTrustFactSchema: Schema = {
-    $id: 'trustfacts/add-facts',
+    $id: 'trustfacts/store-facts',
     type: 'object',
     required: ["fact", "factData", "version", "jobID", "account"],
     properties: {
