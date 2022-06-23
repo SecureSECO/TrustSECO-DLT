@@ -37,8 +37,7 @@ export const validFacts: {source:string, facts:string[]}[] = [
         source: "cve",
         facts: [            
             "cve_count",
-            "cve_vulnerabilities",
-            "cve_codes"
+            "cve_vulnerabilities"
         ]
     },
     {

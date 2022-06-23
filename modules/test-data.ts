@@ -225,15 +225,6 @@ export const coda : CodaJobList = {
         {
             "package": "numpy",
             "version": "1.22.1",
-            "fact": "cve_codes",
-            "date": "0",
-            "jobID": 24,
-            "bounty": BigInt(1000),
-            "account": { uid: "test-account" }
-        },
-        {
-            "package": "numpy",
-            "version": "1.22.1",
             "fact": "so_popularity",
             "date": "0",
             "jobID": 25,
