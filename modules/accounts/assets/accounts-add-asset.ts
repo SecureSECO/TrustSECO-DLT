@@ -23,8 +23,8 @@ export class AccountsAddAsset extends BaseAsset {
             return;
         }
 
-        // create a new account with 5000 reward tokens
-        const account : Account = { slingers: BigInt(5000) };
+        // create a new account with 500000 reward tokens
+        const account : Account = { slingers: BigInt(500000) };
         await stateStore.chain.set("account:" + uid, codec.encode(AccountSchema, account));
 
         console.log(`Added account ${uid} from ${url}`);
