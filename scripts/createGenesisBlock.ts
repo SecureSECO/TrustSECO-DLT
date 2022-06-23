@@ -38,8 +38,8 @@ function createGenesisBlock() {
     }
 
     // GENERATING A LIST OF GENESIS DELEGATES AND ACCOUNTS
-    function newCredentials() {
-        const pass = passphrase.Mnemonic.generateMnemonic();
+    function newCredentials(chosenPassPhrase?: string) {
+        const pass = chosenPassPhrase ?? passphrase.Mnemonic.generateMnemonic();
         const keys = cryptography.getPrivateAndPublicKeyFromPassphrase(pass);
         const credentials = {
             address: cryptography.getBase32AddressFromPassphrase(pass),
@@ -51,8 +51,8 @@ function createGenesisBlock() {
         return credentials;
     }
 
-    function newAccount(balance: bigint, delegateName: string | null = null) {
-        const cred = newCredentials();
+    function newAccount(balance: bigint, delegateName: string | null = null, chosenPassPhrase?: string) {
+        const cred = newCredentials(chosenPassPhrase);
         const address = Buffer.from(cred.binaryAddress, 'hex');
         const account : Partial<Account> & { address: Buffer } = {
             address,
@@ -90,6 +90,7 @@ function createGenesisBlock() {
     const numberOfTokens = BigInt("1000000000000000000");
 
     const delegates = [
+        newAccount(numberOfTokens, 'fidesContributor', 'wat het nu is ofzo maakt me echt niet uit'),
         newAccount(numberOfTokens, 'genesisDelegate1'),
         newAccount(numberOfTokens, 'genesisDelegate2'),
         newAccount(numberOfTokens, 'genesisDelegate3'),
