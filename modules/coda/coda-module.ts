@@ -4,7 +4,7 @@ import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 import { randomBigInt, requiredBounty, requiredVerifications } from '../math';
 import { TrustFactList, TrustFactListSchema } from '../trustfacts/trustfacts_schema';
-import { Account, AccountSchema } from '../accounts/accounts-schemas';
+import { Account, AccountId, AccountSchema } from '../accounts/accounts-schemas';
 import { coda } from '../test-data';
 
 export class CodaModule extends BaseModule {
@@ -26,7 +26,9 @@ export class CodaModule extends BaseModule {
             const { jobs } =  codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
             return jobs.map(job => ({...job, bounty: job.bounty.toString()}));
         },
-        getRandomJob: async ({ uid } : Record<string,unknown>) => {
+        getRandomJob: async (record : Record<string,unknown>) => {
+            const { uid } = record as AccountId;
+            if (!uid) throw new Error("uid is required");
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
             if (jobs.length === 0) return [];
