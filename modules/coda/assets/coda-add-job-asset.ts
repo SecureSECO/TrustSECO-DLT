@@ -96,21 +96,23 @@ export class CodaAddJobAsset extends BaseAsset {
         // calculate next jobId (by adding 1, wow)
 
         const jobIdBuffer = await stateStore.chain.get("coda:jobId") as Buffer;
-        const { jobId: predJobID } = codec.decode<{ jobId: number }>(codaJobIdSchema, jobIdBuffer);
-        const jobID = (predJobID + 1) % 2 ** 32;
-
-
-
+        const { jobId } = codec.decode<{ jobId: number }>(codaJobIdSchema, jobIdBuffer);
+        const nextJobId = (jobId + 1) % 2 ** 32;
+        
+        
+        
         const blockHeightBuffer = await stateStore.chain.get("coda:blockHeight") as Buffer;
         const { blockHeight } = codec.decode<{ blockHeight: number }>(codaBlockHeightSchema, blockHeightBuffer);
-
-
+        
+        
         // Add job to list
-
-        jobs.push({ ...asset.data, account: { uid }, date: blockHeight.toString(), jobID });
-
+        
+        jobs.push({ ...asset.data, account: { uid }, date: blockHeight.toString(), jobID: nextJobId });
+        
         // apply!
         await stateStore.chain.set("account:" + uid, codec.encode(AccountSchema, account));
         await stateStore.chain.set("coda:jobs", codec.encode(codaJobListSchema, { jobs }));
+        const nextJobIdBuffer = codec.encode(codaJobIdSchema, { jobId: nextJobId });
+        await stateStore.chain.set("coda:jobId", nextJobIdBuffer);
     }
 }
