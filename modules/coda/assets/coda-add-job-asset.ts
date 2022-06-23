@@ -52,7 +52,8 @@ export class CodaAddJobAsset extends BaseAsset {
             if (job.package == asset.data.package &&
                 job.fact == asset.data.fact &&
                 job.version == asset.data.version) {
-                throw new Error("There already exists a job for the given package, version and fact!");
+                console.error("There already exists a job for the given package, version and fact!");
+                return;
             }
         }
 
