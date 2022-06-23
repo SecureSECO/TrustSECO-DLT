@@ -32,7 +32,10 @@ export class TrustFactsAddFactAsset extends BaseAsset {
             // check if this account already has a fact for this job
             const uid = GPG.verify(asset, AddTrustFactSchema);
             const existingFact = facts.find(fact => fact.account.uid === uid && fact.jobID === asset.data.jobID);
-            if (existingFact !== undefined) throw new Error("Account already has a fact for this job");
+            if (existingFact !== undefined) {
+                console.error("Account already has a fact for this job! Ignoring this new fact...");
+                return;
+            }
 
             facts.push({ 
                 fact: job.fact, 
