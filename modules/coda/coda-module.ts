@@ -31,14 +31,16 @@ export class CodaModule extends BaseModule {
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             let { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
 
-            const jobsIsDone = await Promise.all(jobs.map(async job => {
+            const jobIsDone = await Promise.all(jobs.map(async job => {
                 const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + job.package);
                 if (trustFactsBuffer === undefined) return false;
                 const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
                 return facts.some(fact => fact.jobID === job.jobId && fact.account.uid === uid);
             }));
 
-            jobs = jobs.filter((_,i) => !jobsIsDone[i]);
+            for (let i = 0; i < jobs.length; i++) console.log(`Job ${jobs[i].jobID} done? ${jobIsDone[i]}`);
+
+            jobs = jobs.filter((_, i) => !jobIsDone[i]);
 
             if (jobs.length === 0) throw new Error("You've done all jobs in the list");
 
