@@ -15,6 +15,12 @@ if (config.rootPath == "auto") {
     config.rootPath = path.join(dir, '.lisk');
 }
 
+if (process.env.NO_OUTSIDE_CONNECTIONS) {
+    console.warn("WARNING: You are running TrustSECO-DLT with NO_OUTSIDE_CONNECTIONS set.");
+    console.warn("There will not be actively searched for seedpeers, but other nodes could still find & connect us to the network.");
+    config.network.seedPeers.length = 0;
+}
+
 checkauto(config);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
