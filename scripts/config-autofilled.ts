@@ -15,16 +15,24 @@ if (config.rootPath == "auto") {
     config.rootPath = path.join(dir, '.lisk');
 }
 
+if (process.env.NO_OUTSIDE_CONNECTIONS) {
+    console.warn("WARNING: You are running TrustSECO-DLT with NO_OUTSIDE_CONNECTIONS set.");
+    console.warn("There will not be actively searched for seedpeers, but other nodes could still find & connect us to the network.");
+    config.network.seedPeers.length = 0;
+}
+
 checkauto(config);
 
-function checkauto(object, path='') {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function checkauto(object : any, path='') {
     for (const key in object) {
         path = path + key;
-        if (object[key] === 'auto') {
+        const value = object[key];
+        if (value === 'auto') {
             throw new Error(`./config/config.json : ${path} is set to 'auto', but ./scripts/config-autofill.ts does not now how to set this value.`);
         }
-        else if (typeof object[key] === 'object') {
-            checkauto(object[key], path);
+        else if (typeof value === 'object') {
+            checkauto(value, path);
         }
     }
 }

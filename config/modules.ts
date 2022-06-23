@@ -1,4 +1,4 @@
-import { TokenModule, DPoSModule, KeysModule, SequenceModule } from 'lisk-sdk';
+import { TokenModule, DPoSModule, KeysModule, SequenceModule, BaseModule } from 'lisk-sdk';
 import config = require('./config.json');
 
 import { CodaModule } from '../modules/coda/coda-module';
@@ -6,7 +6,7 @@ import { TrustFactsModule } from '../modules/trustfacts/trustfacts_module';
 import { PackageDataModule} from '../modules/packagedata/packagedata-module';
 import { AccountsModule } from '../modules/accounts/accounts-module';
 
-export const modules = [
+export const modules : BaseModule[] = [
     // Default Modules
     new TokenModule(config.genesisConfig),
     new DPoSModule(config.genesisConfig),

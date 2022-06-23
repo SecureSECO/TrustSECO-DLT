@@ -1,11 +1,10 @@
-import { BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
+import { AfterGenesisBlockApplyContext, BaseModule, BeforeBlockApplyContext, codec } from 'lisk-sdk';
 import { codaBlockHeightSchema, CodaJob, codaJobIdSchema, CodaJobList, codaJobListSchema, minimalCodaJobSchema, validFacts } from './coda-schemas';
 import { CodaAddJobAsset } from './assets/coda-add-job-asset';
 import { PackageData, PackageDataSchema } from '../packagedata/packagedata-schemas';
 import { randomBigInt, requiredBounty, requiredVerifications } from '../math';
 import { TrustFactList, TrustFactListSchema } from '../trustfacts/trustfacts_schema';
-import { Account, AccountSchema } from '../accounts/accounts-schemas';
-import { coda } from '../test-data';
+import { Account, AccountId, AccountSchema } from '../accounts/accounts-schemas';
 
 export class CodaModule extends BaseModule {
     id = 2632; 
@@ -26,7 +25,9 @@ export class CodaModule extends BaseModule {
             const { jobs } =  codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
             return jobs.map(job => ({...job, bounty: job.bounty.toString()}));
         },
-        getRandomJob: async ({ uid } : Record<string,unknown>) => {
+        getRandomJob: async (record : Record<string,unknown>) => {
+            const { uid } = record as AccountId;
+            if (!uid) throw new Error("uid is required");
             const jobsBuffer = await this._dataAccess.getChainState("coda:jobs") as Buffer;
             const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
             if (jobs.length === 0) return [];
@@ -57,7 +58,8 @@ export class CodaModule extends BaseModule {
             }
 
             // fetch this random job´s package data
-            const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + job.package) as Buffer;
+            const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + job.package);
+            if (packageDataBuffer === undefined) throw new Error("This should never happen. Found a job for a package that doesn't exist");
             const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
 
             return { ...job, bounty: job.bounty.toString(), ...packageData };
@@ -66,8 +68,8 @@ export class CodaModule extends BaseModule {
             (await CodaModule.requiredBounty( key => this._dataAccess.getChainState(key) )).toString()
     }
 
-    async afterGenesisBlockApply({ stateStore }) {
-        const jobsBuffer = codec.encode(codaJobListSchema, coda);
+    async afterGenesisBlockApply({ stateStore } : AfterGenesisBlockApplyContext) {
+        const jobsBuffer = codec.encode(codaJobListSchema, { jobs: [] });
         const jobId = codec.encode(codaJobIdSchema, { jobId: 0 });
         const blockHeight = codec.encode(codaJobIdSchema, { blockHeight: 0 });
         await stateStore.chain.set("coda:jobs", jobsBuffer);
@@ -119,7 +121,8 @@ export class CodaModule extends BaseModule {
                     const reward = (BigInt(networkCapacity) * job.bounty) / (BigInt(facts.length * networkDemand));
 
                     for (const fact of facts) {
-                        const accountBuffer = await stateStore.chain.get("account:" + fact.account.uid) as Buffer;
+                        const accountBuffer = await stateStore.chain.get("account:" + fact.account.uid);
+                        if (accountBuffer === undefined) throw new Error("This should never happen. Found a fact for an account that doesn't exist");
                         const account = codec.decode<Account>(AccountSchema, accountBuffer);
                         account.slingers += reward;
                         await stateStore.chain.set("account:" + fact.account.uid, codec.encode(AccountSchema, account));

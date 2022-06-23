@@ -4,7 +4,7 @@ export interface PackageData extends Record<string, unknown> {
     packageName: string,
     packagePlatform: string,
     packageOwner: string,
-    packageReleases: [string],
+    packageReleases: string[],
 }
 
 export interface PackageDataList extends Record<string, unknown> {

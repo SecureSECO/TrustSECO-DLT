@@ -13,7 +13,7 @@ import prompt = require('prompt');
 import config from '../scripts/config-autofilled'
 
 export async function checkVersion() {
-    const { dataPath } = systemDirs(config.label as string, config.rootPath as string);
+    const { dataPath } = systemDirs(config.label, config.rootPath);
     const versionPath = `${dataPath}/.version`;
 
     const dataVersion = existsSync(versionPath) ? readFileSync(versionPath, 'utf8') : config.version;
@@ -48,5 +48,5 @@ export async function checkVersion() {
     }
 
     mkdirSync(dataPath, { recursive: true });
-    writeFileSync(versionPath, config.version as string);
+    writeFileSync(versionPath, config.version);
 }

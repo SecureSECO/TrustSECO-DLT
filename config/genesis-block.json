@@ -5,17 +5,17 @@
         "previousBlockID": "",
         "reward": "0",
         "signature": "",
-        "timestamp": 1655819326,
+        "timestamp": 1655976955,
         "transactionRoot": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "version": 0,
         "asset": {
             "initRounds": 3,
             "initDelegates": [
-                "3212c0415cc85970286725283470f46e68ae6fd8",
-                "9f05a31e8e87a3ec9bce352d3b1654e3e8a5fc7e",
-                "cdc4476170b4b704ee5454a6df49fb6aef008df2",
-                "d5eae62dcd744c3fb92a8c218160b5e13780a2d1",
-                "db8be6d49122880abc73276ca338da42809fe3ef"
+                "1ca5de265fb3176c45a30203108d711a304161b1",
+                "699e5f3a8d1fa56ef9625eca2a9e4e7f1d8535ee",
+                "a03fd0c8c3ba1d9066badc45715139fefb88dc66",
+                "c163c58020030b5af23bc424dbd43b5618f7f350",
+                "c7ebc1fc7217702965d6197f1ee51c76127f202c"
             ],
             "accounts": [
                 {
@@ -24,7 +24,7 @@
                     },
                     "dpos": {
                         "delegate": {
-                            "username": "",
+                            "username": "genesisDelegate2",
                             "pomHeights": [],
                             "consecutiveMissedBlocks": 0,
                             "lastForgedHeight": 0,
@@ -42,33 +42,7 @@
                     "sequence": {
                         "nonce": "0"
                     },
-                    "address": "0c191349156fe975ddec8a84e1165a4a9ab122b0"
-                },
-                {
-                    "token": {
-                        "balance": "1000000000000000000"
-                    },
-                    "dpos": {
-                        "delegate": {
-                            "username": "genesisDelegate4",
-                            "pomHeights": [],
-                            "consecutiveMissedBlocks": 0,
-                            "lastForgedHeight": 0,
-                            "isBanned": false,
-                            "totalVotesReceived": "0"
-                        },
-                        "sentVotes": [],
-                        "unlocking": []
-                    },
-                    "keys": {
-                        "mandatoryKeys": [],
-                        "optionalKeys": [],
-                        "numberOfSignatures": 0
-                    },
-                    "sequence": {
-                        "nonce": "0"
-                    },
-                    "address": "3212c0415cc85970286725283470f46e68ae6fd8"
+                    "address": "1ca5de265fb3176c45a30203108d711a304161b1"
                 },
                 {
                     "token": {
@@ -94,85 +68,7 @@
                     "sequence": {
                         "nonce": "0"
                     },
-                    "address": "63605ce640fafc80273633d60416ad7a74f84e61"
-                },
-                {
-                    "token": {
-                        "balance": "1000000000000000000"
-                    },
-                    "dpos": {
-                        "delegate": {
-                            "username": "genesisDelegate1",
-                            "pomHeights": [],
-                            "consecutiveMissedBlocks": 0,
-                            "lastForgedHeight": 0,
-                            "isBanned": false,
-                            "totalVotesReceived": "0"
-                        },
-                        "sentVotes": [],
-                        "unlocking": []
-                    },
-                    "keys": {
-                        "mandatoryKeys": [],
-                        "optionalKeys": [],
-                        "numberOfSignatures": 0
-                    },
-                    "sequence": {
-                        "nonce": "0"
-                    },
-                    "address": "9f05a31e8e87a3ec9bce352d3b1654e3e8a5fc7e"
-                },
-                {
-                    "token": {
-                        "balance": "1000000000000000000"
-                    },
-                    "dpos": {
-                        "delegate": {
-                            "username": "",
-                            "pomHeights": [],
-                            "consecutiveMissedBlocks": 0,
-                            "lastForgedHeight": 0,
-                            "isBanned": false,
-                            "totalVotesReceived": "0"
-                        },
-                        "sentVotes": [],
-                        "unlocking": []
-                    },
-                    "keys": {
-                        "mandatoryKeys": [],
-                        "optionalKeys": [],
-                        "numberOfSignatures": 0
-                    },
-                    "sequence": {
-                        "nonce": "0"
-                    },
-                    "address": "be92a3e4e447902ca3966921e269824bb0414ba1"
-                },
-                {
-                    "token": {
-                        "balance": "1000000000000000000"
-                    },
-                    "dpos": {
-                        "delegate": {
-                            "username": "genesisDelegate3",
-                            "pomHeights": [],
-                            "consecutiveMissedBlocks": 0,
-                            "lastForgedHeight": 0,
-                            "isBanned": false,
-                            "totalVotesReceived": "0"
-                        },
-                        "sentVotes": [],
-                        "unlocking": []
-                    },
-                    "keys": {
-                        "mandatoryKeys": [],
-                        "optionalKeys": [],
-                        "numberOfSignatures": 0
-                    },
-                    "sequence": {
-                        "nonce": "0"
-                    },
-                    "address": "cdc4476170b4b704ee5454a6df49fb6aef008df2"
+                    "address": "34dad17353b0d1080fa90810aa2383749741e22c"
                 },
                 {
                     "token": {
@@ -198,7 +94,7 @@
                     "sequence": {
                         "nonce": "0"
                     },
-                    "address": "d5eae62dcd744c3fb92a8c218160b5e13780a2d1"
+                    "address": "699e5f3a8d1fa56ef9625eca2a9e4e7f1d8535ee"
                 },
                 {
                     "token": {
@@ -206,7 +102,7 @@
                     },
                     "dpos": {
                         "delegate": {
-                            "username": "genesisDelegate2",
+                            "username": "",
                             "pomHeights": [],
                             "consecutiveMissedBlocks": 0,
                             "lastForgedHeight": 0,
@@ -224,11 +120,115 @@
                     "sequence": {
                         "nonce": "0"
                     },
-                    "address": "db8be6d49122880abc73276ca338da42809fe3ef"
+                    "address": "8504d482e3a55574dcb54a904d7c5e024cd33004"
+                },
+                {
+                    "token": {
+                        "balance": "1000000000000000000"
+                    },
+                    "dpos": {
+                        "delegate": {
+                            "username": "genesisDelegate1",
+                            "pomHeights": [],
+                            "consecutiveMissedBlocks": 0,
+                            "lastForgedHeight": 0,
+                            "isBanned": false,
+                            "totalVotesReceived": "0"
+                        },
+                        "sentVotes": [],
+                        "unlocking": []
+                    },
+                    "keys": {
+                        "mandatoryKeys": [],
+                        "optionalKeys": [],
+                        "numberOfSignatures": 0
+                    },
+                    "sequence": {
+                        "nonce": "0"
+                    },
+                    "address": "a03fd0c8c3ba1d9066badc45715139fefb88dc66"
+                },
+                {
+                    "token": {
+                        "balance": "1000000000000000000"
+                    },
+                    "dpos": {
+                        "delegate": {
+                            "username": "",
+                            "pomHeights": [],
+                            "consecutiveMissedBlocks": 0,
+                            "lastForgedHeight": 0,
+                            "isBanned": false,
+                            "totalVotesReceived": "0"
+                        },
+                        "sentVotes": [],
+                        "unlocking": []
+                    },
+                    "keys": {
+                        "mandatoryKeys": [],
+                        "optionalKeys": [],
+                        "numberOfSignatures": 0
+                    },
+                    "sequence": {
+                        "nonce": "0"
+                    },
+                    "address": "a0aaddd1399189e2f5d1b86ce0e15d97afadf2d7"
+                },
+                {
+                    "token": {
+                        "balance": "1000000000000000000"
+                    },
+                    "dpos": {
+                        "delegate": {
+                            "username": "genesisDelegate4",
+                            "pomHeights": [],
+                            "consecutiveMissedBlocks": 0,
+                            "lastForgedHeight": 0,
+                            "isBanned": false,
+                            "totalVotesReceived": "0"
+                        },
+                        "sentVotes": [],
+                        "unlocking": []
+                    },
+                    "keys": {
+                        "mandatoryKeys": [],
+                        "optionalKeys": [],
+                        "numberOfSignatures": 0
+                    },
+                    "sequence": {
+                        "nonce": "0"
+                    },
+                    "address": "c163c58020030b5af23bc424dbd43b5618f7f350"
+                },
+                {
+                    "token": {
+                        "balance": "1000000000000000000"
+                    },
+                    "dpos": {
+                        "delegate": {
+                            "username": "genesisDelegate3",
+                            "pomHeights": [],
+                            "consecutiveMissedBlocks": 0,
+                            "lastForgedHeight": 0,
+                            "isBanned": false,
+                            "totalVotesReceived": "0"
+                        },
+                        "sentVotes": [],
+                        "unlocking": []
+                    },
+                    "keys": {
+                        "mandatoryKeys": [],
+                        "optionalKeys": [],
+                        "numberOfSignatures": 0
+                    },
+                    "sequence": {
+                        "nonce": "0"
+                    },
+                    "address": "c7ebc1fc7217702965d6197f1ee51c76127f202c"
                 }
             ]
         },
-        "id": "40725dd2711372c3ef94a49d629b668483cbee57a52773fa46aa8e7cd90138ed"
+        "id": "4e0a206a4e9f341aff39139a0aceb291b31f115a8aa127b60e544be91e8020e3"
     },
     "payload": []
 }
