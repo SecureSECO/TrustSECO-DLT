@@ -22,13 +22,11 @@ export class TrustFactsModule extends BaseModule {
         { fact: "gh_user_count", weight: 60 },
         { fact: "gh_release_download_count", weight: 48 },
         { fact: "gh_yearly_commit_count", weight: 15 },
-        { fact: "gh_repository_language", weight: 3 },
         { fact: "gh_open_issues_count", weight: 34 },
         { fact: "gh_zero_response_issues_count", weight: -12 },
         { fact: "gh_issue_ratio", weight: -15 },
         { fact: "lib_contributor_count", weight: 6 },
         { fact: "lib_dependent_count", weight: 7 },
-        { fact: "lib_latest_release_date", weight: 1 },
         { fact: "lib_release_count", weight: 2 },
         { fact: "so_popularity", weight: 30 },
     ]
@@ -86,7 +84,8 @@ export class TrustFactsModule extends BaseModule {
             const occurenceValue = Object.values(occurenceObject)[0];
             const factValue = parseInt(fact.factData);
             const weight = this.scores.find(score => score.fact === fact.fact)?.weight ?? 0;
-            score += (factValue * weight) / occurenceValue;
+            if (!isNaN(factValue))
+                score += (factValue * weight) / occurenceValue;
         }
         return score;       
     }
