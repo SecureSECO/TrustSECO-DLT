@@ -4,7 +4,7 @@ on: [push]
 jobs:
   standard-checks:
     name: Linting and Tests
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container: node:16
 
     steps:
