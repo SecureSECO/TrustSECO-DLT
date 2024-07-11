@@ -39,8 +39,7 @@ export class CodaAddJobAsset extends BaseAsset {
 
         const rB = await CodaModule.requiredBounty( key => stateStore.chain.get(key) );
         if (asset.data.bounty < rB) {
-            //if (process.env.ACCEPT_INSUFFICIENT_BOUNTY)
-            if (true)
+            if (process.env.ACCEPT_INSUFFICIENT_BOUNTY)
                 console.error("Bounty is lower than minimum required bounty! ACCEPT_INSUFFICIENT_BOUNTY is set, so continuing anyway.");
             else throw new Error("Bounty is lower than minimum required bounty!");
         }
