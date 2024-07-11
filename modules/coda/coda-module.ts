@@ -57,6 +57,10 @@ export class CodaModule extends BaseModule {
             const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + job.package);
             if (packageDataBuffer === undefined) throw new Error("This should never happen. Found a job for a package that doesn't exist");
             const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
+            console.log("Selected the following job:")
+            console.log(job)
+            console.log("With the following packageData:")
+            console.log(packageData)
 
             return { ...job, bounty: job.bounty.toString(), ...packageData };
         },
