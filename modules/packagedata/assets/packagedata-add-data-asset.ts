@@ -15,7 +15,7 @@ export class PackageDataAddDataAsset extends BaseAsset {
         if (asset.packageOwner !== asset.packageOwner.trim()) throw new Error("package owner cannot start or end with whitespace");
         if (asset.packageOwner !== asset.packageOwner.toLowerCase()) throw new Error("package owner must be lowercase");
         for (const version of asset.packageReleases) {
-            if (!/^[^~\^:\"?\[\*@{]+$/.test(version)) throw new Error("Package release must be a valid git tag");
+            if (!/^[^~^:"?[*@{]+$/.test(version)) throw new Error("Package release must be a valid git tag");
         }
 
         if (asset.packageName === "") throw new Error("package name is required and cannot be empty");

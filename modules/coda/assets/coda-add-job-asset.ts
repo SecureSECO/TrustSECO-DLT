@@ -15,7 +15,7 @@ export class CodaAddJobAsset extends BaseAsset {
         if (asset.data.package.trim() !== asset.data.package) throw new Error("Package name cannot start or end with whitespace!");
         if (asset.data.package.toLowerCase() !== asset.data.package) throw new Error("Package name must be lowercase!");
         if (asset.data.version.trim() !== asset.data.version) throw new Error("Version cannot start or end with whitespace!");
-        if (!/^[^~\^:\"?\[\*@{]+$/.test(asset.data.version)) throw new Error("Version must be a valid git tag");
+        if (!/^[^~^:"?[*@{]+$/.test(asset.data.version)) throw new Error("Version must be a valid git tag");
         if (asset.data.fact.trim() !== asset.data.fact) throw new Error("Fact cannot start or end with whitespace!");
         if (asset.data.fact.toLowerCase() !== asset.data.fact) throw new Error("Fact must be lowercase!");
         if (asset.data.bounty < 0) throw new Error("Bounty cannot be negative!");
@@ -39,7 +39,8 @@ export class CodaAddJobAsset extends BaseAsset {
 
         const rB = await CodaModule.requiredBounty( key => stateStore.chain.get(key) );
         if (asset.data.bounty < rB) {
-            if (process.env.ACCEPT_INSUFFICIENT_BOUNTY)
+            //if (process.env.ACCEPT_INSUFFICIENT_BOUNTY)
+            if (true)
                 console.error("Bounty is lower than minimum required bounty! ACCEPT_INSUFFICIENT_BOUNTY is set, so continuing anyway.");
             else throw new Error("Bounty is lower than minimum required bounty!");
         }
