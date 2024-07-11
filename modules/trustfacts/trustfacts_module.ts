@@ -13,7 +13,7 @@ export class TrustFactsModule extends BaseModule {
         { fact: "gh_total_download_count", weight: 63 },
         { fact: "gh_owner_stargazer_count", weight: 24.21 },
         { fact: "cve_count", weight: -16.47 },
-        { fact: "virus_ratio", weight: -16.47 },
+        { fact: "vs_virus_ratio", weight: -16.47 },
         { fact: "lib_dependency_count", weight: 8.04 },
         { fact: "gh_contributor_count", weight: 4.41 },
         { fact: "lib_release_frequency", weight: 2.32 },
