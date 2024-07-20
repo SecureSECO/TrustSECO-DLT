@@ -57,6 +57,10 @@ export class CodaModule extends BaseModule {
             const packageDataBuffer = await this._dataAccess.getChainState("packagedata:" + job.package);
             if (packageDataBuffer === undefined) throw new Error("This should never happen. Found a job for a package that doesn't exist");
             const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
+            console.log("Selected the following job:")
+            console.log(job)
+            console.log("With the following packageData:")
+            console.log(packageData)
 
             return { ...job, bounty: job.bounty.toString(), ...packageData };
         },
@@ -91,6 +95,13 @@ export class CodaModule extends BaseModule {
                 if (trustFactsBuffer !== undefined) {
                     const { facts: allFacts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
                     const facts = allFacts.filter(fact => fact.jobID == job.jobID);
+
+                    // if no facts were gathered nothing needs to be payed out, so we can continue
+                    // TODO: does this mean the requester doesn't get the tokens back?
+                    if (facts.length === 0)
+                    {
+                        continue;
+                    }
 
                     // calculate network capacity (total facts)
                     const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
