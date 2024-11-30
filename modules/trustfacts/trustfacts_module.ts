@@ -10,40 +10,66 @@ export class TrustFactsModule extends BaseModule {
     ];
 
     scores = [
-        { fact: "gh_total_download_count",       weight: 63,     average: 1E4,  log: true },
-        { fact: "gh_owner_stargazer_count",      weight: 24.21,  average: 5000, log: true },
-        { fact: "cve_count",                     weight: -16.47, average: 2,    log: false },
-        { fact: "vs_virus_ratio",                weight: -16.47, average: 0.1,  log: false },
-        { fact: "lib_dependency_count",          weight: 8.04,   average: 20,   log: false },
-        { fact: "gh_contributor_count",          weight: 4.41,   average: 100,  log: true },
-        { fact: "lib_release_frequency",         weight: 2.32,   average: 1E7,  log: false },
+        { fact: "gh_total_download_count",       weight: 63,     average: 2E4,  log: true,  category: "Community and Popularity" },
+        { fact: "gh_owner_stargazer_count",      weight: 24.21,  average: 5000, log: true,  category: "Community and Popularity" },
+        { fact: "cve_count",                     weight: -16.47, average: 2,    log: false, category: "Security" },
+        { fact: "vs_virus_ratio",                weight: -16.47, average: 0.1,  log: false, category: "Security" },
+        { fact: "lib_dependency_count",          weight: 8.04,   average: 20,   log: false, category: "Dependencies and Ecosystem" },
+        { fact: "gh_contributor_count",          weight: 4.41,   average: 100,  log: true,  category: "Community and Popularity" },
+        { fact: "lib_release_frequency",         weight: -2.32,  average: 1E7,  log: false, category: "Project Health and Maintenance" },
 
         // These scores aren't based on the paper but are made up
-        { fact: "gh_user_count",                 weight: 60,     average: 1E5,  log: true },
-        { fact: "gh_release_download_count",     weight: 1,      average: 100,  log: true },
-        { fact: "gh_yearly_commit_count",        weight: 15,     average: 50,   log: true },
-        { fact: "gh_open_issues_count",          weight: 2,      average: 50,   log: false },
-        { fact: "gh_zero_response_issues_count", weight: -12,    average: 15,   log: false },
-        { fact: "gh_issue_ratio",                weight: -15,    average: 0.29, log: false },
-        { fact: "lib_contributor_count",         weight: 6,      average: 100,  log: true },
-        { fact: "lib_dependent_count",           weight: -1,     average: 5000, log: false },
-        { fact: "lib_release_count",             weight: 2,      average: 70,   log: true },
-        { fact: "so_popularity",                 weight: 18,     average: 1E5,  log: true },
+        { fact: "gh_user_count",                 weight: 60,     average: 1E5,  log: true,  category: "Dependencies and Ecosystem" },
+        { fact: "gh_release_download_count",     weight: 1,      average: 300,  log: true,  category: "Community and Popularity" },
+        { fact: "gh_yearly_commit_count",        weight: 15,     average: 50,   log: true,  category: "Project Health and Maintenance" },
+        { fact: "gh_open_issues_count",          weight: 2,      average: 50,   log: false, category: "Project Health and Maintenance" },
+        { fact: "gh_zero_response_issues_count", weight: -7,     average: 70,   log: false, category: "Project Health and Maintenance" },
+        { fact: "gh_issue_ratio",                weight: -15,    average: 0.29, log: false, category: "Project Health and Maintenance" },
+        { fact: "lib_contributor_count",         weight: 6,      average: 100,  log: true,  category: "Community and Popularity" },
+        { fact: "lib_dependent_count",           weight: -1,     average: 5000, log: false, category: "Dependencies and Ecosystem" },
+        { fact: "lib_release_count",             weight: 2,      average: 70,   log: true,  category: "Project Health and Maintenance" },
+        { fact: "so_popularity",                 weight: 18,     average: 1E5,  log: true,  category: "Community and Popularity" },
+    ]
+
+    categories = [
+        // growth rate and midpoint will be used in the logistic function
+        { category: "Community and Popularity",       growth_rate: 0.02, midpoint: 12 },
+        { category: "Security",                       growth_rate: 0.02, midpoint: -110 },
+        { category: "Project Health and Maintenance", growth_rate: 0.03, midpoint: -40 },
+        { category: "Dependencies and Ecosystem",     growth_rate: 0.05, midpoint: 35 },
     ]
 
     actions: Actions = {
         calculateTrustScore: async (record: Record<string, unknown>) => {
             const { packageName, version } = record as { packageName: string, version: string };
             const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
-            if (trustFactsBuffer !== undefined) {
-                let { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-                facts = this.getRelevantFacts(facts, version);
-                let occurences = this.findOccurenceOfTrustFacts(facts);
-                const score = this.calculateTrustScore(facts, occurences);
-                const squashedScore = this.squashTrustScore(score);
-                return squashedScore;
+
+            if (trustFactsBuffer === undefined) return [];
+
+            let { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+            facts = this.getRelevantFacts(facts, version);
+            let occurences = this.findOccurenceOfTrustFacts(facts);
+            const score = this.calculateTrustScore(facts, occurences);
+            const squashedScore = this.squashTrustScore(score, 0.02, 50);
+            return squashedScore;
+        },
+        /** Calculates trust score per category listed above */
+        calculateCategoryTrustScores: async (record: Record<string, unknown>) => {
+            const { packageName, version } = record as { packageName: string, version: string };
+            const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
+
+            if (trustFactsBuffer === undefined) return {};
+
+            let { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+            let categoryScores: Record<string, number> = {};
+            for(let {category, growth_rate, midpoint} of this.categories) {
+                let categoryFacts = this.getRelevantFacts(facts, version, category);
+                let occurences = this.findOccurenceOfTrustFacts(categoryFacts);
+                const score = this.calculateTrustScore(categoryFacts, occurences);
+                const squashedScore = this.squashTrustScore(score, growth_rate, midpoint);
+                categoryScores[category] = squashedScore;
             }
-            else return [];
+            return categoryScores;
         },
         encodeTrustFact: async (asset: Record<string, unknown>) => {
             return codec.encode(AddTrustFactSchema, asset).toString('hex');
@@ -58,11 +84,12 @@ export class TrustFactsModule extends BaseModule {
         },
     }
     
-    /** return only the facts for the current version and which contain a numeric value */
-    getRelevantFacts(facts: StoreTrustFact[], version: string): StoreTrustFact[] {
+    /** return only the facts for the current version and which are included in the trust score */
+    getRelevantFacts(facts: StoreTrustFact[], version: string, category?: string): StoreTrustFact[] {
         return facts.filter(fact =>
             fact.version === version &&
-            this.scores.some(score => score.fact === fact.fact)
+            this.scores.some(score => score.fact === fact.fact && 
+                    (category === undefined || score.category === category))
         );
     }
 
@@ -95,8 +122,8 @@ export class TrustFactsModule extends BaseModule {
         return score;       
     }
 
-    /** Reduce a score to a number between 0 and 100 using the logistic function: */
-    squashTrustScore(score: number) {
-        return 100/(1 + Math.pow(Math.E, -0.004*(score-50)));
+    /** Reduce a score to a number between 0 and 100 using the logistic function */
+    squashTrustScore(score: number, growth_rate: number, midpoint: number) {
+        return 100/(1 + Math.pow(Math.E, -growth_rate*(score-midpoint)));
     }
 }
