@@ -41,7 +41,8 @@ export class TrustFactsModule extends BaseModule {
 
     actions: Actions = {
         calculateTrustScore: async (record: Record<string, unknown>) => {
-            const { packageName, version } = record as { packageName: string, version: string };
+            // if version is left empty calculate trust score over all versions
+            const { packageName, version } = record as { packageName: string, version: string | undefined };
             const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
 
             if (trustFactsBuffer === undefined) return [];
@@ -55,7 +56,8 @@ export class TrustFactsModule extends BaseModule {
         },
         /** Calculates trust score per category listed above */
         calculateCategoryTrustScores: async (record: Record<string, unknown>) => {
-            const { packageName, version } = record as { packageName: string, version: string };
+            // if version is left empty calculate trust score over all versions
+            const { packageName, version } = record as { packageName: string, version: string | undefined };
             const trustFactsBuffer = await this._dataAccess.getChainState("trustfacts:" + packageName);
 
             if (trustFactsBuffer === undefined) return {};
@@ -85,9 +87,9 @@ export class TrustFactsModule extends BaseModule {
     }
     
     /** return only the facts for the current version and which are included in the trust score */
-    getRelevantFacts(facts: StoreTrustFact[], version: string, category?: string): StoreTrustFact[] {
+    getRelevantFacts(facts: StoreTrustFact[], version?: string, category?: string): StoreTrustFact[] {
         return facts.filter(fact =>
-            fact.version === version &&
+            (fact.version === version || version === undefined) &&
             this.scores.some(score => score.fact === fact.fact && 
                     (category === undefined || score.category === category))
         );
