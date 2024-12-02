@@ -49,7 +49,7 @@ export class TrustFactsModule extends BaseModule {
 
             let { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
             facts = this.getRelevantFacts(facts, version);
-            let occurences = this.findOccurenceOfTrustFacts(facts);
+            const occurences = this.findOccurenceOfTrustFacts(facts);
             const score = this.calculateTrustScore(facts, occurences);
             const squashedScore = this.squashTrustScore(score, 0.02, 50);
             return squashedScore;
@@ -62,11 +62,11 @@ export class TrustFactsModule extends BaseModule {
 
             if (trustFactsBuffer === undefined) return {};
 
-            let { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-            let categoryScores: Record<string, number> = {};
-            for(let {category, growth_rate, midpoint} of this.categories) {
-                let categoryFacts = this.getRelevantFacts(facts, version, category);
-                let occurences = this.findOccurenceOfTrustFacts(categoryFacts);
+            const { facts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
+            const categoryScores: Record<string, number> = {};
+            for(const {category, growth_rate, midpoint} of this.categories) {
+                const categoryFacts = this.getRelevantFacts(facts, version, category);
+                const occurences = this.findOccurenceOfTrustFacts(categoryFacts);
                 const score = this.calculateTrustScore(categoryFacts, occurences);
                 const squashedScore = this.squashTrustScore(score, growth_rate, midpoint);
                 categoryScores[category] = squashedScore;
@@ -97,7 +97,7 @@ export class TrustFactsModule extends BaseModule {
 
     /** returns how often trustfacts occurs */
     findOccurenceOfTrustFacts(facts: StoreTrustFact[]): Record<string, number> {
-        let trustFactOccurence: Record<string, number> = {};
+        const trustFactOccurence: Record<string, number> = {};
         for (const score of this.scores) {
             const occurence = facts.filter(fact => fact.fact === score.fact).length;
             trustFactOccurence[score.fact] = occurence;
