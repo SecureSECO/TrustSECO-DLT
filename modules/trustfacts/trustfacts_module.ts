@@ -22,12 +22,16 @@ export class TrustFactsModule extends BaseModule {
         { fact: "gh_user_count",                 weight: 60,     average: 1E5,  log: true,  category: "Dependencies and Ecosystem" },
         { fact: "gh_release_download_count",     weight: 1,      average: 300,  log: true,  category: "Community and Popularity" },
         { fact: "gh_yearly_commit_count",        weight: 15,     average: 50,   log: true,  category: "Project Health and Maintenance" },
+        { fact: "gh_average_resolution_time",    weight: -4,     average: 4E4,  log: false, category: "Project Health and Maintenance" },
+        { fact: "gh_gitstar_ranking",            weight: 1,      average: 600,  log: false, category: "Community and Popularity" },
+        { fact: "gh_release_issues_count",       weight: 1,      average: 20,   log: false, category: "Project Health and Maintenance" },
         { fact: "gh_open_issues_count",          weight: 2,      average: 50,   log: false, category: "Project Health and Maintenance" },
         { fact: "gh_zero_response_issues_count", weight: -7,     average: 70,   log: false, category: "Project Health and Maintenance" },
         { fact: "gh_issue_ratio",                weight: -15,    average: 0.29, log: false, category: "Project Health and Maintenance" },
         { fact: "lib_contributor_count",         weight: 6,      average: 100,  log: true,  category: "Community and Popularity" },
         { fact: "lib_dependent_count",           weight: -1,     average: 5000, log: false, category: "Dependencies and Ecosystem" },
         { fact: "lib_release_count",             weight: 2,      average: 70,   log: true,  category: "Project Health and Maintenance" },
+        { fact: "lib_sourcerank",                weight: 8,      average: 20,   log: false, category: "Project Health and Maintenance" },
         { fact: "so_popularity",                 weight: 18,     average: 1E5,  log: true,  category: "Community and Popularity" },
     ]
 
