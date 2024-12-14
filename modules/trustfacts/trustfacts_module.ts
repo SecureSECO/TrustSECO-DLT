@@ -32,7 +32,7 @@ export class TrustFactsModule extends BaseModule {
         { fact: "lib_dependent_count",           weight: -1,     average: 5000, log: false, category: "Dependencies and Ecosystem" },
         { fact: "lib_release_count",             weight: 2,      average: 70,   log: true,  category: "Project Health and Maintenance" },
         { fact: "lib_sourcerank",                weight: 8,      average: 20,   log: false, category: "Project Health and Maintenance" },
-        { fact: "so_popularity",                 weight: 18,     average: 1E5,  log: true,  category: "Community and Popularity" },
+        { fact: "so_popularity",                 weight: 18,     average: 0.05, log: true,  category: "Community and Popularity" },
     ]
 
     categories = [
