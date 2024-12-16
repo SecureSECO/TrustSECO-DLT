@@ -40,7 +40,7 @@
         "roundLength": 3
     },
     "logger": {
-        "fileLogLevel": "debug",
+        "fileLogLevel": "fatal",
         "consoleLogLevel": "warn"
     },
     "plugins": {
