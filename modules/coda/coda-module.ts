@@ -96,10 +96,10 @@ export class CodaModule extends BaseModule {
                     const { facts: allFacts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
                     const facts = allFacts.filter(fact => fact.jobID == job.jobID);
 
-                    // if no facts were gathered nothing needs to be payed out, so we can continue
-                    // TODO: does this mean the requester doesn't get the tokens back?
+                    // if no facts were gathered do not remove the job and continue
                     if (facts.length === 0)
                     {
+                        jobsToKeep.push(job);
                         continue;
                     }
 
