@@ -12,7 +12,7 @@
     "genesisConfig": {
         "blockTime": 30,
         "communityIdentifier": "TrustSECO",
-        "maxPayloadLength": 262144,
+        "maxPayloadLength": 30720,
         "bftThreshold": 68,
         "minFeePerByte": 1000,
         "baseFees": [
