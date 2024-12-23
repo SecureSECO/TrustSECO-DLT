@@ -53,7 +53,16 @@
     },
     "network": {
         "port": 8000,
-        "seedPeers": []
+        "seedPeers": [
+            {
+                "ip": "trustseco1.science.uu.nl",
+                "port": 8000
+            },
+            {
+                "ip": "trustseco2.science.uu.nl",
+                "port": 8000
+            }
+        ]
     },
     "forging": {
         "force": true,
