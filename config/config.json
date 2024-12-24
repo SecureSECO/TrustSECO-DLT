@@ -41,7 +41,7 @@
     },
     "logger": {
         "fileLogLevel": "fatal",
-        "consoleLogLevel": "warn"
+        "consoleLogLevel": "debug"
     },
     "plugins": {
         "dashboard": {
