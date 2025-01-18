@@ -3,6 +3,7 @@ import { Account, AccountSchema } from '../../accounts/accounts-schemas';
 import { PackageDataSchema, PackageData } from '../../packagedata/packagedata-schemas';
 import { Signed, SignedSchema } from '../../signed-schemas';
 import { CodaModule } from '../coda-module';
+import { TrustFactList, TrustFactListSchema, StoreTrustFact } from '../../trustfacts/trustfacts_schema';
 import { CodaJobList, minimalCodaJobSchema, codaJobListSchema, MinimalCodaJob, codaJobIdSchema, validFacts, codaBlockHeightSchema } from '../coda-schemas';
 import { GPG } from '../../../common/gpg-verification';
 
@@ -32,11 +33,13 @@ export class CodaAddJobAsset extends BaseAsset {
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
-
-
+        const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + asset.data.package);
+        let facts: StoreTrustFact[] = [];
+        if (trustFactsBuffer !== undefined) {
+            facts = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer).facts;
+        }
 
         // check if bounty is higher than minimum required
-
         const rB = await CodaModule.requiredBounty( key => stateStore.chain.get(key) );
         if (asset.data.bounty < rB) {
             if (process.env.ACCEPT_INSUFFICIENT_BOUNTY)
@@ -44,10 +47,7 @@ export class CodaAddJobAsset extends BaseAsset {
             else throw new Error("Bounty is lower than minimum required bounty!");
         }
 
-
-
         // check if job already exists
-
         for (const job of jobs) {
             if (job.package == asset.data.package &&
                 job.fact == asset.data.fact &&
@@ -57,10 +57,17 @@ export class CodaAddJobAsset extends BaseAsset {
             }
         }
 
-
+        // check if there already exists a fact for this job
+        for (const fact of facts) {
+            if (
+                fact.fact == asset.data.fact &&
+                fact.version == asset.data.version) {
+                console.error("There already exists a fact for the given package, version and fact!");
+                return;
+            }
+        }
 
         // check if package & version exists
-
         const packageDataBuffer = await stateStore.chain.get("packagedata:" + asset.data.package);
         if (packageDataBuffer === undefined) {
             throw new Error("The given package does not exist in the packageData!");
@@ -69,8 +76,6 @@ export class CodaAddJobAsset extends BaseAsset {
         const packageData = codec.decode<PackageData>(PackageDataSchema, packageDataBuffer);
         const versionFound = packageData.packageReleases.some(version => asset.data.version == version);
         if (!versionFound) throw new Error("The given package version does not exist in the packageData!");
-
-
 
         // Deduct bounty from account
         const uid = GPG.verify(asset, minimalCodaJobSchema);
@@ -91,22 +96,15 @@ export class CodaAddJobAsset extends BaseAsset {
             else throw new Error("Bounty is higher than account credit!");
         }
 
-
-
         // calculate next jobId (by adding 1, wow)
-
         const jobIdBuffer = await stateStore.chain.get("coda:jobId") as Buffer;
         const { jobId } = codec.decode<{ jobId: number }>(codaJobIdSchema, jobIdBuffer);
         const nextJobId = (jobId + 1) % 2 ** 32;
         
-        
-        
         const blockHeightBuffer = await stateStore.chain.get("coda:blockHeight") as Buffer;
         const { blockHeight } = codec.decode<{ blockHeight: number }>(codaBlockHeightSchema, blockHeightBuffer);
         
-        
         // Add job to list
-        
         jobs.push({ ...asset.data, account: { uid }, date: blockHeight.toString(), jobID: nextJobId });
         
         // apply!
