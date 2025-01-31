@@ -26,7 +26,8 @@
     "@liskhq/lisk-framework-dashboard-plugin": "^0.2.0",
     "dotenv": "^16.0.1",
     "lisk-sdk": "^5.3.0",
-    "node-fetch": "^3.2.6"
+    "node-fetch": "^3.2.6",
+    "openpgp": "^6.1.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.18.2",
