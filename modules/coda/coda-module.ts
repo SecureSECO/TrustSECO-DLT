@@ -96,10 +96,14 @@ export class CodaModule extends BaseModule {
                     const { facts: allFacts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
                     const facts = allFacts.filter(fact => fact.jobID == job.jobID);
 
-                    // if no facts were gathered do not remove the job and continue
+                    // if no facts were gathered nothing needs to be payed out, so we can continue
                     if (facts.length === 0)
                     {
-                        jobsToKeep.push(job);
+                        // Keep the job if it younger than two weeks
+                        if (differenceInBlockHeight < 5760)
+                        {
+                            jobsToKeep.push(job);
+                        }
                         continue;
                     }
 
