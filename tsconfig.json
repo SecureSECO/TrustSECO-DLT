@@ -4,6 +4,7 @@
 		"target": "es2019",
 		"module": "commonjs",
 		"moduleResolution": "node",
+		"esModuleInterop": true,
 		"newLine": "lf",
 		"importHelpers": true,
 		"noFallthroughCasesInSwitch": true,

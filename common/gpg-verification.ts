@@ -4,6 +4,8 @@ import { extname } from 'path';
 import { Signed } from '../modules/signed-schemas';
 import axios from 'axios';
 import * as openpgp from 'openpgp';
+// Yes, awaitSync in very cursed, but lisk wasn't working well with async, so this was the only (easy) solution
+import { awaitSync } from '@kaciras/deasync';
 
 let keyDir = "/trustseco/keys";
 
@@ -38,19 +40,19 @@ export class GPG {
 
     /** verify the signature of a signed object
     returns the account UID of the key used to sign the object */
-    static async verify<T extends object>(asset : Signed<T>, schema : Schema) : Promise<string> {
+    static verify<T extends object>(asset : Signed<T>, schema : Schema) : string {
         const encoded = codec.encode(schema, asset.data).toString('hex');
-        const keys = await this.readKeys();
-        const signature = await openpgp.readSignature({armoredSignature: asset.signature});
-        const verificationResult = await openpgp.verify({
-            message: await openpgp.createMessage({ text: encoded }),
+        const keys = this.readKeys();
+        const signature = awaitSync(openpgp.readSignature({armoredSignature: asset.signature}));
+        const verificationResult = awaitSync(openpgp.verify({
+            message: awaitSync(openpgp.createMessage({ text: encoded })),
             signature,
             verificationKeys: keys
-        })
+        }))
         const { verified, keyID } = verificationResult.signatures[0];
 
         try {
-            await verified;
+            awaitSync(verified);
         }
         catch {
             if (process.env.ACCEPT_BAD_SIGNATURES) console.error("GPG signature verification failed! ACCEPT_BAD_SIGNATURES is set, so continuing anyway.");
@@ -68,14 +70,14 @@ export class GPG {
     }
 
     /** Read all the pgp files from the keyDir directory and parse them */
-    private static async readKeys() : Promise<openpgp.Key[]> {
+    private static readKeys() : openpgp.Key[] {
         const keys = [];
         const files = readdirSync(keyDir);
         for (const file of files) {
             if (extname(file) !== ".gpg") continue;
             try {
                 const data = readFileSync(`${keyDir}/${file}`);
-                keys.push(await openpgp.readKey({armoredKey: '' + data})) // akward implicit type conversion from buffer to string
+                keys.push(awaitSync(openpgp.readKey({armoredKey: '' + data}))) // akward implicit type conversion from buffer to string
             }
             catch {
                 console.log(`Failed to import key ${file}`)
