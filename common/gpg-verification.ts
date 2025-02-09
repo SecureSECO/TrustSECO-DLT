@@ -37,7 +37,8 @@ export class GPG {
     }
 
     /** verify the signature of a signed object
-    returns the account UID of the key used to sign the object */
+    * returns the account UID of the key used to sign the object 
+    * Throws error on invalid signature */
     static async verify<T extends object>(asset : Signed<T>, schema : Schema) : Promise<string> {
         const encoded = codec.encode(schema, asset.data).toString('hex');
         const keys = await this.readKeys();

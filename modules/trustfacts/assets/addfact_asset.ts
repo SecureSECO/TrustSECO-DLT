@@ -9,14 +9,14 @@ export class TrustFactsAddFactAsset extends BaseAsset {
     name = 'AddFacts';
     schema = SignedSchema(AddTrustFactSchema);
 
-    async validate({ asset }: ValidateAssetContext<Signed<AddTrustFact>>) {
+    validate({ asset }: ValidateAssetContext<Signed<AddTrustFact>>) {
         if (asset.data.factData.trim() === "") throw new Error("FactData cannot be empty");
         if (!asset.signature) throw new Error("Signature is missing!");
-
-        await GPG.verify(asset, AddTrustFactSchema);
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<AddTrustFact>>) {
+        // Throws error on invalid signature
+        const uid = await GPG.verify(asset, AddTrustFactSchema);
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         const job = jobs.find(job => job.jobID === asset.data.jobID);
@@ -30,7 +30,6 @@ export class TrustFactsAddFactAsset extends BaseAsset {
             }
 
             // check if this account already has a fact for this job
-            const uid = await GPG.verify(asset, AddTrustFactSchema);
             const existingFact = facts.find(fact => fact.account.uid === uid && fact.jobID === asset.data.jobID);
             if (existingFact !== undefined) {
                 console.error("Account already has a fact for this job! Ignoring this new fact...");
