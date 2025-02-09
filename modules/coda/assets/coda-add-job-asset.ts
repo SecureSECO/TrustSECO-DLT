@@ -12,7 +12,7 @@ export class CodaAddJobAsset extends BaseAsset {
     name = 'AddJob';
     schema = SignedSchema(minimalCodaJobSchema);
     
-    validate({ asset }: ValidateAssetContext<Signed<MinimalCodaJob>>) {
+    async validate({ asset }: ValidateAssetContext<Signed<MinimalCodaJob>>) {
         if (asset.data.package.trim() !== asset.data.package) throw new Error("Package name cannot start or end with whitespace!");
         if (asset.data.package.toLowerCase() !== asset.data.package) throw new Error("Package name must be lowercase!");
         if (asset.data.version.trim() !== asset.data.version) throw new Error("Version cannot start or end with whitespace!");
@@ -27,7 +27,7 @@ export class CodaAddJobAsset extends BaseAsset {
         if (!asset.signature) throw new Error("Signature is missing!");
         
         // will throw an error when the signature is invalid
-        GPG.verify(asset, minimalCodaJobSchema);
+        await GPG.verify(asset, minimalCodaJobSchema);
     }
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
@@ -78,7 +78,7 @@ export class CodaAddJobAsset extends BaseAsset {
         if (!versionFound) throw new Error("The given package version does not exist in the packageData!");
 
         // Deduct bounty from account
-        const uid = GPG.verify(asset, minimalCodaJobSchema);
+        const uid = await GPG.verify(asset, minimalCodaJobSchema);
         let accountBuffer = await stateStore.chain.get("account:" + uid);
         if (accountBuffer == undefined) {
             if (process.env.ACCEPT_INVALID_ACCOUNT) {
