@@ -13,7 +13,7 @@
         "blockTime": 30,
         "communityIdentifier": "TrustSECO",
         "maxPayloadLength": 30720,
-        "bftThreshold": 68,
+        "bftThreshold": 16,
         "minFeePerByte": 1000,
         "baseFees": [
             {
@@ -34,10 +34,10 @@
             "distance": 3000000
         },
         "minRemainingBalance": "5000000",
-        "activeDelegates": 101,
+        "activeDelegates": 30,
         "standbyDelegates": 2,
         "delegateListRoundOffset": 2,
-        "roundLength": 3
+        "roundLength": 35
     },
     "logger": {
         "fileLogLevel": "fatal",
