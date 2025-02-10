@@ -94,7 +94,7 @@ export class CodaModule extends BaseModule {
                 const trustFactsBuffer = await stateStore.chain.get("trustfacts:" + job.package);
                 if (trustFactsBuffer !== undefined) {
                     const { facts: allFacts } = codec.decode<TrustFactList>(TrustFactListSchema, trustFactsBuffer);
-                    const facts = allFacts.filter(fact => fact.jobID == job.jobID);
+                    const facts = allFacts.filter(fact => fact.jobID === job.jobID);
 
                     // if no facts were gathered nothing needs to be payed out, so we can continue
                     if (facts.length === 0)
@@ -104,8 +104,10 @@ export class CodaModule extends BaseModule {
                         {
                             jobsToKeep.push(job);
                         }
+                        console.log(`Removing job ${job.jobID} (no facts) ${differenceInBlockHeight}`);
                         continue;
                     }
+                    console.log(`Removing job ${job.jobID}`);
 
                     // calculate network capacity (total facts)
                     const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;

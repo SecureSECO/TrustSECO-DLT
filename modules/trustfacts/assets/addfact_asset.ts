@@ -47,6 +47,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
 
             await stateStore.chain.set("trustfacts:" + job.package, codec.encode(TrustFactListSchema, { facts }));
         } else {
+            console.log(jobs);
             throw new Error("Job with given job ID does not exist!");
         }
     }
