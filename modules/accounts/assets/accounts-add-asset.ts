@@ -19,8 +19,7 @@ export class AccountsAddAsset extends BaseAsset {
         // when the account is already known, we don't need to do anything
         const accountsBuffer = await stateStore.chain.get("account:" + uid);
         if (accountsBuffer !== undefined) {
-            console.log(`Account from ${url} already known as ${uid}`);
-            return;
+            throw new Error(`Account from ${url} already known as ${uid}`);
         }
 
         // create a new account with 50_000_000 reward tokens
