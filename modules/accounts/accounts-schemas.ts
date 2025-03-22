@@ -13,6 +13,10 @@ export interface AccountURL extends Record<string, unknown> {
     url: string;
 }
 
+export interface Keys extends Record<string, unknown> {
+    keys: {key: string} [];
+}
+
 export const AccountSchema: Schema = {
     $id: "accounts/account",
     type: "object",
@@ -45,6 +49,31 @@ export const AccountURLSchema: Schema = {
         url: {
             dataType: "string",
             fieldNumber: 1
+        }
+    }
+};
+
+export const KeySchema: Schema = {
+    $id: "accounts/key",
+    type: "object",
+    required: ["key"],
+    properties: {
+        key: {
+            dataType: "string",
+            fieldNumber: 1
+        }
+    }
+};
+
+export const KeysSchema: Schema = {
+    $id: "accounts/keys",
+    type: "object",
+    required: ["keys"],
+    properties: {
+        keys: {
+            type: "array",
+            fieldNumber: 1,
+            items: KeySchema
         }
     }
 };

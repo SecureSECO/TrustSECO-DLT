@@ -28,7 +28,7 @@ export class CodaAddJobAsset extends BaseAsset {
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<MinimalCodaJob>>) {
         // Throws error on invalid signature
-        const uid = await GPG.verify(asset, minimalCodaJobSchema);
+        const uid = await GPG.verify(asset, minimalCodaJobSchema, stateStore);
 
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);

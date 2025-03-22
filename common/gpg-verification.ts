@@ -1,48 +1,40 @@
 import { codec, Schema } from 'lisk-sdk';
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'fs';
-import { extname } from 'path';
 import { Signed } from '../modules/signed-schemas';
 import axios from 'axios';
 import * as openpgp from 'openpgp';
+import { StateStore } from 'lisk-sdk';
+import { KeysSchema, Keys } from '../modules/accounts/accounts-schemas';
 
-let keyDir = "/trustseco/keys";
-
-if (!existsSync("/trustseco")){
-    // If trustseco doesn't exist just use the current directory
-    // Otherwise tests don't pass as it is done outside of docker
-    keyDir = "./keys";
-}
-if (!existsSync(keyDir)){
-    mkdirSync(keyDir);
+export interface ImportResult {
+    uid: string,
+    key: string
 }
 
 export class GPG {
     /** all GPG key URLs should be provided by github.com */
     static readonly urlPattern = /^https:\/\/github\.com\/([a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38})\.gpg$/;
 
-    static validateURL = ( url: string ) => this.urlPattern.test(url);
+    static validateURL = (url: string) => this.urlPattern.test(url);
 
-    /** import a GPG key from a URL to a local file
-    returns the account UID of the imported key */
-    static async import( url: string ) : Promise<string> {
+    /** import a GPG key from a URL
+     * returns the account UID, and a string containing the armored key */
+    static async import(url: string): Promise<ImportResult> {
         const match = url.match(this.urlPattern);
         if (!match) throw new Error(`Url ${url} is not a GitHub GPG link`);
-        const name = match[1];
         const { data } = await axios.get(url);
-        const key = await openpgp.readKey({armoredKey: data});
+        const key = await openpgp.readKey({ armoredKey: data });
         const accountUid = key.getKeyID().toHex().toUpperCase();
-        writeFileSync(`${keyDir}/${name}.gpg`, data);
         if (accountUid === undefined) throw new Error(`Unable to find the uid for the GPG key from ${url}`);
-        return accountUid;
+        return {uid: accountUid, key: data};
     }
 
     /** verify the signature of a signed object
     * returns the account UID of the key used to sign the object 
     * Throws error on invalid signature */
-    static async verify<T extends object>(asset : Signed<T>, schema : Schema) : Promise<string> {
+    static async verify<T extends object>(asset: Signed<T>, schema: Schema, stateStore: StateStore): Promise<string> {
         const encoded = codec.encode(schema, asset.data).toString('hex');
-        const keys = await this.readKeys();
-        const signature = await openpgp.readSignature({armoredSignature: asset.signature});
+        const keys = await this.readKeys(stateStore);
+        const signature = await openpgp.readSignature({ armoredSignature: asset.signature });
         const verificationResult = await openpgp.verify({
             message: await openpgp.createMessage({ text: encoded }),
             signature,
@@ -69,17 +61,20 @@ export class GPG {
     }
 
     /** Read all the pgp files from the keyDir directory and parse them */
-    private static async readKeys() : Promise<openpgp.Key[]> {
+    private static async readKeys(stateStore: StateStore): Promise<openpgp.Key[]> {
+        const keysBuffer = await stateStore.chain.get("accounts:keys") as Buffer;
+        const gpg_keys = codec.decode<Keys>(KeysSchema, keysBuffer).keys;
+        if (!gpg_keys) {
+            return []
+        }
+
         const keys = [];
-        const files = readdirSync(keyDir);
-        for (const file of files) {
-            if (extname(file) !== ".gpg") continue;
+        for (const key of gpg_keys) {
             try {
-                const data = readFileSync(`${keyDir}/${file}`);
-                keys.push(await openpgp.readKey({armoredKey: '' + data})) // akward implicit type conversion from buffer to string
+                keys.push(await openpgp.readKey({ armoredKey: key.key }))
             }
             catch {
-                console.log(`Failed to import key ${file}`)
+                console.log(`Failed to import key ${key}`)
             }
         }
         return keys;

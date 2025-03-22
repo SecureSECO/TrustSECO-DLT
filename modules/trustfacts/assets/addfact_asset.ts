@@ -16,7 +16,7 @@ export class TrustFactsAddFactAsset extends BaseAsset {
 
     async apply({ asset, stateStore }: ApplyAssetContext<Signed<AddTrustFact>>) {
         // Throws error on invalid signature
-        const uid = await GPG.verify(asset, AddTrustFactSchema);
+        const uid = await GPG.verify(asset, AddTrustFactSchema, stateStore);
         const jobsBuffer = await stateStore.chain.get("coda:jobs") as Buffer;
         const { jobs } = codec.decode<CodaJobList>(codaJobListSchema, jobsBuffer);
         const job = jobs.find(job => job.jobID === asset.data.jobID);
