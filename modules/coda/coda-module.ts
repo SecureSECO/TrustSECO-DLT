@@ -86,7 +86,7 @@ export class CodaModule extends BaseModule {
 
         for (const job of jobs) {
             const differenceInBlockHeight = block.header.height - parseInt(job.date);
-            if (differenceInBlockHeight <= 500) { 
+            if (differenceInBlockHeight <= 5760) { 
                 jobsToKeep.push(job); 
             }
             else {
