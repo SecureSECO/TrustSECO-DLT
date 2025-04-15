@@ -23,9 +23,9 @@
   },
   "author": "Fides",
   "dependencies": {
-    "@liskhq/lisk-framework-dashboard-plugin": "^0.2.0",
+    "@liskhq/lisk-framework-dashboard-plugin": "^0.3.2",
     "dotenv": "^16.0.1",
-    "lisk-sdk": "^5.3.0",
+    "lisk-sdk": "^6.0.2",
     "node-fetch": "^3.2.6",
     "openpgp": "^6.1.0"
   },
