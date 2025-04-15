@@ -17,9 +17,10 @@
 		"strict": true,
 		"composite": true,
 		"declaration": true,
-		"rootDir": "./",
+		"noImplicitAny": false,
+		"rootDir": "./src",
 		"outDir": "./dist",
 		"skipLibCheck": true
 	},
-	"include": ["./**/*.ts", "./**/*.json"]
+	"include": ["./src/**/*.ts", "./src/**/*.json"]
 }

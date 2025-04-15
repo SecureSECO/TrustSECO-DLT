@@ -1,27 +1,37 @@
-# TrustSECO DLT
+# Getting Started with Lisk Blockchain Client
 
-Prerequisites:
-- [nvm](https://github.com/nvm-sh/nvm)  
-  (or, if you so choose, manually install the required node version as specified in [`package.json`](./package.json) )
+This project was bootstrapped with [Lisk SDK](https://github.com/LiskHQ/lisk-sdk)
 
-To get this running:
+### Start a node
 
-1. `git clone` this repo
-2. `nvm use`
-3. `npm install`
-4. In case you have ran an earlier version: `npm run reset` to get rid of the old blockchain.
-5. `npm run start` and profit!
+```
+./bin/run start
+```
 
-You should get connected to turtle and/or dove and/or other running instances. If your chain does _not_ start at block 0 you know it worked :D
+### Add a new module
 
-# Config & Genesis Block
+```
+lisk generate:module ModuleName
+// Example
+lisk generate:module token
+```
 
-When necessary (f.e. after adding a module); the `npm run genesis` command can generate a new [`config/genesis-block.json`](./config/genesis-block.json) and update the delegate hashes in [`config/config.json`](./config/config.json) accordingly.
+### Add a new command
 
-# Safety
+```
+lisk generate:command ModuleName Command
+// Example
+lisk generate:command token transfer
+```
 
-Note that in this development version; the master password for all delegate accounts is very weak, and stored in plain-text in the config.
+### Add a new plugin
 
-# Development
+```
+lisk generate:plugin PluginName
+// Example
+lisk generate:plugin httpAPI
+```
 
-![Gitflow Workflow](https://wac-cdn.atlassian.com/dam/jcr:cc0b526e-adb7-4d45-874e-9bcea9898b4a/04%20Hotfix%20branches.svg)
+## Learn More
+
+You can learn more in the [documentation](https://lisk.com/documentation/lisk-sdk/).
