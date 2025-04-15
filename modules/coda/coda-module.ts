@@ -7,7 +7,6 @@ import { TrustFactList, TrustFactListSchema } from '../trustfacts/trustfacts_sch
 import { Account, AccountId, AccountSchema } from '../accounts/accounts-schemas';
 
 export class CodaModule extends BaseModule {
-    id = 2632; 
     name = "coda";
     transactionAssets = [
         new CodaAddJobAsset()

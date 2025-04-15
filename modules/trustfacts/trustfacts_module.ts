@@ -3,7 +3,6 @@ import { AddTrustFactSchema, StoreTrustFact, TrustFactList, TrustFactListSchema 
 import { TrustFactsAddFactAsset } from './assets/addfact_asset'
 
 export class TrustFactsModule extends BaseModule {
-    id = 3228;
     name = "trustfacts";
     transactionAssets = [
         new TrustFactsAddFactAsset()

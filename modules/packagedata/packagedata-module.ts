@@ -3,7 +3,6 @@ import { PackageDataAddDataAsset } from './assets/packagedata-add-data-asset';
 import { PackageDataSchema, PackageData, PackageDataListSchema, PackageDataList } from './packagedata-schemas';
 
 export class PackageDataModule extends BaseModule {
-    id = 6328;
     name = "packagedata";
     transactionAssets = [
         new PackageDataAddDataAsset()
