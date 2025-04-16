@@ -5,8 +5,8 @@ import { BaseModule, ModuleMetadata } from 'lisk-sdk';
 import { AccountAddCommand } from './commands/account_add_command';
 import { AccountsEndpoint } from './endpoint';
 import { AccountsMethod } from './method';
-import { AccountStore } from './stores/account';
-import { AccountIdStore } from './stores/account-id';
+import { AccountStore, AccountSchemaSerial } from './stores/account';
+import { AccountIdStore, AccountIdSchema } from './stores/account-id';
 import { AccountUrlStore } from './stores/account-url';
 import { KeysStore, KeysSchema } from './stores/keys';
 
@@ -30,6 +30,11 @@ export class AccountsModule extends BaseModule {
 				{
 					name: this.endpoint.getKeys.name,
 					response: KeysSchema,
+				},
+				{
+					name: this.endpoint.getAccount.name,
+					response: AccountSchemaSerial,
+					request: AccountIdSchema,
 				},
 			],
 			commands: this.commands.map(command => ({
