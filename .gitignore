@@ -43,3 +43,6 @@ config.local.json
 
 # Build Directory
 dist
+
+# TrustSECO stuff
+.env

@@ -1,7 +1,7 @@
 {
-	"name": "TrustSECO",
-	"version": "0.1.0",
-	"description": "Lisk-SDK Application",
+	"name": "TrustSECO-dlt",
+	"version": "2.0.0",
+	"description": "",
 	"author": "Martijn &amp; Fides",
 	"license": "AGLP-3.0-or-later",
 	"keywords": ["blockchain", "lisk", "nodejs", "javascript", "typescript"],
@@ -96,7 +96,10 @@
 		"lisk-commander": "6.0.2",
 		"lisk-sdk": "6.0.2",
 		"tar": "6.1.11",
-		"tslib": "2.4.1"
+		"tslib": "2.4.1",
+		"openpgp": "^6.1.0",
+		"node-fetch": "^3.2.6",
+		"dotenv": "^16.0.1"
 	},
 	"devDependencies": {
 		"@oclif/test": "2.2.12",
