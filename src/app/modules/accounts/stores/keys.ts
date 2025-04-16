@@ -1,0 +1,34 @@
+import { Schema, BaseStore } from "lisk-sdk";
+
+export interface Keys extends Record<string, unknown> {
+    keys: {key: string} [];
+}
+
+export const KeySchema: Schema = {
+    $id: "accounts/key",
+    type: "object",
+    required: ["key"],
+    properties: {
+        key: {
+            dataType: "string",
+            fieldNumber: 1
+        }
+    }
+};
+
+export const KeysSchema: Schema = {
+    $id: "accounts/keys",
+    type: "object",
+    required: ["keys"],
+    properties: {
+        keys: {
+            type: "array",
+            fieldNumber: 1,
+            items: KeySchema
+        }
+    }
+};
+
+export class KeysStore extends BaseStore<Keys> {
+    public schema = KeySchema;
+}
