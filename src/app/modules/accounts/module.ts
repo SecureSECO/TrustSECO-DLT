@@ -1,31 +1,19 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import {
-    BaseModule,
-	ModuleMetadata,
-	// ModuleInitArgs,
-	// InsertAssetContext,
-	// BlockVerifyContext,
-	// TransactionVerifyContext,
-	// VerificationResult,
-	// TransactionExecuteContext,
-	// GenesisBlockExecuteContext,
-	// BlockExecuteContext,
-	// BlockAfterExecuteContext,
-	// VerifyStatus,
-} from 'lisk-sdk';
+import { BaseModule, ModuleMetadata } from 'lisk-sdk';
+import { AccountAddCommand } from './commands/account_add_command';
 import { AccountsEndpoint } from './endpoint';
 import { AccountsMethod } from './method';
-import { KeysStore } from './stores/keys';
 import { AccountStore } from './stores/account';
 import { AccountIdStore } from './stores/account-id';
 import { AccountUrlStore } from './stores/account-url';
+import { KeysStore, KeysSchema } from './stores/keys';
 
 export class AccountsModule extends BaseModule {
-    public endpoint = new AccountsEndpoint(this.stores, this.offchainStores);
-    public method = new AccountsMethod(this.stores, this.events);
-    public commands = [];
+	public endpoint = new AccountsEndpoint(this.stores, this.offchainStores);
+	public method = new AccountsMethod(this.stores, this.events);
+	public commands = [new AccountAddCommand(this.stores, this.events)];
 
 	public constructor() {
 		super();
@@ -38,14 +26,27 @@ export class AccountsModule extends BaseModule {
 
 	public metadata(): ModuleMetadata {
 		return {
-			...this.baseMetadata(),
-			endpoints: [],
+			endpoints: [
+				{
+					name: this.endpoint.getKeys.name,
+					response: KeysSchema,
+				},
+			],
+			commands: this.commands.map(command => ({
+				name: command.name,
+				params: command.schema,
+			})),
+			events: this.events.values().map(v => ({
+				name: v.name,
+				data: v.schema,
+			})),
 			assets: [],
+			stores: [],
 		};
 	}
 
-    // Lifecycle hooks
-    // public async init(_args: ModuleInitArgs): Promise<void> {
+	// Lifecycle hooks
+	// public async init(_args: ModuleInitArgs): Promise<void> {
 	// 	// initialize this module when starting a node
 	// }
 
@@ -57,10 +58,10 @@ export class AccountsModule extends BaseModule {
 	// 	// verify block
 	// }
 
-    // Lifecycle hooks
+	// Lifecycle hooks
 	// public async verifyTransaction(_context: TransactionVerifyContext): Promise<VerificationResult> {
-		// verify transaction will be called multiple times in the transaction pool
-		// return { status: VerifyStatus.OK };
+	// verify transaction will be called multiple times in the transaction pool
+	// return { status: VerifyStatus.OK };
 	// }
 
 	// public async beforeCommandExecute(_context: TransactionExecuteContext): Promise<void> {

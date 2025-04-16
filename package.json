@@ -98,7 +98,6 @@
 		"tar": "6.1.11",
 		"tslib": "2.4.1",
 		"openpgp": "^6.1.0",
-		"node-fetch": "^3.2.6",
 		"dotenv": "^16.0.1"
 	},
 	"devDependencies": {
