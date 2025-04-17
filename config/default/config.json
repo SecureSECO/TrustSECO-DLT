@@ -6,9 +6,11 @@
 	},
 	"rpc": {
 		"modes": [
-			"ipc"
+			"ipc",
+			"ws",
+			"http"
 		],
-		"port": 8080,
+		"port": 7887,
 		"host": "127.0.0.1",
 		"allowedMethods": ["*"]
 	},
@@ -39,5 +41,11 @@
 		}
 	},
 	"modules": {},
-	"plugins": {}
+    "plugins": {
+        "dashboard": {
+            "applicationName": "TrustSECO DLT",
+            "port": 8001,
+            "host": "0.0.0.0"
+        }
+    }
 }

@@ -53,7 +53,10 @@ export class PackageDataModule extends BaseModule {
 					},
 				},
 			],
-			commands: [],
+			commands: this.commands.map(command => ({
+				name: command.name,
+				params: command.schema,
+			})),
 			events: this.events.values().map(v => ({
 				name: v.name,
 				data: v.schema,
