@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddFactCommand constructor should have valid schema 1`] = `
+{
+  "$id": "AddFactCommand",
+  "properties": {},
+  "type": "object",
+}
+`;

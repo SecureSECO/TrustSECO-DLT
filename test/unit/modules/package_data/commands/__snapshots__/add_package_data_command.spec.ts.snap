@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddPackageDataCommand constructor should have valid schema 1`] = `
+{
+  "$id": "packagedata/add-data",
+  "properties": {
+    "packageName": {
+      "dataType": "string",
+      "fieldNumber": 1,
+    },
+    "packageOwner": {
+      "dataType": "string",
+      "fieldNumber": 3,
+    },
+    "packagePlatform": {
+      "dataType": "string",
+      "fieldNumber": 2,
+    },
+    "packageReleases": {
+      "fieldNumber": 4,
+      "items": {
+        "dataType": "string",
+      },
+      "type": "array",
+    },
+  },
+  "required": [
+    "packageName",
+    "packagePlatform",
+    "packageOwner",
+    "packageReleases",
+  ],
+  "type": "object",
+}
+`;

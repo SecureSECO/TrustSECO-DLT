@@ -2,17 +2,17 @@ import { BaseEndpoint, ModuleEndpointContext } from 'lisk-sdk';
 import { PackageData, PackageDataList, PackageDataListStore, packageListKey } from './stores/packagedata';
 
 export class PackageDataEndpoint extends BaseEndpoint {
-	public async getAllPackages(ctx: ModuleEndpointContext): Promise<PackageDataList> {
+    public async getAllPackages(ctx: ModuleEndpointContext): Promise<PackageDataList> {
         const packagesStore = this.stores.get(PackageDataListStore);
         if (!await packagesStore.has(ctx, packageListKey)) return {packages: []}
         const packages = await packagesStore.get(ctx, packageListKey);
         return packages
-	}
-	public async getPackageInfo(ctx: ModuleEndpointContext): Promise<PackageData> {
+    }
+    public async getPackageInfo(ctx: ModuleEndpointContext): Promise<PackageData> {
         const packagesStore = this.stores.get(PackageDataListStore);
         const packages = await packagesStore.get(ctx, packageListKey);
         const { packageName, packagePlatform, packageOwner } = ctx.params;
-		if (typeof packageName !== 'string') {
+        if (typeof packageName !== 'string') {
             throw new Error('Parameter packageName must be a string.');
         }
         // Always filter on packageName
@@ -24,5 +24,5 @@ export class PackageDataEndpoint extends BaseEndpoint {
         )[0];
         if (!pack) throw new Error('No package was found.');
         return pack;
-	}
+    }
 }
