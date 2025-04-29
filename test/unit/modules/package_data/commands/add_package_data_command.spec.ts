@@ -1,18 +1,12 @@
-import { AddPackageDataCommand } from '../../../../../src/app/modules/package_data/commands/add_package_data_command';
 import {
-	PackageDataListStore,
 	PackageDataSchema,
 	PackageData,
 	packageListKey,
 } from '../../../../../src/app/modules/package_data/stores/packagedata';
-import { PackageDataModule } from '../../../../../src/app/modules/package_data/module';
-import { chain, db } from 'lisk-sdk';
-import { createAndExecuteTransaction } from '../../../../utils/common';
+import { createAndExecuteTransaction, createModules, ModulesCollection } from '../../../../utils/common';
 
 describe('AddPackageDataCommand', () => {
-	let command: AddPackageDataCommand;
-	let stateStore: any;
-	let packagesStore: PackageDataListStore;
+	let modules: ModulesCollection
 
 	const samplePackage: PackageData = {
 		packageName: 'pack 1',
@@ -29,19 +23,16 @@ describe('AddPackageDataCommand', () => {
 	};
 
 	beforeEach(() => {
-		const mod = new PackageDataModule();
-		command = new AddPackageDataCommand(mod.stores, mod.events);
-		stateStore = new chain.StateStore(new db.InMemoryDatabase());
-		packagesStore = mod.stores.get(PackageDataListStore);
+		modules = createModules();
 	});
 
 	describe('constructor', () => {
 		it('should have valid name', () => {
-			expect(command.name).toEqual('addPackageData');
+			expect(modules.commands.packageCommand.name).toEqual('addPackageData');
 		});
 
 		it('should have valid schema', () => {
-			expect(command.schema).toMatchSnapshot();
+			expect(modules.commands.packageCommand.schema).toMatchSnapshot();
 		});
 	});
 
@@ -55,20 +46,20 @@ describe('AddPackageDataCommand', () => {
 	describe('execute', () => {
 		describe('valid cases', () => {
 			it('New package should be added', async () => {
-				let context = await createAndExecuteTransaction(samplePackage, PackageDataSchema, 0, command, stateStore);
-				let packages = await packagesStore.get(context, packageListKey);
+				let context = await createAndExecuteTransaction(samplePackage, PackageDataSchema, 0, modules.commands.packageCommand, modules.stateStore);
+				let packages = await modules.stores.packagesStore.get(context, packageListKey);
 				expect(packages).toEqual({ packages: [samplePackage] });
-				let context2 = await createAndExecuteTransaction(samplePackage2, PackageDataSchema, 1, command, stateStore);
-				packages = await packagesStore.get(context2, packageListKey);
+				let context2 = await createAndExecuteTransaction(samplePackage2, PackageDataSchema, 1, modules.commands.packageCommand, modules.stateStore);
+				packages = await modules.stores.packagesStore.get(context2, packageListKey);
 				expect(packages).toEqual({ packages: [samplePackage, samplePackage2] });
 			});
 			it('Versions should be added together', async () => {
-				let context = await createAndExecuteTransaction(samplePackage, PackageDataSchema, 0, command, stateStore);
-				let packages = await packagesStore.get(context, packageListKey);
+				let context = await createAndExecuteTransaction(samplePackage, PackageDataSchema, 0, modules.commands.packageCommand, modules.stateStore);
+				let packages = await modules.stores.packagesStore.get(context, packageListKey);
 				let package2 = structuredClone(samplePackage);
 				package2.packageReleases = ["v2", "v3"]
-				let context2 = await createAndExecuteTransaction(package2, PackageDataSchema, 0, command, stateStore);
-				packages = await packagesStore.get(context2, packageListKey);
+				let context2 = await createAndExecuteTransaction(package2, PackageDataSchema, 0, modules.commands.packageCommand, modules.stateStore);
+				packages = await modules.stores.packagesStore.get(context2, packageListKey);
 				package2.packageReleases = ["v1.0.1", "v2", "v3"]
 				expect(packages).toEqual({ packages: [package2] });
 			});
