@@ -17,4 +17,4 @@ EXPOSE 7887
 # dashboard plugin
 EXPOSE 8001
 
-CMD [ "./bin/run", "start" ]
+CMD [ "npm", "run", "start" ]
