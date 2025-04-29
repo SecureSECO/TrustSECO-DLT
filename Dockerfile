@@ -13,7 +13,7 @@ COPY . .
 # main port
 EXPOSE 8000
 # rpc
-EXPOSE 8080
+EXPOSE 7887
 # dashboard plugin
 EXPOSE 8001
 
