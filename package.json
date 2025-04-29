@@ -24,7 +24,11 @@
 		"test:coverage": "jest --passWithNoTests --coverage=true --coverage-reporters=text",
 		"test:ci": "jest --passWithNoTests --coverage=true --coverage-reporters=json",
 		"version": "oclif readme --multi --dir=docs/commands && git add README.md docs",
-		"prepublishOnly": "npm ci && npm run lint && npm run build"
+		"prepublishOnly": "npm ci && npm run lint && npm run build",
+		"genesis": "./bin/run genesis-block:create --output config/default --assets-file ./config/default/genesis_assets.json",
+		"unsafe-reset": "npm run build && echo \"\n\" | ./bin/run blockchain reset",
+		"reset": "npm run build && ./bin/run blockchain reset",
+		"start": "npm run build && ./bin/run start --config config/default/config.json"
 	},
 	"bin": {
 		"TrustSECO": "./bin/run"

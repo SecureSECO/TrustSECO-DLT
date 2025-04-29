@@ -1,6 +1,6 @@
 {
 	"system": {
-		"dataPath": "/home/martijn/.lisk/TrustSECO",
+		"dataPath": "~/.lisk/TrustSECO",
 		"keepEventsForHeights": 300,
 		"logLevel": "info"
 	},
