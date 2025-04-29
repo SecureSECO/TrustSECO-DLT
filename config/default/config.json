@@ -1,5 +1,6 @@
 {
 	"system": {
+		"version": "2.0.0",
 		"dataPath": "~/.lisk/TrustSECO",
 		"keepEventsForHeights": 300,
 		"logLevel": "info"
@@ -15,8 +16,17 @@
 		"allowedMethods": ["*"]
 	},
 	"network": {
-		"version": "1.0",
-		"seedPeers": [],
+		"version": "2.0",
+        "seedPeers": [
+            {
+                "ip": "trustseco1.science.uu.nl",
+                "port": 8000
+            },
+            {
+                "ip": "trustseco2.science.uu.nl",
+                "port": 8000
+            }
+        ]
 		"port": 8000
 	},
 	"transactionPool": {
@@ -30,9 +40,9 @@
 		"block": {
 			"fromFile": "./config/genesis_block.blob"
 		},
-		"blockTime": 10,
+		"blockTime": 30,
 		"bftBatchSize": 103,
-		"maxTransactionsSize": 15360,
+		"maxTransactionsSize": 30720,
 		"chainID": "7365636f"
 	},
 	"generator": {

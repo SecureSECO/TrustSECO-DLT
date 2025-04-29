@@ -18,7 +18,6 @@
 		"format": "prettier --write '**/*'",
 		"prepack": "oclif manifest && oclif readme --multi --dir=docs/commands && npm shrinkwrap && npm prune --production && npm shrinkwrap",
 		"prebuild": "if test -d dist; then rm -r dist; fi; rm -f tsconfig.tsbuildinfo; rm -f npm-shrinkwrap.json",
-		"start": "echo Run \"./bin/run start\" to start the app",
 		"build": "tsc",
 		"test": "jest --passWithNoTests",
 		"test:coverage": "jest --passWithNoTests --coverage=true --coverage-reporters=text",
@@ -28,7 +27,7 @@
 		"genesis": "./bin/run genesis-block:create --output config/default --assets-file ./config/default/genesis_assets.json",
 		"unsafe-reset": "npm run build && echo \"\n\" | ./bin/run blockchain reset",
 		"reset": "npm run build && ./bin/run blockchain reset",
-		"start": "npm run build && ./bin/run start --config config/default/config.json"
+		"start": "npm run build && ./bin/run start --config config/default/config.json --overwrite-config"
 	},
 	"bin": {
 		"TrustSECO": "./bin/run"
