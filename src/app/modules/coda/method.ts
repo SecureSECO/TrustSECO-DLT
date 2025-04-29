@@ -1,5 +1,5 @@
 import { BaseMethod, ImmutableMethodContext } from 'lisk-sdk';
-import { CodaJobListStore, jobListKey, CodaJob } from './stores/coda-schemas'
+import { CodaJobListStore, jobListKey, CodaJob, CodaJobList } from './stores/coda-schemas'
 import { TrustfactsMethod } from '../trustfacts/method';
 
 export class CodaMethod extends BaseMethod {
@@ -7,6 +7,11 @@ export class CodaMethod extends BaseMethod {
     
     public addDependecies(trustfactsMethod: TrustfactsMethod) {
         this.trustfactsMethod = trustfactsMethod;
+    }
+
+    public getJobs(ctx: ImmutableMethodContext): Promise<CodaJobList> {
+        const codaStore = this.stores.get(CodaJobListStore);
+        return codaStore.get(ctx, jobListKey);
     }
 
 	public async requiredBounty(ctx: ImmutableMethodContext): Promise<bigint> {

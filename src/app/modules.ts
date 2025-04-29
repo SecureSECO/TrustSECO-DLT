@@ -20,5 +20,5 @@ export const registerModules = (app: Application): void => {
     codaModule.addDependecies(accountsModule.method,packageDataModule.method, trustfactsModule.method);
     app.registerModule(codaModule);
 
-    trustfactsModule.addDependecies(codaModule.method);
+    trustfactsModule.addDependecies(codaModule.method, accountsModule.method);
 };

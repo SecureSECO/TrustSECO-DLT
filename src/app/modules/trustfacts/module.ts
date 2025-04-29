@@ -1,75 +1,59 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import {
-    BaseModule,
-    ModuleMetadata
-} from 'lisk-sdk';
-import { AddFactCommand } from "./commands/add_fact_command";
+import { BaseModule, ModuleMetadata } from 'lisk-sdk';
+import { AddFactCommand } from './commands/add_fact_command';
 import { TrustfactsEndpoint } from './endpoint';
 import { TrustfactsMethod } from './method';
 import { CodaMethod } from '../coda/method';
+import { TrustFactsStore, RequestSchema, AddTrustFactSchema } from './stores/trustfacts';
+import { AccountsMethod } from '../accounts/method';
 
 export class TrustfactsModule extends BaseModule {
-    public endpoint = new TrustfactsEndpoint(this.stores, this.offchainStores);
-    public method = new TrustfactsMethod(this.stores, this.events);
-    public commands = [new AddFactCommand(this.stores, this.events)];
+	public endpoint = new TrustfactsEndpoint(this.stores, this.offchainStores);
+	public method = new TrustfactsMethod(this.stores, this.events);
+	public commands = [new AddFactCommand(this.stores, this.events)];
 
-	// public constructor() {
-	// 	super();
-	// 	// registeration of stores and events
-	// }
+	public constructor() {
+		super();
+		this.stores.register(TrustFactsStore, new TrustFactsStore(this.name, 0));
+	}
 
 	public metadata(): ModuleMetadata {
 		return {
-			...this.baseMetadata(),
-			endpoints: [],
+			endpoints: [
+				{
+					name: this.endpoint.calculateTrustScore.name,
+					request: RequestSchema,
+				},
+				{
+					name: this.endpoint.calculateCategoryTrustScores.name,
+					request: RequestSchema,
+				},
+				{
+					name: this.endpoint.encodeTrustFact.name,
+					request: AddTrustFactSchema
+				},
+				{
+					name: this.endpoint.getPackageFacts.name,
+					request: RequestSchema,
+				}
+			],
+			commands: this.commands.map(command => ({
+				name: command.name,
+				params: command.schema,
+			})),
+			events: this.events.values().map(v => ({
+				name: v.name,
+				data: v.schema,
+			})),
 			assets: [],
+			stores: [],
 		};
 	}
 
-    public addDependecies(codaMethod: CodaMethod) {
-		this.commands[0].addDependecies(codaMethod);
-    }
-
-    // Lifecycle hooks
-    // public async init(_args: ModuleInitArgs): Promise<void> {
-	// 	// initialize this module when starting a node
-	// }
-
-	// public async insertAssets(_context: InsertAssetContext) {
-	// 	// initialize block generation, add asset
-	// }
-
-	// public async verifyAssets(_context: BlockVerifyContext): Promise<void> {
-	// 	// verify block
-	// }
-
-    // Lifecycle hooks
-	// public async verifyTransaction(_context: TransactionVerifyContext): Promise<VerificationResult> {
-		// verify transaction will be called multiple times in the transaction pool
-		// return { status: VerifyStatus.OK };
-	// }
-
-	// public async beforeCommandExecute(_context: TransactionExecuteContext): Promise<void> {
-	// }
-
-	// public async afterCommandExecute(_context: TransactionExecuteContext): Promise<void> {
-
-	// }
-	// public async initGenesisState(_context: GenesisBlockExecuteContext): Promise<void> {
-
-	// }
-
-	// public async finalizeGenesisState(_context: GenesisBlockExecuteContext): Promise<void> {
-
-	// }
-
-	// public async beforeTransactionsExecute(_context: BlockExecuteContext): Promise<void> {
-
-	// }
-
-	// public async afterTransactionsExecute(_context: BlockAfterExecuteContext): Promise<void> {
-
-	// }
+	public addDependecies(codaMethod: CodaMethod, accountsMethod: AccountsMethod) {
+		this.commands[0].addDependecies(codaMethod, accountsMethod, this.method);
+		this.endpoint.addDependecies(this.method);
+	}
 }
