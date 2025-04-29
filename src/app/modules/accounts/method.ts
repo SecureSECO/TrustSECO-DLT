@@ -15,6 +15,9 @@ export class AccountsMethod extends BaseMethod {
 	/** Add amount to account balance (negative to lower account balance)*/
 	public async changeBalance(ctx: MethodContext, uid: string, amount: bigint) {
 		const accountStore = this.stores.get(AccountStore);
+		if (!await accountStore.has(ctx, Buffer.from(uid))){
+			throw new Error('No account exists for givin uid')
+		}
 		let account = await accountStore.get(ctx, Buffer.from(uid))
 		account.slingers += amount;
 		if (account.slingers < 0) {
@@ -25,6 +28,9 @@ export class AccountsMethod extends BaseMethod {
 
 	public async getAccount(ctx: MethodContext, uid: string): Promise<Account> {
 		const accountStore = this.stores.get(AccountStore);
+		if (!await accountStore.has(ctx, Buffer.from(uid))){
+			throw new Error('No account exists for givin uid')
+		}
 		return await accountStore.get(ctx, Buffer.from(uid))
 	}
 }

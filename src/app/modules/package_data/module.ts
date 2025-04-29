@@ -3,13 +3,14 @@
 
 import {
     BaseModule,
-    ModuleMetadata
+    ModuleMetadata,
+	GenesisBlockExecuteContext
 } from 'lisk-sdk';
 import { AddPackageDataCommand } from "./commands/add_package_data_command";
 import { PackageDataEndpoint } from './endpoint';
 import { PackageDataMethod } from './method';
 import {
-    PackageDataListSchema, PackageDataListStore, PackageDataSchema
+    PackageDataListSchema, PackageDataListStore, PackageDataSchema, packageListKey 
 } from './stores/packagedata';
 
 export class PackageDataModule extends BaseModule {
@@ -66,44 +67,8 @@ export class PackageDataModule extends BaseModule {
 		};
 	}
 
-	// Lifecycle hooks
-	// public async init(_args: ModuleInitArgs): Promise<void> {
-	// 	// initialize this module when starting a node
-	// }
-
-	// public async insertAssets(_context: InsertAssetContext) {
-	// 	// initialize block generation, add asset
-	// }
-
-	// public async verifyAssets(_context: BlockVerifyContext): Promise<void> {
-	// 	// verify block
-	// }
-
-	// Lifecycle hooks
-	// public async verifyTransaction(_context: TransactionVerifyContext): Promise<VerificationResult> {
-	// verify transaction will be called multiple times in the transaction pool
-	// return { status: VerifyStatus.OK };
-	// }
-
-	// public async beforeCommandExecute(_context: TransactionExecuteContext): Promise<void> {
-	// }
-
-	// public async afterCommandExecute(_context: TransactionExecuteContext): Promise<void> {
-
-	// }
-	// public async initGenesisState(_context: GenesisBlockExecuteContext): Promise<void> {
-
-	// }
-
-	// public async finalizeGenesisState(_context: GenesisBlockExecuteContext): Promise<void> {
-
-	// }
-
-	// public async beforeTransactionsExecute(_context: BlockExecuteContext): Promise<void> {
-
-	// }
-
-	// public async afterTransactionsExecute(_context: BlockAfterExecuteContext): Promise<void> {
-
-	// }
+	public async initGenesisState(context: GenesisBlockExecuteContext): Promise<void> {
+		const packagesStore = this.stores.get(PackageDataListStore);
+		packagesStore.set(context, packageListKey, { packages: [] })
+	}
 }

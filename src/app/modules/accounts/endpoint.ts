@@ -14,6 +14,10 @@ export class AccountsEndpoint extends BaseEndpoint {
 		if (typeof uid !== 'string') {
             throw new Error('Parameter uid must be a string.');
         }
+		if (!await accountStore.has(ctx, Buffer.from(uid))){
+			throw new Error('No account exists for givin uid')
+		}
+	
 		const account = await accountStore.get(ctx, Buffer.from(uid))
 		
 		return { slingers: account.slingers.toString() };

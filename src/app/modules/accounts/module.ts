@@ -1,14 +1,14 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import { BaseModule, ModuleMetadata } from 'lisk-sdk';
+import { BaseModule, GenesisBlockExecuteContext, ModuleMetadata } from 'lisk-sdk';
 import { AccountAddCommand } from './commands/account_add_command';
 import { AccountsEndpoint } from './endpoint';
 import { AccountsMethod } from './method';
 import { AccountStore, AccountSchemaSerial } from './stores/account';
 import { AccountIdStore, AccountIdSchema } from './stores/account-id';
 import { AccountUrlStore } from './stores/account-url';
-import { KeysStore, KeysSchema } from './stores/keys';
+import { KeysStore, KeysSchema, keyIndex } from './stores/keys';
 
 export class AccountsModule extends BaseModule {
 	public endpoint = new AccountsEndpoint(this.stores, this.offchainStores);
@@ -50,44 +50,8 @@ export class AccountsModule extends BaseModule {
 		};
 	}
 
-	// Lifecycle hooks
-	// public async init(_args: ModuleInitArgs): Promise<void> {
-	// 	// initialize this module when starting a node
-	// }
-
-	// public async insertAssets(_context: InsertAssetContext) {
-	// 	// initialize block generation, add asset
-	// }
-
-	// public async verifyAssets(_context: BlockVerifyContext): Promise<void> {
-	// 	// verify block
-	// }
-
-	// Lifecycle hooks
-	// public async verifyTransaction(_context: TransactionVerifyContext): Promise<VerificationResult> {
-	// verify transaction will be called multiple times in the transaction pool
-	// return { status: VerifyStatus.OK };
-	// }
-
-	// public async beforeCommandExecute(_context: TransactionExecuteContext): Promise<void> {
-	// }
-
-	// public async afterCommandExecute(_context: TransactionExecuteContext): Promise<void> {
-
-	// }
-	// public async initGenesisState(_context: GenesisBlockExecuteContext): Promise<void> {
-
-	// }
-
-	// public async finalizeGenesisState(_context: GenesisBlockExecuteContext): Promise<void> {
-
-	// }
-
-	// public async beforeTransactionsExecute(_context: BlockExecuteContext): Promise<void> {
-
-	// }
-
-	// public async afterTransactionsExecute(_context: BlockAfterExecuteContext): Promise<void> {
-
-	// }
+	public async initGenesisState(context: GenesisBlockExecuteContext): Promise<void> {
+		const keyStore = this.stores.get(KeysStore);
+		keyStore.set(context, keyIndex, { keys: [] })
+	}
 }

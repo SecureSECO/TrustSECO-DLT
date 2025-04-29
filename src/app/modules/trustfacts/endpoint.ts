@@ -68,7 +68,7 @@ export class TrustfactsEndpoint extends BaseEndpoint {
 		if (typeof platform !== "string" && typeof platform !== "undefined")
 			throw new Error("platform should be string or undefined.")
 
-		return await this.trustfactsMethod.getTrustFacts(context, {packageName, packageOwner: owner, packagePlatform: platform, packageRelease: version});
+		return { facts: await this.trustfactsMethod.getTrustFacts(context, {packageName, packageOwner: owner, packagePlatform: platform, packageRelease: version}) };
 	}
 
     /** return only the facts for the current version and which are included in the trust score */

@@ -1,12 +1,12 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import { BaseModule, ModuleMetadata } from 'lisk-sdk';
+import { BaseModule, ModuleMetadata, GenesisBlockExecuteContext } from 'lisk-sdk';
 import { AddFactCommand } from './commands/add_fact_command';
 import { TrustfactsEndpoint } from './endpoint';
 import { TrustfactsMethod } from './method';
 import { CodaMethod } from '../coda/method';
-import { TrustFactsStore, RequestSchema, AddTrustFactSchema } from './stores/trustfacts';
+import { TrustFactsStore, RequestSchema, AddTrustFactSchema, trustFactsIndex } from './stores/trustfacts';
 import { AccountsMethod } from '../accounts/method';
 
 export class TrustfactsModule extends BaseModule {
@@ -55,5 +55,10 @@ export class TrustfactsModule extends BaseModule {
 	public addDependecies(codaMethod: CodaMethod, accountsMethod: AccountsMethod) {
 		this.commands[0].addDependecies(codaMethod, accountsMethod, this.method);
 		this.endpoint.addDependecies(this.method);
+	}
+
+	public async initGenesisState(context: GenesisBlockExecuteContext): Promise<void> {
+		const factsStore = this.stores.get(TrustFactsStore);
+		factsStore.set(context, trustFactsIndex, { facts: [] })
 	}
 }
