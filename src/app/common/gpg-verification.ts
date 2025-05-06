@@ -44,16 +44,11 @@ export class GPG {
             await verified;
         }
         catch {
-            if (process.env.ACCEPT_BAD_SIGNATURES) console.error("GPG signature verification failed! ACCEPT_BAD_SIGNATURES is set, so continuing anyway.");
-            else throw new Error("GPG signature verification failed");
+            throw new Error("GPG signature verification failed");
         }
         const accountUid = keyID.toHex().toUpperCase();
         if (accountUid === undefined) {
-            if (process.env.ACCEPT_INVALID_ACCOUNT) {
-                console.error("Unable to find the uid for the provided GPG key! ACCEPT_INVALID_ACCOUNT is set, so continuing anyway with throwaway account");
-                return "throwaway";
-            }
-            else throw new Error("Unable to find the uid for the provided GPG key");
+            throw new Error("Unable to find the uid for the provided GPG key");
         }
         return accountUid;
     }

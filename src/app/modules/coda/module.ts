@@ -97,10 +97,10 @@ export class CodaModule extends BaseModule {
 				{
 					jobsToKeep.push(job);
 				}
-				console.log(`Removing job ${job.jobID} (no facts) ${differenceInBlockHeight}`);
+				context.logger.info(`Removing job ${job.jobID} (no facts) ${differenceInBlockHeight}`);
 				continue;
 			}
-			console.log(`Removing job ${job.jobID}`);
+			context.logger.info(`Removing job ${job.jobID}`);
 
 			const reward = await this.calculateReward(context, job, facts.length);
 

@@ -75,7 +75,7 @@ export function isMinimalCodaJob(obj: any): boolean {
 		typeof obj.package === 'string' &&
 		typeof obj.version === 'string' &&
 		typeof obj.fact === 'string' &&
-		typeof obj.bounty === 'bigint'
+		typeof obj.bounty === 'string'
 	);
 }
 
@@ -124,7 +124,7 @@ export const codaJobIdSchema: Schema = {
 	required: ['jobId'],
 	properties: {
 		jobId: {
-			dataType: 'uint64',
+			dataType: 'uint32',
 			fieldNumber: 1,
 		},
 	},

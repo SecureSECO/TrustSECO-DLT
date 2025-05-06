@@ -44,7 +44,7 @@ export class AddFactCommand extends BaseCommand {
         const job = jobs.find(job => job.jobID === params.data.jobID);
 
         if (job === undefined) {
-            console.log(jobs);
+            context.logger.error(jobs);
             throw new Error("Job with given job ID does not exist!");
         }
 
@@ -54,7 +54,7 @@ export class AddFactCommand extends BaseCommand {
         // check if this account already has a fact for this job
         const existingFact = facts.find(fact => fact.account.uid === uid && fact.jobID === params.data.jobID);
         if (existingFact !== undefined) {
-            console.error("Account already has a fact for this job! Ignoring this new fact...");
+            context.logger.error("Account already has a fact for this job! Ignoring this new fact...");
             return;
         }
 

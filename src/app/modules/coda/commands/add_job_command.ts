@@ -42,7 +42,8 @@ export class AddJobCommand extends BaseCommand {
     
     public schema = SignedSchema(minimalCodaJobSchema);
     
-    public async verify({ params }: CommandVerifyContext<Params>): Promise<VerificationResult> {
+    public async verify(context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+        const { params } = context;
         if (params.data.package.trim() !== params.data.package)
             throw new Error('Package name cannot start or end with whitespace!');
         if (params.data.package.toLowerCase() !== params.data.package)
@@ -60,7 +61,13 @@ export class AddJobCommand extends BaseCommand {
         if (params.data.version === '') throw new Error('version cannot be empty');
         if (!validFacts.flatMap(a => a.facts).includes(params.data.fact))
             throw new Error('Invalid fact provided');
-        if (!params.data.signature) throw new Error('Signature is missing!');
+        if (!params.signature) throw new Error('Signature is missing!');
+        // check if bounty is higher than minimum required
+        const rB = await this.codaMethod.requiredBounty(context);
+        if (params.data.bounty < rB) {
+            throw new Error('Bounty is lower than minimum required bounty!');
+        }
+    
         return { status: VerifyStatus.OK };
     }
     
@@ -75,16 +82,6 @@ export class AddJobCommand extends BaseCommand {
         // TODO: also filter on version, owner, and platform
         let facts: StoreTrustFact[] = await this.trustfactsMethod.getTrustFacts(context, { packageName: params.data.package });
     
-        // check if bounty is higher than minimum required
-        const rB = await this.codaMethod.requiredBounty(context);
-        if (params.data.bounty < rB) {
-            if (process.env.ACCEPT_INSUFFICIENT_BOUNTY)
-                console.error(
-                    'Bounty is lower than minimum required bounty! ACCEPT_INSUFFICIENT_BOUNTY is set, so continuing anyway.',
-                );
-            else throw new Error('Bounty is lower than minimum required bounty!');
-        }
-    
         // check if job already exists
         for (const job of jobs) {
             if (
@@ -92,7 +89,7 @@ export class AddJobCommand extends BaseCommand {
                 job.fact === params.data.fact &&
                 job.version === params.data.version
             ) {
-                console.error('There already exists a job for the given package, version and fact!');
+                context.logger.error('There already exists a job for the given package, version and fact!');
                 return;
             }
         }
@@ -100,7 +97,7 @@ export class AddJobCommand extends BaseCommand {
         // check if there already exists a fact for this job
         for (const fact of facts) {
             if (fact.fact === params.data.fact && fact.version === params.data.version) { // TODO: check name, owner and maybe platform
-                console.error('There already exists a fact for the given package, version and fact!');
+                context.logger.error('There already exists a fact for the given package, version and fact!');
                 return;
             }
         }
