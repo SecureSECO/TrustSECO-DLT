@@ -6,7 +6,7 @@ export interface AddTrustFact {
 	factData: string;
 }
 
-export interface StoreTrustFact extends Record<string, unknown> {
+export interface StoreTrustFact {
 	fact: string;
 	packageName: string;
 	factData: string;
@@ -40,7 +40,7 @@ export const AddTrustFactSchema: Schema = {
 export const StoreTrustFactSchema: Schema = {
 	$id: 'trustfacts/store-facts',
 	type: 'object',
-	required: ['fact', 'factData', 'version', 'jobID', 'account'],
+	required: ['fact', 'factData', 'version', 'jobID', 'account', 'packageName'],
 	properties: {
 		// the fact that was spidered
 		fact: {
@@ -56,6 +56,11 @@ export const StoreTrustFactSchema: Schema = {
 		version: {
 			dataType: 'string',
 			fieldNumber: 3,
+		},
+		// The name of the package the trustfact was gathered for
+		packageName: {
+			dataType: 'string',
+			fieldNumber: 4,
 		},
 		// ID of job in CODA
 		jobID: {

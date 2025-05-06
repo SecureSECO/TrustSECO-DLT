@@ -12,19 +12,16 @@ import { AddTrustFact, AddTrustFactSchema, TrustFactsStore, trustFactsIndex, Sto
 import { GPG } from '../../../common/gpg-verification';
 import { SignedSchema, Signed } from '../../../common/signed-schemas';
 import { AccountsMethod } from '../../accounts/method';
-import { TrustfactsMethod } from '../method';
 
 type Params = Signed<AddTrustFact>;
 
 export class AddFactCommand extends BaseCommand {
     private codaMethod!: CodaMethod;
     private accountsMethod!: AccountsMethod;
-    private trustfactsMethod!: TrustfactsMethod;
     
-    public addDependecies(codaMethod: CodaMethod, accountsMethod: AccountsMethod, trustfactsMethod: TrustfactsMethod) {
+    public addDependecies(codaMethod: CodaMethod, accountsMethod: AccountsMethod) {
         this.codaMethod = codaMethod; 
 		this.accountsMethod = accountsMethod;
-        this.trustfactsMethod = trustfactsMethod;
     }
 
 	public schema = SignedSchema(AddTrustFactSchema);
@@ -55,8 +52,9 @@ export class AddFactCommand extends BaseCommand {
             return;
         }
 
+        const factsStore = this.stores.get(TrustFactsStore);
         // TODO: also filter on owner and platform
-        let facts: StoreTrustFact[] = await this.trustfactsMethod.getTrustFacts(context, {packageName: job.package, packageRelease: job.version});
+        let facts: StoreTrustFact[] = (await factsStore.get(context, trustFactsIndex)).facts;
 
         // check if this account already has a fact for this job
         const existingFact = facts.find(fact => fact.account.uid === uid && fact.jobID === params.data.jobID);
@@ -74,7 +72,6 @@ export class AddFactCommand extends BaseCommand {
             packageName: job.package
         });
 
-        const factsStore = this.stores.get(TrustFactsStore);
         await factsStore.set(context, trustFactsIndex, { facts });
 	}
 }

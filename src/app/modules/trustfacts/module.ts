@@ -53,7 +53,7 @@ export class TrustfactsModule extends BaseModule {
 	}
 
 	public addDependecies(codaMethod: CodaMethod, accountsMethod: AccountsMethod) {
-		this.commands[0].addDependecies(codaMethod, accountsMethod, this.method);
+		this.commands[0].addDependecies(codaMethod, accountsMethod);
 		this.endpoint.addDependecies(this.method);
 	}
 
