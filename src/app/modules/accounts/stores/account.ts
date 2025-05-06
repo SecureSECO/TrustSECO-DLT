@@ -1,10 +1,10 @@
 import { Schema, BaseStore } from "lisk-sdk";
 
-export interface Account extends Record<string, unknown> {
+export interface Account {
     slingers: bigint;
 }
 
-export interface AccountSerial extends Record<string, unknown> {
+export interface AccountSerial {
     slingers: string;
 }
 

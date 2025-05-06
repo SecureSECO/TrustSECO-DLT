@@ -94,6 +94,7 @@ export class TrustfactsEndpoint extends BaseEndpoint {
     private _calculateTrustScore(facts: StoreTrustFact[], occurences: Record<string, number>) {
         let score = 0;
         for (const fact of facts) {
+            // TODO: maybe replace occurences_count by amount of facts, this way packages wont get rewarded only having a few facts
             const occurences_count = occurences[fact.fact];
             if (occurences_count == undefined) throw new Error("Could not find occurence of trust fact " + fact.fact);
             const fact_score = scores.find(score => score.fact === fact.fact) ?? { fact: "", weight: 0, average: 1, log: false }

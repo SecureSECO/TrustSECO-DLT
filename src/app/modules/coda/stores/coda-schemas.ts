@@ -48,7 +48,7 @@ export const validFacts: { source: string; facts: string[] }[] = [
 	},
 ];
 
-export interface CodaJob extends Record<string, unknown> {
+export interface CodaJob {
 	package: string;
 	version: string;
 	fact: string;
@@ -58,11 +58,11 @@ export interface CodaJob extends Record<string, unknown> {
 	account: AccountId;
 }
 
-export interface CodaJobList extends Record<string, unknown> {
+export interface CodaJobList {
 	jobs: CodaJob[];
 }
 
-export interface MinimalCodaJob extends Record<string, unknown> {
+export interface MinimalCodaJob {
 	package: string;
 	version: string;
 	fact: string;
@@ -174,7 +174,7 @@ export class CodaJobListStore extends BaseStore<CodaJobList> {
 	public schema = codaJobListSchema;
 }
 
-export interface CodaJobList extends Record<string, unknown> {
+export interface CodaJobList {
 	jobs: CodaJob[];
 }
 

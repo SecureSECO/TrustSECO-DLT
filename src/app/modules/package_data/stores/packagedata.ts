@@ -1,6 +1,6 @@
 import { Schema, BaseStore } from "lisk-sdk";
 
-export interface PackageData extends Record<string, unknown> {
+export interface PackageData {
     packageName: string,
     packagePlatform: string,
     packageOwner: string,
@@ -39,7 +39,7 @@ export const PackageDataSchema: Schema = {
     }
 }
 
-export interface PackageDataList extends Record<string, unknown> {
+export interface PackageDataList {
     packages: PackageData[];
 }
 

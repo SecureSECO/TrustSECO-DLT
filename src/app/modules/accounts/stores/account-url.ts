@@ -1,6 +1,6 @@
 import { Schema, BaseStore } from "lisk-sdk";
 
-export interface AccountURL extends Record<string, unknown> {
+export interface AccountURL {
     url: string;
 }
 

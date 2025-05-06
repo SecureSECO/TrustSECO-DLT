@@ -3,7 +3,7 @@ import { Schema, BaseStore } from "lisk-sdk";
 /** Key used to access the keys, needed because lisk data storage is key-value based */
 export const keyIndex = Buffer.alloc(0);
 
-export interface Keys extends Record<string, unknown> {
+export interface Keys {
     keys: {key: string} [];
 }
 

@@ -1,6 +1,6 @@
 import { Schema, BaseStore } from "lisk-sdk";
 
-export interface AccountId extends Record<string, unknown> {
+export interface AccountId {
     uid: string;
 }
 
