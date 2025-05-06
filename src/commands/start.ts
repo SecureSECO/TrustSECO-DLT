@@ -6,7 +6,6 @@ import { Flags as flagParser } from '@oclif/core';
 import { FlagInput } from '@oclif/core/lib/interfaces';
 import { BaseStartCommand } from 'lisk-commander';
 import { Application, ApplicationConfig, PartialApplicationConfig } from 'lisk-sdk';
-import { ForgerPlugin } from '@liskhq/lisk-framework-forger-plugin';
 import { MonitorPlugin } from '@liskhq/lisk-framework-monitor-plugin';
 import { ReportMisbehaviorPlugin } from '@liskhq/lisk-framework-report-misbehavior-plugin';
 import { DashboardPlugin } from '@liskhq/lisk-framework-dashboard-plugin';
@@ -49,12 +48,6 @@ type StartFlags = typeof BaseStartCommand.flags & FlagInput<any>;
 export class StartCommand extends BaseStartCommand {
 	static flags: StartFlags = {
 		...BaseStartCommand.flags,
-		'enable-forger-plugin': flagParser.boolean({
-			description:
-				'Enable Forger Plugin. Environment variable "LISK_ENABLE_FORGER_PLUGIN" can also be used.',
-			env: 'LISK_ENABLE_FORGER_PLUGIN',
-			default: false,
-		}),
 		'enable-monitor-plugin': flagParser.boolean({
 			description:
 				'Enable Monitor Plugin. Environment variable "LISK_ENABLE_MONITOR_PLUGIN" can also be used.',
@@ -118,9 +111,6 @@ export class StartCommand extends BaseStartCommand {
 		setPluginConfig(config as ApplicationConfig, flags);
 		const app = getApplication(config);
 
-		if (flags['enable-forger-plugin']) {
-			app.registerPlugin(new ForgerPlugin(), { loadAsChildProcess: true });
-		}
 		if (flags['enable-monitor-plugin']) {
 			app.registerPlugin(new MonitorPlugin(), { loadAsChildProcess: true });
 		}
