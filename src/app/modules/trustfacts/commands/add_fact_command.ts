@@ -29,23 +29,30 @@ export class AddFactCommand extends BaseCommand {
 
 	public schema = SignedSchema(AddTrustFactSchema);
 
-	public async verify({params}: CommandVerifyContext<Params>): Promise<VerificationResult> {
+	public async verify(context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+        const { params } = context;
         if (params.data.factData.trim() === "") throw new Error("FactData cannot be empty");
         if (!params.signature) throw new Error("Signature is missing!");
+		const keys = await this.accountsMethod.getKeys(context);
+        await GPG.verify(params, AddTrustFactSchema, keys);
+        const { jobs } = await this.codaMethod.getJobs(context);
+        const job = jobs.find(job => job.jobID === params.data.jobID);
+        if (job === undefined) {
+            context.logger.error(jobs);
+            throw new Error("Job with given job ID does not exist!");
+        }
 		return { status: VerifyStatus.OK };
 	}
 
 	public async execute(context: CommandExecuteContext<Params>): Promise<void> {
 		const { params } = context;
 		const keys = await this.accountsMethod.getKeys(context);
-        // Throws error on invalid signature
         const uid = await GPG.verify(params, AddTrustFactSchema, keys);
         const { jobs } = await this.codaMethod.getJobs(context);
         const job = jobs.find(job => job.jobID === params.data.jobID);
-
+        // This was already verified above but needed to type check
         if (job === undefined) {
-            context.logger.error(jobs);
-            throw new Error("Job with given job ID does not exist!");
+            return;
         }
 
         // TODO: also filter on owner and platform

@@ -31,7 +31,6 @@ export class AccountAddCommand extends BaseCommand {
 		},
 	};
 
-	// eslint-disable-next-line @typescript-eslint/require-await
 	public async verify(context: CommandVerifyContext<Params>): Promise<VerificationResult> {
 		const url = context.params.url
         if (!GPG.validateURL(url)) throw new Error('url should be of the form https://github.com/[username].gpg');

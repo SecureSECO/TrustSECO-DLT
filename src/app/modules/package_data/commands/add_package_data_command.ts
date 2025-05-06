@@ -8,7 +8,7 @@ import {
 	VerifyStatus,
 } from 'lisk-sdk';
 
-import { PackageDataSchema, PackageData, PackageDataList, PackageDataListStore, packageListKey } from '../stores/packagedata';
+import { PackageDataSchema, PackageData, PackageDataListStore, packageListKey } from '../stores/packagedata';
 
 export class AddPackageDataCommand extends BaseCommand {
 	public schema = PackageDataSchema;
@@ -36,14 +36,7 @@ export class AddPackageDataCommand extends BaseCommand {
 	public async execute(context: CommandExecuteContext<PackageData>): Promise<void> {
 		const asset = context.params;
 		const packagesStore = this.stores.get(PackageDataListStore);
-		let packages: PackageDataList;
-		try {
-			// throws error if packages list doesn't exist yet
-			packages = await packagesStore.get(context, packageListKey);
-		}
-		catch {
-			packages = { packages: [] };
-		}
+		let packages = await packagesStore.get(context, packageListKey);
 		// Find package with same owner, name and platform if it exists
 		const index = packages.packages.findIndex((pack) => pack.packageOwner === asset.packageOwner
 			&& pack.packagePlatform === asset.packagePlatform

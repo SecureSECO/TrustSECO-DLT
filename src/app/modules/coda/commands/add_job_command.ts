@@ -67,6 +67,22 @@ export class AddJobCommand extends BaseCommand {
         if (params.data.bounty < rB) {
             throw new Error('Bounty is lower than minimum required bounty!');
         }
+        const keys: string[] = (await this.accountsMethod.getKeys(context));
+        const uid = await GPG.verify(params, minimalCodaJobSchema, keys);
+    
+        // TODO should also filter on owner and platform
+        const packageData = await this.packageDataMethod.getPackageInfo(context, { packageName: params.data.package });
+        const versionFound = packageData.packageReleases.some(
+            version => params.data.version == version,
+        );
+        if (!versionFound)
+            throw new Error('The given package version does not exist in the packageData!');
+        const account = await this.accountsMethod.getAccount(context, uid)
+        account.slingers -= params.data.bounty;
+        if (account.slingers < 0) {
+            throw new Error('Bounty is higher than account credit!');
+        }
+    
     
         return { status: VerifyStatus.OK };
     }
@@ -74,7 +90,6 @@ export class AddJobCommand extends BaseCommand {
     public async execute(context: CommandExecuteContext<Params>): Promise<void> {
         const params = context.params;
         const keys: string[] = (await this.accountsMethod.getKeys(context));
-        // Throws error on invalid signature
         const uid = await GPG.verify(params, minimalCodaJobSchema, keys);
     
         const jobsStore = this.stores.get(CodaJobListStore);
@@ -102,19 +117,8 @@ export class AddJobCommand extends BaseCommand {
             }
         }
     
-        // TODO should also filter on owner and platform
-        const packageData = await this.packageDataMethod.getPackageInfo(context, { packageName: params.data.package });
-        const versionFound = packageData.packageReleases.some(
-            version => params.data.version == version,
-        );
-        if (!versionFound)
-            throw new Error('The given package version does not exist in the packageData!');
-    
         const account = await this.accountsMethod.getAccount(context, uid)
         account.slingers -= params.data.bounty;
-        if (account.slingers < 0) {
-            throw new Error('Bounty is higher than account credit!');
-        }
     
         const jobIdStore = this.stores.get(CodaJobIdStore);
         const { jobId } = (await jobIdStore.get(context, jobIdKey));

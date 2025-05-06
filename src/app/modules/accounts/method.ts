@@ -26,7 +26,7 @@ export class AccountsMethod extends BaseMethod {
 		await accountStore.set(ctx, Buffer.from(uid), account);
 	}
 
-	public async getAccount(ctx: MethodContext, uid: string): Promise<Account> {
+	public async getAccount(ctx: ImmutableMethodContext, uid: string): Promise<Account> {
 		const accountStore = this.stores.get(AccountStore);
 		if (!await accountStore.has(ctx, Buffer.from(uid))){
 			throw new Error('No account exists for givin uid')
