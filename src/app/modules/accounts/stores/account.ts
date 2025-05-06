@@ -1,4 +1,4 @@
-import { Schema, BaseStore } from "klayr-sdk";
+import { Schema, Modules } from "klayr-sdk";
 
 export interface Account {
     slingers: bigint;
@@ -32,6 +32,6 @@ export const AccountSchema: Schema = {
     }
 };
 
-export class AccountStore extends BaseStore<Account> {
+export class AccountStore extends Modules.BaseStore<Account> {
     public schema = AccountSchema;
 }

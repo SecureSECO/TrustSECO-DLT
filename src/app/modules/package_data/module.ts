@@ -1,11 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import {
-    BaseModule,
-    ModuleMetadata,
-	GenesisBlockExecuteContext
-} from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 import { AddPackageDataCommand } from "./commands/add_package_data_command";
 import { PackageDataEndpoint } from './endpoint';
 import { PackageDataMethod } from './method';
@@ -13,7 +9,7 @@ import {
     PackageDataListSchema, PackageDataListStore, PackageDataSchema, packageListKey 
 } from './stores/packagedata';
 
-export class PackageDataModule extends BaseModule {
+export class PackageDataModule extends Modules.BaseModule {
 	public endpoint = new PackageDataEndpoint(this.stores, this.offchainStores);
 	public method = new PackageDataMethod(this.stores, this.events);
 	public commands = [new AddPackageDataCommand(this.stores, this.events)];
@@ -23,7 +19,7 @@ export class PackageDataModule extends BaseModule {
 		this.stores.register(PackageDataListStore, new PackageDataListStore(this.name, 0));
 	}
 
-	public metadata(): ModuleMetadata {
+	public metadata(): Modules.ModuleMetadata {
 		return {
 			endpoints: [
 				{
@@ -67,7 +63,7 @@ export class PackageDataModule extends BaseModule {
 		};
 	}
 
-	public async initGenesisState(context: GenesisBlockExecuteContext): Promise<void> {
+	public async initGenesisState(context: StateMachine.GenesisBlockExecuteContext): Promise<void> {
 		const packagesStore = this.stores.get(PackageDataListStore);
 		packagesStore.set(context, packageListKey, { packages: [] })
 	}

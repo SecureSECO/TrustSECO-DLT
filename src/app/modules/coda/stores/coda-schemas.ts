@@ -1,6 +1,6 @@
 import { Schema } from 'klayr-sdk';
 import { AccountId, AccountIdSchema } from '../../accounts/stores/account-id';
-import { BaseStore } from 'klayr-sdk';
+import { Modules } from 'klayr-sdk';
 
 export const validFacts: { source: string; facts: string[] }[] = [
 	{
@@ -170,7 +170,7 @@ export const minimalCodaJobSchema: Schema = {
 /** Key used to access the keys, needed because klayr data storage is key-value based */
 export const jobListKey = Buffer.alloc(0);
 
-export class CodaJobListStore extends BaseStore<CodaJobList> {
+export class CodaJobListStore extends Modules.BaseStore<CodaJobList> {
 	public schema = codaJobListSchema;
 }
 
@@ -184,6 +184,6 @@ export interface CodaJobId {
 	jobId: number
 }
 
-export class CodaJobIdStore extends BaseStore<CodaJobId> {
+export class CodaJobIdStore extends Modules.BaseStore<CodaJobId> {
 	public schema = codaJobIdSchema;
 }

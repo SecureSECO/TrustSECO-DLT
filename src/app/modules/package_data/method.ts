@@ -1,12 +1,12 @@
-import { BaseMethod, ImmutableMethodContext  } from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 import {
 	PackageData,
 	PackageDataListStore,
 	packageListKey,
 } from './stores/packagedata';
 
-export class PackageDataMethod extends BaseMethod {
-	public async getPackageInfo(ctx: ImmutableMethodContext, params: { packageName: string, packageOwner?: string, packagePlatform?: string}): Promise<PackageData> {
+export class PackageDataMethod extends Modules.BaseMethod {
+	public async getPackageInfo(ctx: StateMachine.ImmutableMethodContext, params: { packageName: string, packageOwner?: string, packagePlatform?: string}): Promise<PackageData> {
 		const packagesStore = this.stores.get(PackageDataListStore);
 		const packages = await packagesStore.get(ctx, packageListKey);
 		const { packageName, packagePlatform, packageOwner } = params;

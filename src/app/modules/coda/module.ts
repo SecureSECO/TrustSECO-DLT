@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import { BaseModule, ModuleMetadata, GenesisBlockExecuteContext, BlockAfterExecuteContext } from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 import { AddJobCommand } from './commands/add_job_command';
 import { CodaEndpoint } from './endpoint';
 import { CodaMethod } from './method';
@@ -11,7 +11,7 @@ import { PackageDataMethod } from '../package_data/method';
 import { TrustfactsMethod } from '../trustfacts/method';
 import { requiredVerifications } from './method';
 
-export class CodaModule extends BaseModule {
+export class CodaModule extends Modules.BaseModule {
 	public endpoint = new CodaEndpoint(this.stores, this.offchainStores);
 	public method = new CodaMethod(this.stores, this.events);
 	public commands = [new AddJobCommand(this.stores, this.events)];
@@ -25,7 +25,7 @@ export class CodaModule extends BaseModule {
 		this.stores.register(CodaJobIdStore, new CodaJobIdStore(this.name, 1));
 	}
 
-	public metadata(): ModuleMetadata {
+	public metadata(): Modules.ModuleMetadata {
 		return {
 			endpoints: [
 				{
@@ -63,7 +63,7 @@ export class CodaModule extends BaseModule {
 		this.commands[0].addDependecies(accountsMethod, this.method, packageDataMethod, trustfactsMethod);
     }
 
-	public async initGenesisState(context: GenesisBlockExecuteContext): Promise<void> {
+	public async initGenesisState(context: StateMachine.GenesisBlockExecuteContext): Promise<void> {
 		const jobIdStore = this.stores.get(CodaJobIdStore);
 		jobIdStore.set(context, jobIdKey, { jobId: 0 })
 
@@ -72,7 +72,7 @@ export class CodaModule extends BaseModule {
 	}
 
 	// Executed every block after all transactions are completed
-	public async afterTransactionsExecute(context: BlockAfterExecuteContext): Promise<void> {
+	public async afterTransactionsExecute(context: StateMachine.BlockAfterExecuteContext): Promise<void> {
 		const jobsStore = this.stores.get(CodaJobListStore);
         const { jobs } = await jobsStore.get(context, jobListKey);
         const jobsToKeep: CodaJob[] = [];
@@ -114,7 +114,7 @@ export class CodaModule extends BaseModule {
 
 	// TODO: this reward payout calculation is pretty stupid, it is not even equal to the original bounty of the job
 	// the reward also doesn't change if it was spidered by multiple accounts
-	private async calculateReward(context: BlockAfterExecuteContext, job: CodaJob, jobFacts: number): Promise<bigint>{
+	private async calculateReward(context: StateMachine.BlockAfterExecuteContext, job: CodaJob, jobFacts: number): Promise<bigint>{
 		// calculate network capacity (total facts)
 		const jobsStore = this.stores.get(CodaJobListStore);
         const { jobs } = await jobsStore.get(context, jobListKey);

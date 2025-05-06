@@ -1,20 +1,14 @@
 /* eslint-disable class-methods-use-this */
 
-import {
-	BaseCommand,
-	CommandVerifyContext,
-	CommandExecuteContext,
-	VerificationResult,
-	VerifyStatus,
-} from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 
 import { PackageDataSchema, PackageData, PackageDataListStore, packageListKey } from '../stores/packagedata';
 
-export class AddPackageDataCommand extends BaseCommand {
+export class AddPackageDataCommand extends Modules.BaseCommand {
 	public schema = PackageDataSchema;
 
 	// eslint-disable-next-line @typescript-eslint/require-await
-	public async verify(context: CommandVerifyContext<PackageData>): Promise<VerificationResult> {
+	public async verify(context: StateMachine.CommandVerifyContext<PackageData>): Promise<StateMachine.VerificationResult> {
 		const asset = context.params;
 		// Prevents users from adding duplicate packages, differentiated by whitespaces
 		if (asset.packageName !== asset.packageName.trim()) throw new Error('package name cannot start or end with whitespace');
@@ -30,10 +24,10 @@ export class AddPackageDataCommand extends BaseCommand {
 		if (asset.packagePlatform === '') throw new Error('package platform is required and cannot be empty');
 		if (asset.packageOwner === '') throw new Error('package owner is required and cannot be empty');
 		if (asset.packageReleases.length === 0) throw new Error('at least one release is required, the list can not be empty');
-		return { status: VerifyStatus.OK };
+		return { status: StateMachine.VerifyStatus.OK };
 	}
 
-	public async execute(context: CommandExecuteContext<PackageData>): Promise<void> {
+	public async execute(context: StateMachine.CommandExecuteContext<PackageData>): Promise<void> {
 		const asset = context.params;
 		const packagesStore = this.stores.get(PackageDataListStore);
 		let packages = await packagesStore.get(context, packageListKey);

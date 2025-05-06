@@ -1,4 +1,4 @@
-import { Schema, BaseStore } from "klayr-sdk";
+import { Schema, Modules } from "klayr-sdk";
 
 export interface AccountId {
     uid: string;
@@ -16,6 +16,6 @@ export const AccountIdSchema: Schema = {
     }
 };
 
-export class AccountIdStore extends BaseStore<AccountId> {
+export class AccountIdStore extends Modules.BaseStore<AccountId> {
     public schema = AccountIdSchema;
 }

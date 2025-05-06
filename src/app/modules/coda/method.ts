@@ -1,20 +1,20 @@
-import { BaseMethod, ImmutableMethodContext } from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 import { CodaJobListStore, jobListKey, CodaJob, CodaJobList } from './stores/coda-schemas'
 import { TrustfactsMethod } from '../trustfacts/method';
 
-export class CodaMethod extends BaseMethod {
+export class CodaMethod extends Modules.BaseMethod {
     private trustfactsMethod!: TrustfactsMethod;
     
     public addDependecies(trustfactsMethod: TrustfactsMethod) {
         this.trustfactsMethod = trustfactsMethod;
     }
 
-    public getJobs(ctx: ImmutableMethodContext): Promise<CodaJobList> {
+    public getJobs(ctx: StateMachine.ImmutableMethodContext): Promise<CodaJobList> {
         const codaStore = this.stores.get(CodaJobListStore);
         return codaStore.get(ctx, jobListKey);
     }
 
-	public async requiredBounty(ctx: ImmutableMethodContext): Promise<bigint> {
+	public async requiredBounty(ctx: StateMachine.ImmutableMethodContext): Promise<bigint> {
         const jobsStore = this.stores.get(CodaJobListStore);
         let jobs: CodaJob[] = [];
         if (await jobsStore.has(ctx, jobListKey)){

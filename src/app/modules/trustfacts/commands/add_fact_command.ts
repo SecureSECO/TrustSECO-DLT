@@ -1,12 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
-import {
-    BaseCommand,
-    CommandVerifyContext,
-    CommandExecuteContext,
-	VerificationResult,
-	VerifyStatus,
-} from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 import { CodaMethod } from '../../coda/method';
 import { AddTrustFact, AddTrustFactSchema, TrustFactsStore, trustFactsIndex, StoreTrustFact } from '../stores/trustfacts'
 import { GPG } from '../../../common/gpg-verification';
@@ -15,7 +9,7 @@ import { AccountsMethod } from '../../accounts/method';
 
 type Params = Signed<AddTrustFact>;
 
-export class AddFactCommand extends BaseCommand {
+export class AddFactCommand extends Modules.BaseCommand {
     private codaMethod!: CodaMethod;
     private accountsMethod!: AccountsMethod;
     
@@ -26,7 +20,7 @@ export class AddFactCommand extends BaseCommand {
 
 	public schema = SignedSchema(AddTrustFactSchema);
 
-	public async verify(context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+	public async verify(context: StateMachine.CommandVerifyContext<Params>): Promise<StateMachine.VerificationResult> {
         const { params } = context;
         if (params.data.factData.trim() === "") throw new Error("FactData cannot be empty");
         if (!params.signature) throw new Error("Signature is missing!");
@@ -38,10 +32,10 @@ export class AddFactCommand extends BaseCommand {
             context.logger.error(jobs);
             throw new Error("Job with given job ID does not exist!");
         }
-		return { status: VerifyStatus.OK };
+		return { status: StateMachine.VerifyStatus.OK };
 	}
 
-	public async execute(context: CommandExecuteContext<Params>): Promise<void> {
+	public async execute(context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
 		const { params } = context;
 		const keys = await this.accountsMethod.getKeys(context);
         const uid = await GPG.verify(params, AddTrustFactSchema, keys);

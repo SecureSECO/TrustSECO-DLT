@@ -5,7 +5,8 @@
 import { Flags as flagParser } from '@oclif/core';
 import { FlagInput } from '@oclif/core/lib/interfaces';
 import { BaseStartCommand } from 'klayr-commander';
-import { Application, ApplicationConfig, PartialApplicationConfig } from 'klayr-sdk';
+import { Application, Types } from 'klayr-sdk';
+import { ForgerPlugin } from '@klayr/generator-plugin';
 import { MonitorPlugin } from '@klayr/monitor-plugin';
 import { ReportMisbehaviorPlugin } from '@klayr/report-misbehavior-plugin';
 import { DashboardPlugin } from '@klayr/dashboard-plugin';
@@ -18,7 +19,7 @@ interface Flags {
 	[key: string]: string | number | boolean | undefined;
 }
 
-const setPluginConfig = (config: ApplicationConfig, flags: Flags): void => {
+const setPluginConfig = (config: Types.ApplicationConfig, flags: Flags): void => {
 	if (flags['monitor-plugin-port'] !== undefined) {
 		config.plugins[MonitorPlugin.name] = config.plugins[MonitorPlugin.name] ?? {};
 		config.plugins[MonitorPlugin.name].port = flags['monitor-plugin-port'];
@@ -48,6 +49,12 @@ type StartFlags = typeof BaseStartCommand.flags & FlagInput<any>;
 export class StartCommand extends BaseStartCommand {
 	static flags: StartFlags = {
 		...BaseStartCommand.flags,
+		'enable-forger-plugin': flagParser.boolean({
+			description:
+				'Enable Forger Plugin. Environment variable "KLAYR_ENABLE_FORGER_PLUGIN" can also be used.',
+			env: 'KLAYR_ENABLE_FORGER_PLUGIN',
+			default: false,
+		}),
 		'enable-monitor-plugin': flagParser.boolean({
 			description:
 				'Enable Monitor Plugin. Environment variable "KLAYR_ENABLE_MONITOR_PLUGIN" can also be used.',
@@ -104,13 +111,16 @@ export class StartCommand extends BaseStartCommand {
 		}),
 	};
 
-	public async getApplication(config: PartialApplicationConfig): Promise<Application> {
+	public async getApplication(config: Types.PartialApplicationConfig): Promise<Application> {
 		/* eslint-disable @typescript-eslint/no-unsafe-call */
 		const { flags } = await this.parse(StartCommand);
 		// Set Plugins Config
-		setPluginConfig(config as ApplicationConfig, flags);
+		setPluginConfig(config as Types.ApplicationConfig, flags);
 		const app = getApplication(config);
 
+		if (flags['enable-forger-plugin']) {
+			app.registerPlugin(new ForgerPlugin(), { loadAsChildProcess: true });
+		}
 		if (flags['enable-monitor-plugin']) {
 			app.registerPlugin(new MonitorPlugin(), { loadAsChildProcess: true });
 		}

@@ -1,12 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
-import {
-	BaseCommand,
-	CommandVerifyContext,
-	CommandExecuteContext,
-	VerificationResult,
-	VerifyStatus,
-} from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 import { GPG } from '../../../common/gpg-verification';
 import { AccountStore, Account } from '../stores/account';
 import { KeysStore, keyIndex } from '../stores/keys';
@@ -15,7 +9,7 @@ interface Params {
 	url: string;
 }
 
-export class AccountAddCommand extends BaseCommand {
+export class AccountAddCommand extends Modules.BaseCommand {
 	public schema = {
 		$id: 'account/accountAdd-params',
 		title: 'accountAddCommand transaction parameter for the account module',
@@ -31,7 +25,7 @@ export class AccountAddCommand extends BaseCommand {
 		},
 	};
 
-	public async verify(context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+	public async verify(context: StateMachine.CommandVerifyContext<Params>): Promise<StateMachine.VerificationResult> {
 		const url = context.params.url
         if (!GPG.validateURL(url)) throw new Error('url should be of the form https://github.com/[username].gpg');
 		await GPG.import(url); // throws error on invalid import
@@ -42,10 +36,10 @@ export class AccountAddCommand extends BaseCommand {
             throw new Error(`Account from ${url} already known as ${uid}`);
         }
 
-		return { status: VerifyStatus.OK };
+		return { status: StateMachine.VerifyStatus.OK };
 	}
 
-	public async execute(context: CommandExecuteContext<Params>): Promise<void> {
+	public async execute(context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
 		const url = context.params.url
         context.logger.info(`Adding GPG key from ${url}`);
 

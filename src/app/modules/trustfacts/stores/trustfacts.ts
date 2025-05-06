@@ -1,4 +1,4 @@
-import { Schema, BaseStore } from 'klayr-sdk';
+import { Schema, Modules } from 'klayr-sdk';
 import { AccountId, AccountIdSchema } from '../../accounts/stores/account-id';
 
 export interface AddTrustFact {
@@ -112,7 +112,7 @@ export const RequestSchema: Schema = {
 	},
 };
 
-export class TrustFactsStore extends BaseStore<TrustFactList> {
+export class TrustFactsStore extends Modules.BaseStore<TrustFactList> {
 	public schema = TrustFactListSchema;
 }
 

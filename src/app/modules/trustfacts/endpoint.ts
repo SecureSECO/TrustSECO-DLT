@@ -1,15 +1,15 @@
-import { BaseEndpoint, ModuleEndpointContext, codec } from 'klayr-sdk';
+import { Modules, Types, codec } from 'klayr-sdk';
 import { TrustfactsMethod } from './method';
 import { StoreTrustFact, AddTrustFactSchema } from './stores/trustfacts';
 
-export class TrustfactsEndpoint extends BaseEndpoint {
+export class TrustfactsEndpoint extends Modules.BaseEndpoint {
     private trustfactsMethod!: TrustfactsMethod;
     
     public addDependecies(trustfactsMethod: TrustfactsMethod) {
         this.trustfactsMethod = trustfactsMethod;
     }
 
-	public async calculateTrustScore(context: ModuleEndpointContext) {
+	public async calculateTrustScore(context: Types.ModuleEndpointContext) {
 		const { packageName, version, owner, platform } = context.params;
 		if (typeof packageName !== "string")
 			throw new Error("packageName should be string.")
@@ -29,7 +29,7 @@ export class TrustfactsEndpoint extends BaseEndpoint {
 	}
 
 	/** Calculates trust score per category listed above */
-	public async calculateCategoryTrustScores(context: ModuleEndpointContext) {
+	public async calculateCategoryTrustScores(context: Types.ModuleEndpointContext) {
 		const { packageName, version, owner, platform } = context.params;
 		if (typeof packageName !== "string")
 			throw new Error("packageName should be string.")
@@ -53,11 +53,11 @@ export class TrustfactsEndpoint extends BaseEndpoint {
 		return categoryScores;
 	}
 
-	public async encodeTrustFact(context: ModuleEndpointContext) {
+	public async encodeTrustFact(context: Types.ModuleEndpointContext) {
 		return codec.encode(AddTrustFactSchema, context.params).toString('hex');
 	}
 
-	public async getPackageFacts(context: ModuleEndpointContext) {
+	public async getPackageFacts(context: Types.ModuleEndpointContext) {
 		const { packageName, version, owner, platform } = context.params;
 		if (typeof packageName !== "string")
 			throw new Error("packageName should be string.")

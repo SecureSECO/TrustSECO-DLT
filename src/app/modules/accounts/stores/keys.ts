@@ -1,4 +1,4 @@
-import { Schema, BaseStore } from "klayr-sdk";
+import { Schema, Modules } from "klayr-sdk";
 
 /** Key used to access the keys, needed because klayr data storage is key-value based */
 export const keyIndex = Buffer.alloc(0);
@@ -32,6 +32,6 @@ export const KeysSchema: Schema = {
     }
 };
 
-export class KeysStore extends BaseStore<Keys> {
+export class KeysStore extends Modules.BaseStore<Keys> {
     public schema = KeysSchema;
 }

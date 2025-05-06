@@ -1,9 +1,9 @@
-import { BaseMethod, ImmutableMethodContext, MethodContext } from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 import { KeysStore, keyIndex } from './stores/keys';
 import { Account, AccountStore } from './stores/account';
 
-export class AccountsMethod extends BaseMethod {
-	public async getKeys(ctx: ImmutableMethodContext): Promise<string[]> {
+export class AccountsMethod extends Modules.BaseMethod {
+	public async getKeys(ctx: StateMachine.ImmutableMethodContext): Promise<string[]> {
 		const keysStore = this.stores.get(KeysStore);
 		const keys = await keysStore.get(
 			ctx,
@@ -13,7 +13,7 @@ export class AccountsMethod extends BaseMethod {
 	}
 	
 	/** Add amount to account balance (negative to lower account balance)*/
-	public async changeBalance(ctx: MethodContext, uid: string, amount: bigint) {
+	public async changeBalance(ctx: StateMachine.MethodContext, uid: string, amount: bigint) {
 		const accountStore = this.stores.get(AccountStore);
 		if (!await accountStore.has(ctx, Buffer.from(uid))){
 			throw new Error('No account exists for givin uid')
@@ -26,7 +26,7 @@ export class AccountsMethod extends BaseMethod {
 		await accountStore.set(ctx, Buffer.from(uid), account);
 	}
 
-	public async getAccount(ctx: ImmutableMethodContext, uid: string): Promise<Account> {
+	public async getAccount(ctx: StateMachine.ImmutableMethodContext, uid: string): Promise<Account> {
 		const accountStore = this.stores.get(AccountStore);
 		if (!await accountStore.has(ctx, Buffer.from(uid))){
 			throw new Error('No account exists for givin uid')

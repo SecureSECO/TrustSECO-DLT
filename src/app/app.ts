@@ -1,8 +1,8 @@
-import { Application, PartialApplicationConfig } from 'klayr-sdk';
+import { Application, Types } from 'klayr-sdk';
 import { registerModules } from './modules';
 import { registerPlugins } from './plugins';
 
-export const getApplication = (config: PartialApplicationConfig): Application => {
+export const getApplication = (config: Types.PartialApplicationConfig): Application => {
 	const { app } = Application.defaultApplication(config);
 
 	registerModules(app);

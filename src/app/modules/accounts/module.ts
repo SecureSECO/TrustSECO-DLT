@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import { BaseModule, GenesisBlockExecuteContext, ModuleMetadata } from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 import { AccountAddCommand } from './commands/account_add_command';
 import { AccountsEndpoint } from './endpoint';
 import { AccountsMethod } from './method';
@@ -10,7 +10,7 @@ import { AccountIdStore, AccountIdSchema } from './stores/account-id';
 import { AccountUrlStore } from './stores/account-url';
 import { KeysStore, KeysSchema, keyIndex } from './stores/keys';
 
-export class AccountsModule extends BaseModule {
+export class AccountsModule extends Modules.BaseModule {
 	public endpoint = new AccountsEndpoint(this.stores, this.offchainStores);
 	public method = new AccountsMethod(this.stores, this.events);
 	public commands = [new AccountAddCommand(this.stores, this.events)];
@@ -24,7 +24,7 @@ export class AccountsModule extends BaseModule {
 		this.stores.register(AccountUrlStore, new AccountUrlStore(this.name, 3));
 	}
 
-	public metadata(): ModuleMetadata {
+	public metadata(): Modules.ModuleMetadata {
 		return {
 			endpoints: [
 				{
@@ -50,7 +50,7 @@ export class AccountsModule extends BaseModule {
 		};
 	}
 
-	public async initGenesisState(context: GenesisBlockExecuteContext): Promise<void> {
+	public async initGenesisState(context: StateMachine.GenesisBlockExecuteContext): Promise<void> {
 		const keyStore = this.stores.get(KeysStore);
 		keyStore.set(context, keyIndex, { keys: [] })
 	}

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import { BaseModule, ModuleMetadata, GenesisBlockExecuteContext } from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 import { AddFactCommand } from './commands/add_fact_command';
 import { TrustfactsEndpoint } from './endpoint';
 import { TrustfactsMethod } from './method';
@@ -9,7 +9,7 @@ import { CodaMethod } from '../coda/method';
 import { TrustFactsStore, RequestSchema, AddTrustFactSchema, trustFactsIndex } from './stores/trustfacts';
 import { AccountsMethod } from '../accounts/method';
 
-export class TrustfactsModule extends BaseModule {
+export class TrustfactsModule extends Modules.BaseModule {
 	public endpoint = new TrustfactsEndpoint(this.stores, this.offchainStores);
 	public method = new TrustfactsMethod(this.stores, this.events);
 	public commands = [new AddFactCommand(this.stores, this.events)];
@@ -19,7 +19,7 @@ export class TrustfactsModule extends BaseModule {
 		this.stores.register(TrustFactsStore, new TrustFactsStore(this.name, 0));
 	}
 
-	public metadata(): ModuleMetadata {
+	public metadata(): Modules.ModuleMetadata {
 		return {
 			endpoints: [
 				{
@@ -57,7 +57,7 @@ export class TrustfactsModule extends BaseModule {
 		this.endpoint.addDependecies(this.method);
 	}
 
-	public async initGenesisState(context: GenesisBlockExecuteContext): Promise<void> {
+	public async initGenesisState(context: StateMachine.GenesisBlockExecuteContext): Promise<void> {
 		const factsStore = this.stores.get(TrustFactsStore);
 		factsStore.set(context, trustFactsIndex, { facts: [] })
 	}

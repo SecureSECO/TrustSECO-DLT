@@ -4,8 +4,8 @@ import {
 	Schema,
 	codec,
 	cryptography,
-	BaseCommand,
-	CommandExecuteContext,
+	Modules,
+	StateMachine
 } from 'klayr-sdk';
 import { AddPackageDataCommand } from '../../src/app/modules/package_data/commands/add_package_data_command';
 import { PackageDataListStore } from '../../src/app/modules/package_data/stores/packagedata';
@@ -41,12 +41,12 @@ export function createTransaction(
 	});
 }
 
-export async function executeTransaction<CommandType extends BaseCommand>(
+export async function executeTransaction<CommandType extends Modules.BaseCommand>(
 	command: CommandType,
 	stateStore: any,
 	transaction: Transaction,
 	paramsSchema: Schema,
-): Promise<CommandExecuteContext<CommandType>> {
+): Promise<StateMachine.CommandExecuteContext<CommandType>> {
 	const context = testing
 		.createTransactionContext({
 			stateStore,
@@ -54,17 +54,17 @@ export async function executeTransaction<CommandType extends BaseCommand>(
 			header: testing.createFakeBlockHeader({}),
 		})
 		.createCommandExecuteContext<CommandType>(paramsSchema);
-	await command.execute(context);
+	await command.execute(context as unknown as StateMachine.CommandExecuteContext<unknown>);
 	return context;
 }
 
-export async function createAndExecuteTransaction<CommandType extends BaseCommand>(
+export async function createAndExecuteTransaction<CommandType extends Modules.BaseCommand>(
 	params: any,
 	paramsSchema: Schema,
 	nonce: number,
 	command: CommandType,
 	stateStore: any,
-): Promise<CommandExecuteContext<CommandType>> {
+): Promise<StateMachine.CommandExecuteContext<CommandType>> {
 	const trans = createTransaction(params, paramsSchema, nonce, command.name);
 	return await executeTransaction(command, stateStore, trans, paramsSchema);
 }
@@ -77,10 +77,10 @@ export interface ModulesCollection {
     codaModule: CodaModule
   },
   commands: {
-    accountsCommand: BaseCommand,
+    accountsCommand: Modules.BaseCommand,
     packageCommand: AddPackageDataCommand,
-    trustfactsCommand: BaseCommand,
-    codaCommand: BaseCommand
+    trustfactsCommand: Modules.BaseCommand,
+    codaCommand: Modules.BaseCommand
   },
   stores: {
     packagesStore: PackageDataListStore,

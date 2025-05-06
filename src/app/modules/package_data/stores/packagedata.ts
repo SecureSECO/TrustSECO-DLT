@@ -1,4 +1,4 @@
-import { Schema, BaseStore } from "klayr-sdk";
+import { Schema, Modules } from "klayr-sdk";
 
 export interface PackageData {
     packageName: string,
@@ -56,7 +56,7 @@ export const PackageDataListSchema: Schema = {
     }
 }
 
-export class PackageDataListStore extends BaseStore<PackageDataList> {
+export class PackageDataListStore extends Modules.BaseStore<PackageDataList> {
     public schema = PackageDataListSchema;
 }
 

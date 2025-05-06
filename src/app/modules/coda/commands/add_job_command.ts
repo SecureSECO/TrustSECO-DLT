@@ -1,12 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
-import {
-    BaseCommand,
-    CommandVerifyContext,
-    CommandExecuteContext,
-    VerificationResult,
-    VerifyStatus,
-} from 'klayr-sdk';
+import { Modules, StateMachine } from 'klayr-sdk';
 
 import {
     minimalCodaJobSchema,
@@ -27,7 +21,7 @@ import { StoreTrustFact } from '../../trustfacts/stores/trustfacts';
 
 type Params = Signed<MinimalCodaJob>;
 
-export class AddJobCommand extends BaseCommand {
+export class AddJobCommand extends Modules.BaseCommand {
     private accountsMethod!: AccountsMethod;
     private codaMethod!: CodaMethod;
     private packageDataMethod!: PackageDataMethod;
@@ -42,7 +36,7 @@ export class AddJobCommand extends BaseCommand {
     
     public schema = SignedSchema(minimalCodaJobSchema);
     
-    public async verify(context: CommandVerifyContext<Params>): Promise<VerificationResult> {
+    public async verify(context: StateMachine.CommandVerifyContext<Params>): Promise<StateMachine.VerificationResult> {
         const { params } = context;
         if (params.data.package.trim() !== params.data.package)
             throw new Error('Package name cannot start or end with whitespace!');
@@ -84,10 +78,10 @@ export class AddJobCommand extends BaseCommand {
         }
     
     
-        return { status: VerifyStatus.OK };
+        return { status: StateMachine.VerifyStatus.OK };
     }
     
-    public async execute(context: CommandExecuteContext<Params>): Promise<void> {
+    public async execute(context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
         const params = context.params;
         const keys: string[] = (await this.accountsMethod.getKeys(context));
         const uid = await GPG.verify(params, minimalCodaJobSchema, keys);
