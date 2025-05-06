@@ -33,7 +33,7 @@
 		"TrustSECO": "./bin/run"
 	},
 	"klayr": {
-		"addressPrefix": "lsk"
+		"addressPrefix": "kly"
 	},
 	"oclif": {
 		"bin": "TrustSECO",
