@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import { BaseModule, ModuleMetadata, GenesisBlockExecuteContext } from 'lisk-sdk';
+import { BaseModule, ModuleMetadata, GenesisBlockExecuteContext } from 'klayr-sdk';
 import { AddFactCommand } from './commands/add_fact_command';
 import { TrustfactsEndpoint } from './endpoint';
 import { TrustfactsMethod } from './method';

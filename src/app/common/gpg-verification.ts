@@ -1,4 +1,4 @@
-import { codec, Schema } from 'lisk-sdk';
+import { codec, Schema } from 'klayr-sdk';
 import { Signed } from './signed-schemas';
 import axios from 'axios';
 import * as openpgp from 'openpgp';

@@ -1,4 +1,4 @@
-import { BaseEndpoint, codec, ModuleEndpointContext } from 'lisk-sdk';
+import { BaseEndpoint, codec, ModuleEndpointContext } from 'klayr-sdk';
 import { minimalCodaJobSchema, isMinimalCodaJob, validFacts, CodaJobListStore, jobListKey } from './stores/coda-schemas';
 import { CodaMethod } from './method'
 

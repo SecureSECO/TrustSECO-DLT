@@ -1,4 +1,4 @@
-import { Schema } from "lisk-sdk";
+import { Schema } from "klayr-sdk";
 
 export interface Signed<T extends object> {
     signature: string;

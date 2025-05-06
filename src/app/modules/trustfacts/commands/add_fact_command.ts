@@ -6,7 +6,7 @@ import {
     CommandExecuteContext,
 	VerificationResult,
 	VerifyStatus,
-} from 'lisk-sdk';
+} from 'klayr-sdk';
 import { CodaMethod } from '../../coda/method';
 import { AddTrustFact, AddTrustFactSchema, TrustFactsStore, trustFactsIndex, StoreTrustFact } from '../stores/trustfacts'
 import { GPG } from '../../../common/gpg-verification';

@@ -1,4 +1,4 @@
-import { BaseMethod, ImmutableMethodContext } from 'lisk-sdk';
+import { BaseMethod, ImmutableMethodContext } from 'klayr-sdk';
 import { StoreTrustFact, TrustFactsStore, trustFactsIndex } from './stores/trustfacts'
 
 export class TrustfactsMethod extends BaseMethod {

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import { BaseModule, ModuleMetadata, GenesisBlockExecuteContext, BlockAfterExecuteContext } from 'lisk-sdk';
+import { BaseModule, ModuleMetadata, GenesisBlockExecuteContext, BlockAfterExecuteContext } from 'klayr-sdk';
 import { AddJobCommand } from './commands/add_job_command';
 import { CodaEndpoint } from './endpoint';
 import { CodaMethod } from './method';

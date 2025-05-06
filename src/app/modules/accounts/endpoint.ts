@@ -1,4 +1,4 @@
-import { BaseEndpoint, ModuleEndpointContext } from 'lisk-sdk';
+import { BaseEndpoint, ModuleEndpointContext } from 'klayr-sdk';
 import { Keys, KeysStore, keyIndex } from './stores/keys';
 import { AccountSerial, AccountStore } from './stores/account';
 

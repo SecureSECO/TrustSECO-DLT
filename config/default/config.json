@@ -1,7 +1,7 @@
 {
 	"system": {
 		"version": "2.0.0",
-		"dataPath": "~/.lisk/TrustSECO",
+		"dataPath": "~/.klayr/TrustSECO",
 		"keepEventsForHeights": 300,
 		"logLevel": "info"
 	},

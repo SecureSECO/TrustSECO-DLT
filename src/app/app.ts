@@ -1,4 +1,4 @@
-import { Application, PartialApplicationConfig } from 'lisk-sdk';
+import { Application, PartialApplicationConfig } from 'klayr-sdk';
 import { registerModules } from './modules';
 import { registerPlugins } from './plugins';
 

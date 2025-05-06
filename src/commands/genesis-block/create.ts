@@ -1,5 +1,5 @@
-import { BaseGenesisBlockCommand } from 'lisk-commander';
-import { Application, PartialApplicationConfig } from 'lisk-sdk';
+import { BaseGenesisBlockCommand } from 'klayr-commander';
+import { Application, PartialApplicationConfig } from 'klayr-sdk';
 import { join } from 'path';
 import { getApplication } from '../../app/app';
 

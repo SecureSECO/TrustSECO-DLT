@@ -1,4 +1,4 @@
-import { BaseMethod, ImmutableMethodContext, MethodContext } from 'lisk-sdk';
+import { BaseMethod, ImmutableMethodContext, MethodContext } from 'klayr-sdk';
 import { KeysStore, keyIndex } from './stores/keys';
 import { Account, AccountStore } from './stores/account';
 

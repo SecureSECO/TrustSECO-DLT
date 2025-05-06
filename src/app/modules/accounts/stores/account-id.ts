@@ -1,4 +1,4 @@
-import { Schema, BaseStore } from "lisk-sdk";
+import { Schema, BaseStore } from "klayr-sdk";
 
 export interface AccountId {
     uid: string;

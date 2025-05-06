@@ -1,4 +1,4 @@
-import { Schema, BaseStore } from 'lisk-sdk';
+import { Schema, BaseStore } from 'klayr-sdk';
 import { AccountId, AccountIdSchema } from '../../accounts/stores/account-id';
 
 export interface AddTrustFact {

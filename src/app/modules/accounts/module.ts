@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/member-ordering */
 
-import { BaseModule, GenesisBlockExecuteContext, ModuleMetadata } from 'lisk-sdk';
+import { BaseModule, GenesisBlockExecuteContext, ModuleMetadata } from 'klayr-sdk';
 import { AccountAddCommand } from './commands/account_add_command';
 import { AccountsEndpoint } from './endpoint';
 import { AccountsMethod } from './method';

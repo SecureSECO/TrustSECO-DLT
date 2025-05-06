@@ -6,7 +6,7 @@ import {
 	CommandExecuteContext,
 	VerificationResult,
 	VerifyStatus,
-} from 'lisk-sdk';
+} from 'klayr-sdk';
 import { GPG } from '../../../common/gpg-verification';
 import { AccountStore, Account } from '../stores/account';
 import { KeysStore, keyIndex } from '../stores/keys';

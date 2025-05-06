@@ -1,6 +1,6 @@
-import { Schema, BaseStore } from "lisk-sdk";
+import { Schema, BaseStore } from "klayr-sdk";
 
-/** Key used to access the keys, needed because lisk data storage is key-value based */
+/** Key used to access the keys, needed because klayr data storage is key-value based */
 export const keyIndex = Buffer.alloc(0);
 
 export interface Keys {

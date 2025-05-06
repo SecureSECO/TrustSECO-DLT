@@ -1,4 +1,4 @@
-import { BaseMethod, ImmutableMethodContext } from 'lisk-sdk';
+import { BaseMethod, ImmutableMethodContext } from 'klayr-sdk';
 import { CodaJobListStore, jobListKey, CodaJob, CodaJobList } from './stores/coda-schemas'
 import { TrustfactsMethod } from '../trustfacts/method';
 

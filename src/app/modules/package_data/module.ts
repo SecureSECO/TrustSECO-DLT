@@ -5,7 +5,7 @@ import {
     BaseModule,
     ModuleMetadata,
 	GenesisBlockExecuteContext
-} from 'lisk-sdk';
+} from 'klayr-sdk';
 import { AddPackageDataCommand } from "./commands/add_package_data_command";
 import { PackageDataEndpoint } from './endpoint';
 import { PackageDataMethod } from './method';

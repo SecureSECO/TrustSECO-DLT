@@ -1,4 +1,4 @@
-import { BaseEndpoint, ModuleEndpointContext } from 'lisk-sdk';
+import { BaseEndpoint, ModuleEndpointContext } from 'klayr-sdk';
 import { PackageData, PackageDataList, PackageDataListStore, packageListKey } from './stores/packagedata';
 
 export class PackageDataEndpoint extends BaseEndpoint {

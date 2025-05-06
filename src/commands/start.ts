@@ -4,13 +4,13 @@
 /* eslint-disable @typescript-eslint/explicit-member-accessibility */
 import { Flags as flagParser } from '@oclif/core';
 import { FlagInput } from '@oclif/core/lib/interfaces';
-import { BaseStartCommand } from 'lisk-commander';
-import { Application, ApplicationConfig, PartialApplicationConfig } from 'lisk-sdk';
-import { MonitorPlugin } from '@liskhq/lisk-framework-monitor-plugin';
-import { ReportMisbehaviorPlugin } from '@liskhq/lisk-framework-report-misbehavior-plugin';
-import { DashboardPlugin } from '@liskhq/lisk-framework-dashboard-plugin';
-import { FaucetPlugin } from '@liskhq/lisk-framework-faucet-plugin';
-import { ChainConnectorPlugin } from '@liskhq/lisk-framework-chain-connector-plugin';
+import { BaseStartCommand } from 'klayr-commander';
+import { Application, ApplicationConfig, PartialApplicationConfig } from 'klayr-sdk';
+import { MonitorPlugin } from '@klayr/monitor-plugin';
+import { ReportMisbehaviorPlugin } from '@klayr/report-misbehavior-plugin';
+import { DashboardPlugin } from '@klayr/dashboard-plugin';
+import { FaucetPlugin } from '@klayr/faucet-plugin';
+import { ChainConnectorPlugin } from '@klayr/chain-connector-plugin';
 import { join } from 'path';
 import { getApplication } from '../app/app';
 
@@ -50,56 +50,56 @@ export class StartCommand extends BaseStartCommand {
 		...BaseStartCommand.flags,
 		'enable-monitor-plugin': flagParser.boolean({
 			description:
-				'Enable Monitor Plugin. Environment variable "LISK_ENABLE_MONITOR_PLUGIN" can also be used.',
-			env: 'LISK_ENABLE_MONITOR_PLUGIN',
+				'Enable Monitor Plugin. Environment variable "KLAYR_ENABLE_MONITOR_PLUGIN" can also be used.',
+			env: 'KLAYR_ENABLE_MONITOR_PLUGIN',
 			default: false,
 		}),
 		'monitor-plugin-port': flagParser.integer({
 			description:
-				'Port to be used for Monitor Plugin. Environment variable "LISK_MONITOR_PLUGIN_PORT" can also be used.',
-			env: 'LISK_MONITOR_PLUGIN_PORT',
+				'Port to be used for Monitor Plugin. Environment variable "KLAYR_MONITOR_PLUGIN_PORT" can also be used.',
+			env: 'KLAYR_MONITOR_PLUGIN_PORT',
 			dependsOn: ['enable-monitor-plugin'],
 		}),
 		'monitor-plugin-whitelist': flagParser.string({
 			description:
-				'List of IPs in comma separated value to allow the connection. Environment variable "LISK_MONITOR_PLUGIN_WHITELIST" can also be used.',
-			env: 'LISK_MONITOR_PLUGIN_WHITELIST',
+				'List of IPs in comma separated value to allow the connection. Environment variable "KLAYR_MONITOR_PLUGIN_WHITELIST" can also be used.',
+			env: 'KLAYR_MONITOR_PLUGIN_WHITELIST',
 			dependsOn: ['enable-monitor-plugin'],
 		}),
 		'enable-report-misbehavior-plugin': flagParser.boolean({
 			description:
-				'Enable ReportMisbehavior Plugin. Environment variable "LISK_ENABLE_REPORT_MISBEHAVIOR_PLUGIN" can also be used.',
-			env: 'LISK_ENABLE_MISBEHAVIOR_PLUGIN',
+				'Enable ReportMisbehavior Plugin. Environment variable "KLAYR_ENABLE_REPORT_MISBEHAVIOR_PLUGIN" can also be used.',
+			env: 'KLAYR_ENABLE_MISBEHAVIOR_PLUGIN',
 			default: false,
 		}),
 		'enable-faucet-plugin': flagParser.boolean({
 			description:
-				'Enable Faucet Plugin. Environment variable "LISK_ENABLE_FAUCET_PLUGIN" can also be used.',
-			env: 'LISK_ENABLE_FAUCET_PLUGIN',
+				'Enable Faucet Plugin. Environment variable "KLAYR_ENABLE_FAUCET_PLUGIN" can also be used.',
+			env: 'KLAYR_ENABLE_FAUCET_PLUGIN',
 			default: false,
 		}),
 		'faucet-plugin-port': flagParser.integer({
 			description:
-				'Port to be used for Faucet Plugin. Environment variable "LISK_FAUCET_PLUGIN_PORT" can also be used.',
-			env: 'LISK_FAUCET_PLUGIN_PORT',
+				'Port to be used for Faucet Plugin. Environment variable "KLAYR_FAUCET_PLUGIN_PORT" can also be used.',
+			env: 'KLAYR_FAUCET_PLUGIN_PORT',
 			dependsOn: ['enable-faucet-plugin'],
 		}),
 		'enable-dashboard-plugin': flagParser.boolean({
 			description:
-				'Enable Dashboard Plugin. Environment variable "LISK_ENABLE_DASHBOARD_PLUGIN" can also be used.',
-			env: 'LISK_ENABLE_DASHBOARD_PLUGIN',
+				'Enable Dashboard Plugin. Environment variable "KLAYR_ENABLE_DASHBOARD_PLUGIN" can also be used.',
+			env: 'KLAYR_ENABLE_DASHBOARD_PLUGIN',
 			default: false,
 		}),
 		'dashboard-plugin-port': flagParser.integer({
 			description:
-				'Port to be used for Dashboard Plugin. Environment variable "LISK_DASHBOARD_PLUGIN_PORT" can also be used.',
-			env: 'LISK_DASHBOARD_PLUGIN_PORT',
+				'Port to be used for Dashboard Plugin. Environment variable "KLAYR_DASHBOARD_PLUGIN_PORT" can also be used.',
+			env: 'KLAYR_DASHBOARD_PLUGIN_PORT',
 			dependsOn: ['enable-dashboard-plugin'],
 		}),
 		'enable-chain-connector-plugin': flagParser.boolean({
 			description:
-				'Enable ChainConnector Plugin. Environment variable "LISK_ENABLE_CHAIN_CONNECTOR_PLUGIN" can also be used.',
-			env: 'LISK_ENABLE_CONNECTOR_PLUGIN',
+				'Enable ChainConnector Plugin. Environment variable "KLAYR_ENABLE_CHAIN_CONNECTOR_PLUGIN" can also be used.',
+			env: 'KLAYR_ENABLE_CONNECTOR_PLUGIN',
 			default: false,
 		}),
 	};

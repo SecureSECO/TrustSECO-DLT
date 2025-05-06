@@ -6,11 +6,11 @@ import {
 	cryptography,
 	BaseCommand,
 	CommandExecuteContext,
-} from 'lisk-sdk';
+} from 'klayr-sdk';
 import { AddPackageDataCommand } from '../../src/app/modules/package_data/commands/add_package_data_command';
 import { PackageDataListStore } from '../../src/app/modules/package_data/stores/packagedata';
 import { PackageDataModule } from '../../src/app/modules/package_data/module';
-import { chain, db } from 'lisk-sdk';
+import { chain, db } from 'klayr-sdk';
 import { AccountsModule } from '../../src/app/modules/accounts/module';
 import { CodaModule } from '../../src/app/modules/coda/module';
 import { TrustfactsModule } from '../../src/app/modules/trustfacts/module';

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/explicit-member-accessibility */
-import { TransactionCreateCommand } from 'lisk-commander';
-import { Application, PartialApplicationConfig } from 'lisk-sdk';
+import { TransactionCreateCommand } from 'klayr-commander';
+import { Application, PartialApplicationConfig } from 'klayr-sdk';
 import { getApplication } from '../../app/app';
 
 type CreateFlags = typeof TransactionCreateCommand.flags & {

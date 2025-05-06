@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Application } from 'lisk-sdk';
+import { Application } from 'klayr-sdk';
 import { AccountsModule } from "./modules/accounts/module";
 import { CodaModule } from "./modules/coda/module";
 import { PackageDataModule } from "./modules/package_data/module";

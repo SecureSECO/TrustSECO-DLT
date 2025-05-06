@@ -1,4 +1,4 @@
-import { BaseEndpoint, ModuleEndpointContext, codec } from 'lisk-sdk';
+import { BaseEndpoint, ModuleEndpointContext, codec } from 'klayr-sdk';
 import { TrustfactsMethod } from './method';
 import { StoreTrustFact, AddTrustFactSchema } from './stores/trustfacts';
 

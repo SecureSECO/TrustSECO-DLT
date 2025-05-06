@@ -1,4 +1,4 @@
-import { Schema, BaseStore } from "lisk-sdk";
+import { Schema, BaseStore } from "klayr-sdk";
 
 export interface PackageData {
     packageName: string,
@@ -60,5 +60,5 @@ export class PackageDataListStore extends BaseStore<PackageDataList> {
     public schema = PackageDataListSchema;
 }
 
-/** Key used to access the keys, needed because lisk data storage is key-value based */
+/** Key used to access the keys, needed because klayr data storage is key-value based */
 export const packageListKey = Buffer.alloc(0);
