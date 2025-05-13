@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddFactCommand constructor should have valid schema 1`] = `
+{
+  "$id": "trustfacts/add-facts/signed",
+  "properties": {
+    "data": {
+      "$id": "trustfacts/add-facts",
+      "fieldNumber": 2,
+      "properties": {
+        "factData": {
+          "dataType": "string",
+          "fieldNumber": 2,
+        },
+        "jobID": {
+          "dataType": "uint32",
+          "fieldNumber": 1,
+        },
+      },
+      "required": [
+        "jobID",
+        "factData",
+      ],
+      "type": "object",
+    },
+    "signature": {
+      "dataType": "string",
+      "fieldNumber": 1,
+    },
+  },
+  "required": [
+    "signature",
+    "data",
+  ],
+  "type": "object",
+}
+`;

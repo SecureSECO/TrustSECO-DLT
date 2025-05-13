@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddJobCommand constructor should have valid schema 1`] = `
+{
+  "$id": "coda/add-minimal-job/signed",
+  "properties": {
+    "data": {
+      "$id": "coda/add-minimal-job",
+      "fieldNumber": 2,
+      "properties": {
+        "bounty": {
+          "dataType": "uint64",
+          "fieldNumber": 4,
+        },
+        "fact": {
+          "dataType": "string",
+          "fieldNumber": 3,
+        },
+        "package": {
+          "dataType": "string",
+          "fieldNumber": 1,
+        },
+        "version": {
+          "dataType": "string",
+          "fieldNumber": 2,
+        },
+      },
+      "required": [
+        "package",
+        "version",
+        "fact",
+        "bounty",
+      ],
+      "type": "object",
+    },
+    "signature": {
+      "dataType": "string",
+      "fieldNumber": 1,
+    },
+  },
+  "required": [
+    "signature",
+    "data",
+  ],
+  "type": "object",
+}
+`;

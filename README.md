@@ -9,19 +9,42 @@ To get this running:
 1. `git clone` this repo
 2. `nvm use`
 3. `npm install`
-4. In case you have ran an earlier version: `npm run reset` to get rid of the old blockchain.
-5. `npm run start` and profit!
-
-You should get connected to turtle and/or dove and/or other running instances. If your chain does _not_ start at block 0 you know it worked :D
-
-# Config & Genesis Block
-
-When necessary (f.e. after adding a module); the `npm run genesis` command can generate a new [`config/genesis-block.json`](./config/genesis-block.json) and update the delegate hashes in [`config/config.json`](./config/config.json) accordingly.
+4. `./bin/run start` and profit!
 
 # Safety
 
 Note that in this development version; the master password for all delegate accounts is very weak, and stored in plain-text in the config.
 
-# Development
+# Getting Started with Klayr Blockchain Client
 
-![Gitflow Workflow](https://wac-cdn.atlassian.com/dam/jcr:cc0b526e-adb7-4d45-874e-9bcea9898b4a/04%20Hotfix%20branches.svg)
+This project was bootstrapped with [Klayr SDK](https://github.com/KlayrHQ/klayr-sdk)
+
+### Start a node
+
+```
+./bin/run start
+```
+
+### Add a new module
+
+```
+klayr generate:module ModuleName
+// Example
+klayr generate:module token
+```
+
+### Add a new command
+
+```
+klayr generate:command ModuleName Command
+// Example
+klayr generate:command token transfer
+```
+
+### Add a new plugin
+
+```
+klayr generate:plugin PluginName
+// Example
+klayr generate:plugin httpAPI
+```

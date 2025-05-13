@@ -1,0 +1,21 @@
+import { Schema, Modules } from "klayr-sdk";
+
+export interface AccountId {
+    uid: string;
+}
+
+export const AccountIdSchema: Schema = {
+    $id: "accounts/new-account",
+    type: "object",
+    required: ["uid"],
+    properties: {
+        uid: {
+            dataType: "string",
+            fieldNumber: 1
+        }
+    }
+};
+
+export class AccountIdStore extends Modules.BaseStore<AccountId> {
+    public schema = AccountIdSchema;
+}

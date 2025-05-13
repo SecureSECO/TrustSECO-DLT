@@ -10,9 +10,11 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+# main port
 EXPOSE 8000
-EXPOSE 8080
+# rpc
+EXPOSE 7887
+# dashboard plugin
 EXPOSE 8001
 
 CMD [ "npm", "run", "start" ]
-

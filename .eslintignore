@@ -1,2 +1,13 @@
+docs/
 node_modules
+examples/
+**/*.d.ts
+jest.config.js
+.eslintrc.js
+coverage
+benchmark
 dist
+tmp
+build
+scripts
+config
