@@ -59,6 +59,6 @@ export class TrustfactsModule extends Modules.BaseModule {
 
 	public async initGenesisState(context: StateMachine.GenesisBlockExecuteContext): Promise<void> {
 		const factsStore = this.stores.get(TrustFactsStore);
-		factsStore.set(context, trustFactsIndex, { facts: [] })
+		await factsStore.set(context, trustFactsIndex, { facts: [] })
 	}
 }

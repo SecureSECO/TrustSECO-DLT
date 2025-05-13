@@ -5,8 +5,8 @@ export interface Signed<T extends object> {
     data: T;
 }
 
-export const SignedSchema = (schema: Schema) : Schema => ({
-    $id: schema.$id + "/signed",
+export const SignedSchema = (schema: Schema): Schema => ({
+    $id: `${schema.$id  }/signed`,
     type: 'object',
     required: ["signature", "data"],
     properties: {

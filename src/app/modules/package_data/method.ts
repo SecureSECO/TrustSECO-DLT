@@ -6,7 +6,7 @@ import {
 } from './stores/packagedata';
 
 export class PackageDataMethod extends Modules.BaseMethod {
-	public async getPackageInfo(ctx: StateMachine.ImmutableMethodContext, params: { packageName: string, packageOwner?: string, packagePlatform?: string}): Promise<PackageData> {
+	public async getPackageInfo(ctx: StateMachine.ImmutableMethodContext, params: { packageName: string; packageOwner?: string; packagePlatform?: string}): Promise<PackageData> {
 		const packagesStore = this.stores.get(PackageDataListStore);
 		const packages = await packagesStore.get(ctx, packageListKey);
 		const { packageName, packagePlatform, packageOwner } = params;
@@ -16,10 +16,10 @@ export class PackageDataMethod extends Modules.BaseMethod {
 		// Always filter on packageName
 		// Filter on packageOwner and platform if the params were provided
 		const pack = packages.packages.filter(
-			pack =>
-				pack.packageName === packageName &&
-				(typeof packagePlatform !== 'string' || pack.packagePlatform === packagePlatform) &&
-				(typeof packageOwner !== 'string' || pack.packageOwner === packageOwner),
+			p =>
+				p.packageName === packageName &&
+				(typeof packagePlatform !== 'string' || p.packagePlatform === packagePlatform) &&
+				(typeof packageOwner !== 'string' || p.packageOwner === packageOwner),
 		)[0];
 		if (!pack) throw new Error('No package was found.');
 		return pack;

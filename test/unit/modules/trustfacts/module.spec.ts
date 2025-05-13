@@ -17,10 +17,10 @@ describe('TrustfactsModule', () => {
 	describe('afterCommandExecute', () => {
 		it.todo('should execute after transaction execute');
 	});
-	describe('beforeTransactionsExecute', () => {
-		it.todo('should execute after genesis execute');
+	describe('beforeGenesisExectue', () => {
+		it.todo('should execute before genesis execute');
 	});
-	describe('afterTransactionsExecute', () => {
+	describe('afterGenesisExectue', () => {
 		it.todo('should execute after genesis execute');
 	});
 });

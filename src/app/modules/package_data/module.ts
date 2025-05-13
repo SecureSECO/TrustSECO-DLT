@@ -65,6 +65,6 @@ export class PackageDataModule extends Modules.BaseModule {
 
 	public async initGenesisState(context: StateMachine.GenesisBlockExecuteContext): Promise<void> {
 		const packagesStore = this.stores.get(PackageDataListStore);
-		packagesStore.set(context, packageListKey, { packages: [] })
+		await packagesStore.set(context, packageListKey, { packages: [] })
 	}
 }

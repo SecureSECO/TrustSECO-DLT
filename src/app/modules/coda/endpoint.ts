@@ -9,20 +9,20 @@ export class CodaEndpoint extends Modules.BaseEndpoint {
         this.codaMethod = method;
     }
 
-    public async encodeCodaJob(ctx: Types.ModuleEndpointContext) {
-        const params = ctx.params;
+    public encodeCodaJob(ctx: Types.ModuleEndpointContext) {
+        const {params} = ctx;
         if (!isMinimalCodaJob(params)){
             throw new Error('Argument must be minimal coda Job');
         }
         params.bounty = BigInt(params.bounty as string | number);
         return codec.encode(minimalCodaJobSchema, params).toString('hex');
     }
-    public async getAllFacts() {
+    public getAllFacts() {
         return validFacts;
     }
     public async getJobs(ctx: Types.ModuleEndpointContext) {
         const jobsStore = this.stores.get(CodaJobListStore);
-        let jobs = (await jobsStore.get(ctx, jobListKey)).jobs;
+        const {jobs} = await jobsStore.get(ctx, jobListKey);
         return jobs.map(job => ({ ...job, bounty: job.bounty.toString() }));
     }
     public async getMinimumRequiredBounty(ctx: Types.ModuleEndpointContext) {

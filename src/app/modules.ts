@@ -5,7 +5,6 @@ import { CodaModule } from "./modules/coda/module";
 import { PackageDataModule } from "./modules/package_data/module";
 import { TrustfactsModule } from "./modules/trustfacts/module";
 
-// @ts-ignore app will have typescript error for unused variables
 export const registerModules = (app: Application): void => {
     const accountsModule = new AccountsModule()
     app.registerModule(accountsModule);

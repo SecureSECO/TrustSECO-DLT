@@ -9,7 +9,7 @@ export class AccountsEndpoint extends Modules.BaseEndpoint {
 		return keys;
 	}
 	public async getAccount(ctx: Types.ModuleEndpointContext): Promise<AccountSerial> {
-		const uid = ctx.params.uid;
+		const {uid} = ctx.params;
 		const accountStore = this.stores.get(AccountStore);
 		if (typeof uid !== 'string') {
             throw new Error('Parameter uid must be a string.');

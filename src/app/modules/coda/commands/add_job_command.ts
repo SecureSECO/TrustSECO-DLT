@@ -11,7 +11,7 @@ import {
     CodaJobIdStore,
     jobIdKey
 } from '../stores/coda-schemas';
-import { GPG } from '../../../common/gpg-verification';
+import * as GPG from '../../../common/gpg-verification';
 import { SignedSchema, Signed } from '../../../common/signed-schemas';
 import { AccountsMethod } from '../../accounts/method';
 import { CodaMethod } from '../method'
@@ -67,7 +67,7 @@ export class AddJobCommand extends Modules.BaseCommand {
         // TODO should also filter on owner and platform
         const packageData = await this.packageDataMethod.getPackageInfo(context, { packageName: params.data.package });
         const versionFound = packageData.packageReleases.some(
-            version => params.data.version == version,
+            version => params.data.version === version,
         );
         if (!versionFound)
             throw new Error('The given package version does not exist in the packageData!');
@@ -82,14 +82,14 @@ export class AddJobCommand extends Modules.BaseCommand {
     }
     
     public async execute(context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
-        const params = context.params;
+        const {params} = context;
         const keys: string[] = (await this.accountsMethod.getKeys(context));
         const uid = await GPG.verify(params, minimalCodaJobSchema, keys);
     
         const jobsStore = this.stores.get(CodaJobListStore);
         const { jobs } = await jobsStore.get(context, jobListKey);
         // TODO: also filter on version, owner, and platform
-        let facts: StoreTrustFact[] = await this.trustfactsMethod.getTrustFacts(context, { packageName: params.data.package });
+        const facts: StoreTrustFact[] = await this.trustfactsMethod.getTrustFacts(context, { packageName: params.data.package });
     
         // check if job already exists
         for (const job of jobs) {

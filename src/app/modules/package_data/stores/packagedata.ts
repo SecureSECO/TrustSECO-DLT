@@ -1,10 +1,10 @@
 import { Schema, Modules } from "klayr-sdk";
 
 export interface PackageData {
-    packageName: string,
-    packagePlatform: string,
-    packageOwner: string,
-    packageReleases: string[],
+    packageName: string;
+    packagePlatform: string;
+    packageOwner: string;
+    packageReleases: string[];
 }
 
 export const PackageDataSchema: Schema = {

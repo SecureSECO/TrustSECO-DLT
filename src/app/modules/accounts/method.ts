@@ -12,13 +12,13 @@ export class AccountsMethod extends Modules.BaseMethod {
 		return keys.keys.map(key => key.key);
 	}
 	
-	/** Add amount to account balance (negative to lower account balance)*/
+	/** Add amount to account balance (negative to lower account balance) */
 	public async changeBalance(ctx: StateMachine.MethodContext, uid: string, amount: bigint) {
 		const accountStore = this.stores.get(AccountStore);
 		if (!await accountStore.has(ctx, Buffer.from(uid))){
 			throw new Error('No account exists for givin uid')
 		}
-		let account = await accountStore.get(ctx, Buffer.from(uid))
+		const account = await accountStore.get(ctx, Buffer.from(uid))
 		account.slingers += amount;
 		if (account.slingers < 0) {
 			throw new Error("Can complete transaction: account balance to low");
@@ -31,6 +31,6 @@ export class AccountsMethod extends Modules.BaseMethod {
 		if (!await accountStore.has(ctx, Buffer.from(uid))){
 			throw new Error('No account exists for givin uid')
 		}
-		return await accountStore.get(ctx, Buffer.from(uid))
+		return accountStore.get(ctx, Buffer.from(uid))
 	}
 }

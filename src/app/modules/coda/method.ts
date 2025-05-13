@@ -9,7 +9,7 @@ export class CodaMethod extends Modules.BaseMethod {
         this.trustfactsMethod = trustfactsMethod;
     }
 
-    public getJobs(ctx: StateMachine.ImmutableMethodContext): Promise<CodaJobList> {
+    public async getJobs(ctx: StateMachine.ImmutableMethodContext): Promise<CodaJobList> {
         const codaStore = this.stores.get(CodaJobListStore);
         return codaStore.get(ctx, jobListKey);
     }
@@ -42,7 +42,8 @@ export class CodaMethod extends Modules.BaseMethod {
 	}
 }
 
-export function requiredVerifications(activeSpiders: number) : number {
+/* eslint-disable no-bitwise */
+export function requiredVerifications(activeSpiders: number): number {
     const gamma = 0.5772156649015328;                   // Euler–Mascheroni constant
     const f = (c: number) => c * (Math.log(c) + gamma); // Harmonic Series approximation
 

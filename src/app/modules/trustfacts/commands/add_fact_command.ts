@@ -2,8 +2,8 @@
 
 import { Modules, StateMachine } from 'klayr-sdk';
 import { CodaMethod } from '../../coda/method';
-import { AddTrustFact, AddTrustFactSchema, TrustFactsStore, trustFactsIndex, StoreTrustFact } from '../stores/trustfacts'
-import { GPG } from '../../../common/gpg-verification';
+import { AddTrustFact, AddTrustFactSchema, TrustFactsStore, trustFactsIndex } from '../stores/trustfacts'
+import * as GPG from '../../../common/gpg-verification';
 import { SignedSchema, Signed } from '../../../common/signed-schemas';
 import { AccountsMethod } from '../../accounts/method';
 
@@ -27,7 +27,7 @@ export class AddFactCommand extends Modules.BaseCommand {
 		const keys = await this.accountsMethod.getKeys(context);
         await GPG.verify(params, AddTrustFactSchema, keys);
         const { jobs } = await this.codaMethod.getJobs(context);
-        const job = jobs.find(job => job.jobID === params.data.jobID);
+        const job = jobs.find(j => j.jobID === params.data.jobID);
         if (job === undefined) {
             context.logger.error(jobs);
             throw new Error("Job with given job ID does not exist!");
@@ -40,7 +40,7 @@ export class AddFactCommand extends Modules.BaseCommand {
 		const keys = await this.accountsMethod.getKeys(context);
         const uid = await GPG.verify(params, AddTrustFactSchema, keys);
         const { jobs } = await this.codaMethod.getJobs(context);
-        const job = jobs.find(job => job.jobID === params.data.jobID);
+        const job = jobs.find(j => j.jobID === params.data.jobID);
         // This was already verified above but needed to type check
         if (job === undefined) {
             return;
@@ -48,7 +48,7 @@ export class AddFactCommand extends Modules.BaseCommand {
 
         const factsStore = this.stores.get(TrustFactsStore);
         // TODO: also filter on owner and platform
-        let facts: StoreTrustFact[] = (await factsStore.get(context, trustFactsIndex)).facts;
+        const {facts} = await factsStore.get(context, trustFactsIndex);
 
         // check if this account already has a fact for this job
         const existingFact = facts.find(fact => fact.account.uid === uid && fact.jobID === params.data.jobID);

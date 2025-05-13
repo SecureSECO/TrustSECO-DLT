@@ -2,7 +2,7 @@ import { Modules, StateMachine } from 'klayr-sdk';
 import { StoreTrustFact, TrustFactsStore, trustFactsIndex } from './stores/trustfacts'
 
 export class TrustfactsMethod extends Modules.BaseMethod {
-    public async getTrustFacts(context: StateMachine.ImmutableMethodContext, params: { packageName: string, packageOwner?: string, packagePlatform?: string, packageRelease?: string}): Promise<StoreTrustFact[]> {
+    public async getTrustFacts(context: StateMachine.ImmutableMethodContext, params: { packageName: string; packageOwner?: string; packagePlatform?: string; packageRelease?: string}): Promise<StoreTrustFact[]> {
 		const trustfactsStore = this.stores.get(TrustFactsStore);
 		const trustfacts = await trustfactsStore.get(context, trustFactsIndex);
 		const { packageName, packageRelease } = params;

@@ -6,11 +6,10 @@ import {
 	cryptography,
 	Modules,
 	StateMachine
-} from 'klayr-sdk';
+, chain, db } from 'klayr-sdk';
 import { AddPackageDataCommand } from '../../src/app/modules/package_data/commands/add_package_data_command';
 import { PackageDataListStore } from '../../src/app/modules/package_data/stores/packagedata';
 import { PackageDataModule } from '../../src/app/modules/package_data/module';
-import { chain, db } from 'klayr-sdk';
 import { AccountsModule } from '../../src/app/modules/accounts/module';
 import { CodaModule } from '../../src/app/modules/coda/module';
 import { TrustfactsModule } from '../../src/app/modules/trustfacts/module';
@@ -22,7 +21,7 @@ import { CodaJobListStore, CodaJobIdStore } from '../../src/app/modules/coda/sto
 import { TrustFactsStore } from '../../src/app/modules/trustfacts/stores/trustfacts';
 
 export function createTransaction(
-	params: any,
+	params: object,
 	paramsSchema: Schema,
 	nonce: number,
 	commandName: string,
@@ -59,40 +58,40 @@ export async function executeTransaction<CommandType extends Modules.BaseCommand
 }
 
 export async function createAndExecuteTransaction<CommandType extends Modules.BaseCommand>(
-	params: any,
+	params: object,
 	paramsSchema: Schema,
 	nonce: number,
 	command: CommandType,
 	stateStore: any,
 ): Promise<StateMachine.CommandExecuteContext<CommandType>> {
 	const trans = createTransaction(params, paramsSchema, nonce, command.name);
-	return await executeTransaction(command, stateStore, trans, paramsSchema);
+	return executeTransaction(command, stateStore, trans, paramsSchema);
 }
 
 export interface ModulesCollection {
   modules: {
-    accountsModule: AccountsModule,
-    packageModule: PackageDataModule,
-    trustfactsModule: TrustfactsModule,
-    codaModule: CodaModule
-  },
+    accountsModule: AccountsModule;
+    packageModule: PackageDataModule;
+    trustfactsModule: TrustfactsModule;
+    codaModule: CodaModule;
+  };
   commands: {
-    accountsCommand: Modules.BaseCommand,
-    packageCommand: AddPackageDataCommand,
-    trustfactsCommand: Modules.BaseCommand,
-    codaCommand: Modules.BaseCommand
-  },
+    accountsCommand: Modules.BaseCommand;
+    packageCommand: AddPackageDataCommand;
+    trustfactsCommand: Modules.BaseCommand;
+    codaCommand: Modules.BaseCommand;
+  };
   stores: {
-    packagesStore: PackageDataListStore,
-    accountsStore: AccountStore,
-    keysStore: KeysStore,
-    accountIdStore: AccountIdStore,
-    accountUrlStore: AccountUrlStore,
-    codaJobsStore: CodaJobListStore,
-    codaJobIdStore: CodaJobIdStore,
-    trustFactsStore: TrustFactsStore
-  },
-  stateStore: chain.StateStore
+    packagesStore: PackageDataListStore;
+    accountsStore: AccountStore;
+    keysStore: KeysStore;
+    accountIdStore: AccountIdStore;
+    accountUrlStore: AccountUrlStore;
+    codaJobsStore: CodaJobListStore;
+    codaJobIdStore: CodaJobIdStore;
+    trustFactsStore: TrustFactsStore;
+  };
+  stateStore: chain.StateStore;
 }
 
 export function createModules(): ModulesCollection {

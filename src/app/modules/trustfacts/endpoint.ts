@@ -40,20 +40,20 @@ export class TrustfactsEndpoint extends Modules.BaseEndpoint {
 		if (typeof platform !== "string" && typeof platform !== "undefined")
 			throw new Error("platform should be string or undefined.")
 
-		let facts = await this.trustfactsMethod.getTrustFacts(context, {packageName, packageOwner: owner, packagePlatform: platform, packageRelease: version});
+		const facts = await this.trustfactsMethod.getTrustFacts(context, {packageName, packageOwner: owner, packagePlatform: platform, packageRelease: version});
 
 		const categoryScores: Record<string, number> = {};
-		for (const { category, growth_rate, midpoint } of categories) {
+		for (const { category, growthRate, midpoint } of categories) {
 			const categoryFacts = this.getRelevantFacts(facts, version, category);
 			const occurences = this.findOccurenceOfTrustFacts(categoryFacts);
 			const score = this._calculateTrustScore(categoryFacts, occurences);
-			const squashedScore = this.squashTrustScore(score, growth_rate, midpoint);
+			const squashedScore = this.squashTrustScore(score, growthRate, midpoint);
 			categoryScores[category] = squashedScore;
 		}
 		return categoryScores;
 	}
 
-	public async encodeTrustFact(context: Types.ModuleEndpointContext) {
+	public encodeTrustFact(context: Types.ModuleEndpointContext) {
 		return codec.encode(AddTrustFactSchema, context.params).toString('hex');
 	}
 
@@ -95,24 +95,24 @@ export class TrustfactsEndpoint extends Modules.BaseEndpoint {
         let score = 0;
         for (const fact of facts) {
             // TODO: maybe replace occurences_count by amount of facts, this way packages wont get rewarded only having a few facts
-            const occurences_count = occurences[fact.fact];
-            if (occurences_count == undefined) throw new Error("Could not find occurence of trust fact " + fact.fact);
-            const fact_score = scores.find(score => score.fact === fact.fact) ?? { fact: "", weight: 0, average: 1, log: false }
+            const occurencesCount = occurences[fact.fact];
+            if (occurencesCount === undefined) throw new Error(`Could not find occurence of trust fact ${  fact.fact}`);
+            const factScore = scores.find(s => s.fact === fact.fact) ?? { fact: "", weight: 0, average: 1, log: false }
             let factValue = parseFloat(fact.factData);
-            factValue = fact_score.log ? Math.max(Math.log(factValue), 0) : factValue;
-            const weight = fact_score.weight;
-            const average = fact_score.log ? Math.log(fact_score.average) : fact_score.average;
-            if (!isNaN(factValue))
+            factValue = factScore.log ? Math.max(Math.log(factValue), 0) : factValue;
+            const {weight} = factScore;
+            const average = factScore.log ? Math.log(factScore.average) : factScore.average;
+            if (!Number.isNaN(factValue))
             {
-                score += (factValue * weight / average) / occurences_count;
+                score += (factValue * weight / average) / occurencesCount;
             }
         }
         return score;       
     }
 
     /** Reduce a score to a number between 0 and 100 using the logistic function */
-    private squashTrustScore(score: number, growth_rate: number, midpoint: number) {
-        return 100/(1 + Math.pow(Math.E, -growth_rate*(score-midpoint)));
+    private squashTrustScore(score: number, growthRate: number, midpoint: number) {
+        return 100/(1 + Math.E ** -growthRate*(score-midpoint));
     }
 }
 
@@ -144,8 +144,8 @@ const scores = [
 
 const categories = [
     // growth rate and midpoint will be used in the logistic function
-    { category: "Community and Popularity",       growth_rate: 0.02, midpoint: 12 },
-    { category: "Security",                       growth_rate: 0.02, midpoint: -110 },
-    { category: "Project Health and Maintenance", growth_rate: 0.03, midpoint: -40 },
-    { category: "Dependencies and Ecosystem",     growth_rate: 0.05, midpoint: 35 },
+    { category: "Community and Popularity",       growthRate: 0.02, midpoint: 12 },
+    { category: "Security",                       growthRate: 0.02, midpoint: -110 },
+    { category: "Project Health and Maintenance", growthRate: 0.03, midpoint: -40 },
+    { category: "Dependencies and Ecosystem",     growthRate: 0.05, midpoint: 35 },
 ]

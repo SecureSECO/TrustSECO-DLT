@@ -4,12 +4,11 @@
 import { Modules, StateMachine } from 'klayr-sdk';
 import { AddJobCommand } from './commands/add_job_command';
 import { CodaEndpoint } from './endpoint';
-import { CodaMethod } from './method';
+import { CodaMethod , requiredVerifications } from './method';
 import { CodaJobListStore, minimalCodaJobSchema, CodaJobIdStore, jobIdKey, jobListKey, CodaJob } from './stores/coda-schemas';
 import { AccountsMethod } from '../accounts/method';
 import { PackageDataMethod } from '../package_data/method';
 import { TrustfactsMethod } from '../trustfacts/method';
-import { requiredVerifications } from './method';
 
 export class CodaModule extends Modules.BaseModule {
 	public endpoint = new CodaEndpoint(this.stores, this.offchainStores);
@@ -65,10 +64,10 @@ export class CodaModule extends Modules.BaseModule {
 
 	public async initGenesisState(context: StateMachine.GenesisBlockExecuteContext): Promise<void> {
 		const jobIdStore = this.stores.get(CodaJobIdStore);
-		jobIdStore.set(context, jobIdKey, { jobId: 0 })
+		await jobIdStore.set(context, jobIdKey, { jobId: 0 })
 
 		const jobsStore = this.stores.get(CodaJobListStore);
-		jobsStore.set(context, jobListKey, {jobs: []})
+		await jobsStore.set(context, jobListKey, {jobs: []})
 	}
 
 	// Executed every block after all transactions are completed
@@ -78,7 +77,7 @@ export class CodaModule extends Modules.BaseModule {
         const jobsToKeep: CodaJob[] = [];
 
         for (const job of jobs) {
-            const differenceInBlockHeight = context.header.height - parseInt(job.date);
+            const differenceInBlockHeight = context.header.height - parseInt(job.date, 10);
             if (differenceInBlockHeight <= 5760) { 
                 jobsToKeep.push(job); 
 				continue;
@@ -114,7 +113,7 @@ export class CodaModule extends Modules.BaseModule {
 
 	// TODO: this reward payout calculation is pretty stupid, it is not even equal to the original bounty of the job
 	// the reward also doesn't change if it was spidered by multiple accounts
-	private async calculateReward(context: StateMachine.BlockAfterExecuteContext, job: CodaJob, jobFacts: number): Promise<bigint>{
+	private async calculateReward(context: StateMachine.BlockAfterExecuteContext, codaJob: CodaJob, jobFacts: number): Promise<bigint>{
 		// calculate network capacity (total facts)
 		const jobsStore = this.stores.get(CodaJobListStore);
         const { jobs } = await jobsStore.get(context, jobListKey);
@@ -135,6 +134,6 @@ export class CodaModule extends Modules.BaseModule {
 		const networkDemand = requiredVerifications(spideringAccounts.size) * jobs.length;
 
 		// reward is increased or decreased proportionally to the network capacity-demand ratio
-		return (BigInt(networkCapacity) * job.bounty) / (BigInt(jobFacts * networkDemand));
+		return (BigInt(networkCapacity) * codaJob.bounty) / (BigInt(jobFacts * networkDemand));
 	}
 }

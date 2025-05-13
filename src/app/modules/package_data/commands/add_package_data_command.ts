@@ -30,7 +30,7 @@ export class AddPackageDataCommand extends Modules.BaseCommand {
 	public async execute(context: StateMachine.CommandExecuteContext<PackageData>): Promise<void> {
 		const asset = context.params;
 		const packagesStore = this.stores.get(PackageDataListStore);
-		let packages = await packagesStore.get(context, packageListKey);
+		const packages = await packagesStore.get(context, packageListKey);
 		// Find package with same owner, name and platform if it exists
 		const index = packages.packages.findIndex((pack) => pack.packageOwner === asset.packageOwner
 			&& pack.packagePlatform === asset.packagePlatform

@@ -52,6 +52,6 @@ export class AccountsModule extends Modules.BaseModule {
 
 	public async initGenesisState(context: StateMachine.GenesisBlockExecuteContext): Promise<void> {
 		const keyStore = this.stores.get(KeysStore);
-		keyStore.set(context, keyIndex, { keys: [] })
+		await keyStore.set(context, keyIndex, { keys: [] })
 	}
 }

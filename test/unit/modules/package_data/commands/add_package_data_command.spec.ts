@@ -28,7 +28,7 @@ describe('AddPackageDataCommand', () => {
 
 	describe('constructor', () => {
 		it('should have valid name', () => {
-			expect(modules.commands.packageCommand.name).toEqual('addPackageData');
+			expect(modules.commands.packageCommand.name).toBe('addPackageData');
 		});
 
 		it('should have valid schema', () => {
@@ -46,19 +46,19 @@ describe('AddPackageDataCommand', () => {
 	describe('execute', () => {
 		describe('valid cases', () => {
 			it('New package should be added', async () => {
-				let context = await createAndExecuteTransaction(samplePackage, PackageDataSchema, 0, modules.commands.packageCommand, modules.stateStore);
+				const context = await createAndExecuteTransaction(samplePackage, PackageDataSchema, 0, modules.commands.packageCommand, modules.stateStore);
 				let packages = await modules.stores.packagesStore.get(context, packageListKey);
 				expect(packages).toEqual({ packages: [samplePackage] });
-				let context2 = await createAndExecuteTransaction(samplePackage2, PackageDataSchema, 1, modules.commands.packageCommand, modules.stateStore);
+				const context2 = await createAndExecuteTransaction(samplePackage2, PackageDataSchema, 1, modules.commands.packageCommand, modules.stateStore);
 				packages = await modules.stores.packagesStore.get(context2, packageListKey);
 				expect(packages).toEqual({ packages: [samplePackage, samplePackage2] });
 			});
 			it('Versions should be added together', async () => {
-				let context = await createAndExecuteTransaction(samplePackage, PackageDataSchema, 0, modules.commands.packageCommand, modules.stateStore);
+				const context = await createAndExecuteTransaction(samplePackage, PackageDataSchema, 0, modules.commands.packageCommand, modules.stateStore);
 				let packages = await modules.stores.packagesStore.get(context, packageListKey);
-				let package2 = structuredClone(samplePackage);
+				const package2 = structuredClone(samplePackage);
 				package2.packageReleases = ["v2", "v3"]
-				let context2 = await createAndExecuteTransaction(package2, PackageDataSchema, 0, modules.commands.packageCommand, modules.stateStore);
+				const context2 = await createAndExecuteTransaction(package2, PackageDataSchema, 0, modules.commands.packageCommand, modules.stateStore);
 				packages = await modules.stores.packagesStore.get(context2, packageListKey);
 				package2.packageReleases = ["v1.0.1", "v2", "v3"]
 				expect(packages).toEqual({ packages: [package2] });

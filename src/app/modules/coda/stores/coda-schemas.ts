@@ -1,6 +1,6 @@
-import { Schema } from 'klayr-sdk';
+/* eslint-disable max-classes-per-file */
+import { Schema , Modules } from 'klayr-sdk';
 import { AccountId, AccountIdSchema } from '../../accounts/stores/account-id';
-import { Modules } from 'klayr-sdk';
 
 export const validFacts: { source: string; facts: string[] }[] = [
 	{
@@ -58,10 +58,6 @@ export interface CodaJob {
 	account: AccountId;
 }
 
-export interface CodaJobList {
-	jobs: CodaJob[];
-}
-
 export interface MinimalCodaJob {
 	package: string;
 	version: string;
@@ -69,7 +65,7 @@ export interface MinimalCodaJob {
 	bounty: bigint;
 }
 
-export function isMinimalCodaJob(obj: any): boolean {
+export function isMinimalCodaJob(obj: Record<string, unknown>): boolean {
     // Why is this not build into typescript
 	return (
 		typeof obj.package === 'string' &&
@@ -181,7 +177,7 @@ export interface CodaJobList {
 export const jobIdKey = Buffer.alloc(0);
 
 export interface CodaJobId {
-	jobId: number
+	jobId: number;
 }
 
 export class CodaJobIdStore extends Modules.BaseStore<CodaJobId> {

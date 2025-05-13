@@ -17,10 +17,10 @@ export class PackageDataEndpoint extends Modules.BaseEndpoint {
         }
         // Always filter on packageName
         // Filter on packageOwner and platform if the params were provided
-        const pack = packages.packages.filter((pack) => 
-            pack.packageName === packageName 
-            && (typeof packagePlatform !== 'string' || pack.packagePlatform === packagePlatform)
-            && (typeof packageOwner !== 'string' || pack.packageOwner === packageOwner)
+        const pack = packages.packages.filter((p) => 
+            p.packageName === packageName 
+            && (typeof packagePlatform !== 'string' || p.packagePlatform === packagePlatform)
+            && (typeof packageOwner !== 'string' || p.packageOwner === packageOwner)
         )[0];
         if (!pack) throw new Error('No package was found.');
         return pack;
