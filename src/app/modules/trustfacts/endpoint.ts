@@ -112,7 +112,7 @@ export class TrustfactsEndpoint extends Modules.BaseEndpoint {
 
     /** Reduce a score to a number between 0 and 100 using the logistic function */
     private squashTrustScore(score: number, growthRate: number, midpoint: number) {
-        return 100/(1 + Math.E ** -growthRate*(score-midpoint));
+        return 100/(1 + Math.E ** (-growthRate*(score-midpoint)));
     }
 }
 
