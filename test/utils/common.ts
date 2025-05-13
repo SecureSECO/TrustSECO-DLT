@@ -6,9 +6,12 @@ import {
 	cryptography,
 	Modules,
 	StateMachine
-, chain, db } from 'klayr-sdk';
+} from 'klayr-sdk';
+import { createGenesisBlockContext } from "klayr-framework/dist-node/testing/create_contexts"
+import { PrefixedStateReadWriter } from 'klayr-framework/dist-node/state_machine/prefixed_state_read_writer';
+import { InMemoryPrefixedStateDB } from 'klayr-framework/dist-node/testing';
 import { AddPackageDataCommand } from '../../src/app/modules/package_data/commands/add_package_data_command';
-import { PackageDataListStore } from '../../src/app/modules/package_data/stores/packagedata';
+import { PackageDataListStore, packageListKey } from '../../src/app/modules/package_data/stores/packagedata';
 import { PackageDataModule } from '../../src/app/modules/package_data/module';
 import { AccountsModule } from '../../src/app/modules/accounts/module';
 import { CodaModule } from '../../src/app/modules/coda/module';
@@ -91,10 +94,10 @@ export interface ModulesCollection {
     codaJobIdStore: CodaJobIdStore;
     trustFactsStore: TrustFactsStore;
   };
-  stateStore: chain.StateStore;
+  stateStore: PrefixedStateReadWriter;
 }
 
-export function createModules(): ModulesCollection {
+export async function createModules(): Promise<ModulesCollection> {
 	const accountsModule = new AccountsModule();
 	const accountsCommand = accountsModule.commands[0];
 
@@ -111,7 +114,7 @@ export function createModules(): ModulesCollection {
 	codaModule.addDependecies(accountsModule.method, packageModule.method, trustfactsModule.method);
 	trustfactsModule.addDependecies(codaModule.method, accountsModule.method);
 
-	const stateStore = new chain.StateStore(new db.InMemoryDatabase());
+	const stateStore = new PrefixedStateReadWriter(new InMemoryPrefixedStateDB());
 
 	// Get all stores
 	const packagesStore = packageModule.stores.get(PackageDataListStore);
@@ -123,6 +126,15 @@ export function createModules(): ModulesCollection {
 	const codaJobIdStore = codaModule.stores.get(CodaJobIdStore);
 	const trustFactsStore = trustfactsModule.stores.get(TrustFactsStore);
 
+	const context = createGenesisBlockContext({
+				chainID: Buffer.from([0, 0, 0, 0]),
+				stateStore
+			}).createInitGenesisStateContext();
+	await accountsModule.initGenesisState(context);
+	await packageModule.initGenesisState(context);
+	await packagesStore.set(context, packageListKey, { packages: [] });
+	await trustfactsModule.initGenesisState(context);
+	await codaModule.initGenesisState(context);
 	return {
 		modules: {
 			accountsModule,

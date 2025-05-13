@@ -22,8 +22,8 @@ describe('AddPackageDataCommand', () => {
 		packageReleases: ['v1.2.1'],
 	};
 
-	beforeEach(() => {
-		modules = createModules();
+	beforeEach(async () => {
+		modules = await createModules();
 	});
 
 	describe('constructor', () => {
@@ -58,7 +58,7 @@ describe('AddPackageDataCommand', () => {
 				let packages = await modules.stores.packagesStore.get(context, packageListKey);
 				const package2 = structuredClone(samplePackage);
 				package2.packageReleases = ["v2", "v3"]
-				const context2 = await createAndExecuteTransaction(package2, PackageDataSchema, 0, modules.commands.packageCommand, modules.stateStore);
+				const context2 = await createAndExecuteTransaction(package2, PackageDataSchema, 1, modules.commands.packageCommand, modules.stateStore);
 				packages = await modules.stores.packagesStore.get(context2, packageListKey);
 				package2.packageReleases = ["v1.0.1", "v2", "v3"]
 				expect(packages).toEqual({ packages: [package2] });
