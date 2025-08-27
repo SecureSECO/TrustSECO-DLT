@@ -1,12 +1,15 @@
-import { Modules, Types, codec } from 'klayr-sdk';
+import { Modules, Types, codec, StateMachine } from 'klayr-sdk';
 import { TrustfactsMethod } from './method';
-import { StoreTrustFact, AddTrustFactSchema } from './stores/trustfacts';
+import { PackageDataMethod } from '../package_data/method';
+import { StoreTrustFact, AddTrustFactSchema, TopPackageResult } from './stores/trustfacts';
 
 export class TrustfactsEndpoint extends Modules.BaseEndpoint {
     private trustfactsMethod!: TrustfactsMethod;
+    private packageDataMethod!: PackageDataMethod;
     
-    public addDependecies(trustfactsMethod: TrustfactsMethod) {
+    public addDependecies(trustfactsMethod: TrustfactsMethod, packageDataMethod: PackageDataMethod) {
         this.trustfactsMethod = trustfactsMethod;
+        this.packageDataMethod = packageDataMethod;
     }
 
 	public async calculateTrustScore(context: Types.ModuleEndpointContext) {
@@ -19,13 +22,36 @@ export class TrustfactsEndpoint extends Modules.BaseEndpoint {
 			throw new Error("owner should be string or undefined.")
 		if (typeof platform !== "string" && typeof platform !== "undefined")
 			throw new Error("platform should be string or undefined.")
-		let facts = await this.trustfactsMethod.getTrustFacts(context, {packageName, packageOwner: owner, packagePlatform: platform, packageRelease: version});
+        return this._calculateTrustScore(context, { packageName, version, owner, platform });
+	}
 
-		facts = this.getRelevantFacts(facts, version);
-		const occurences = this.findOccurenceOfTrustFacts(facts);
-		const score = this._calculateTrustScore(facts, occurences);
-		const squashedScore = this.squashTrustScore(score, 0.02, 50);
-		return squashedScore;
+	public async getTopPackages(context: Types.ModuleEndpointContext): Promise<TopPackageResult> {
+		const { descending, count } = context.params;
+		if (typeof descending !== 'boolean') throw new Error('descending should be boolean.');
+		if (typeof count !== 'number') throw new Error('count should be number.');
+
+		const packages = await this.packageDataMethod.getAllPackages(context);
+		const withScore = (
+			await Promise.all(
+				packages.packages.map(async pack => {
+					const score = await this._calculateTrustScore(context, {
+						packageName: pack.packageName,
+						version: undefined,
+						platform: pack.packagePlatform,
+						owner: pack.packageOwner,
+					});
+					if (typeof score !== 'number') return null;
+					return {
+						...pack,
+						score,
+					};
+				}),
+			)
+		)
+			.filter(pack => pack !== null)
+			.sort((a, b) => (descending ? b.score - a.score : a.score - b.score))
+			.slice(0, count);
+		return { packages: withScore };
 	}
 
 	/** Calculates trust score per category listed above */
@@ -46,7 +72,7 @@ export class TrustfactsEndpoint extends Modules.BaseEndpoint {
 		for (const { category, growthRate, midpoint } of categories) {
 			const categoryFacts = this.getRelevantFacts(facts, version, category);
 			const occurences = this.findOccurenceOfTrustFacts(categoryFacts);
-			const score = this._calculateTrustScore(categoryFacts, occurences);
+			const score = this.combineFactsIntoScore(categoryFacts, occurences);
 			const squashedScore = this.squashTrustScore(score, growthRate, midpoint);
 			categoryScores[category] = squashedScore;
 		}
@@ -89,9 +115,19 @@ export class TrustfactsEndpoint extends Modules.BaseEndpoint {
         }
         return trustFactOccurence;
     }
+    
+    private async _calculateTrustScore(context: StateMachine.ImmutableMethodContext, pack: { packageName: string; version: string | undefined; owner: string | undefined; platform: string | undefined }): Promise<number> {
+        const { packageName, version, owner, platform } = pack;
+		let facts = await this.trustfactsMethod.getTrustFacts(context, {packageName, packageOwner: owner, packagePlatform: platform, packageRelease: version});
+		facts = this.getRelevantFacts(facts, version);
+		const occurences = this.findOccurenceOfTrustFacts(facts);
+		const score = this.combineFactsIntoScore(facts, occurences);
+		const squashedScore = this.squashTrustScore(score, 0.02, 50);
+		return squashedScore;
+    }
 
     /** combines all the trustfacts into a single score */
-    private _calculateTrustScore(facts: StoreTrustFact[], occurences: Record<string, number>) {
+    private combineFactsIntoScore(facts: StoreTrustFact[], occurences: Record<string, number>) {
         let score = 0;
         for (const fact of facts) {
             // TODO: maybe replace occurences_count by amount of facts, this way packages wont get rewarded only having a few facts

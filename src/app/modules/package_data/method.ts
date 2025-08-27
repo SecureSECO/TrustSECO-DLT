@@ -3,6 +3,7 @@ import {
 	PackageData,
 	PackageDataListStore,
 	packageListKey,
+	PackageDataList
 } from './stores/packagedata';
 
 export class PackageDataMethod extends Modules.BaseMethod {
@@ -24,4 +25,11 @@ export class PackageDataMethod extends Modules.BaseMethod {
 		if (!pack) throw new Error('No package was found.');
 		return pack;
 	}
+
+    public async getAllPackages(ctx: StateMachine.ImmutableMethodContext): Promise<PackageDataList> {
+        const packagesStore = this.stores.get(PackageDataListStore);
+        if (!await packagesStore.has(ctx, packageListKey)) return {packages: []}
+        const packages = await packagesStore.get(ctx, packageListKey);
+        return packages
+    }
 }

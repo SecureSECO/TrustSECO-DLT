@@ -8,6 +8,7 @@ import { TrustfactsMethod } from './method';
 import { CodaMethod } from '../coda/method';
 import { TrustFactsStore, RequestSchema, AddTrustFactSchema, trustFactsIndex } from './stores/trustfacts';
 import { AccountsMethod } from '../accounts/method';
+import { PackageDataMethod } from '../package_data/method';
 
 export class TrustfactsModule extends Modules.BaseModule {
 	public endpoint = new TrustfactsEndpoint(this.stores, this.offchainStores);
@@ -52,9 +53,9 @@ export class TrustfactsModule extends Modules.BaseModule {
 		};
 	}
 
-	public addDependecies(codaMethod: CodaMethod, accountsMethod: AccountsMethod) {
+	public addDependecies(codaMethod: CodaMethod, accountsMethod: AccountsMethod, packageDataMethod: PackageDataMethod) {
 		this.commands[0].addDependecies(codaMethod, accountsMethod);
-		this.endpoint.addDependecies(this.method);
+		this.endpoint.addDependecies(this.method, packageDataMethod);
 	}
 
 	public async initGenesisState(context: StateMachine.GenesisBlockExecuteContext): Promise<void> {
