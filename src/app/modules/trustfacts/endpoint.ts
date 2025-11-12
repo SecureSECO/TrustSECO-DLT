@@ -113,7 +113,9 @@ export class TrustfactsEndpoint extends Modules.BaseEndpoint {
 		const packages = await this.packageDataMethod.getAllPackages(context);
 		return packages.packages
 			.map(pack => {
-				const score = this._calculateTrustScoreWithFacts(packageFacts[pack.packageName]);
+				const facts = packageFacts[pack.packageName];
+				if (!facts) return null;
+				const score = this._calculateTrustScoreWithFacts(facts);
 				if (typeof score !== 'number') return null;
 				return {
 					...pack,

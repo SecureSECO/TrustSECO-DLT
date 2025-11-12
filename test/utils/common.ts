@@ -112,7 +112,7 @@ export async function createModules(): Promise<ModulesCollection> {
 
 	// Add dependencies
 	codaModule.addDependecies(accountsModule.method, packageModule.method, trustfactsModule.method);
-	trustfactsModule.addDependecies(codaModule.method, accountsModule.method);
+	trustfactsModule.addDependecies(codaModule.method, accountsModule.method, packageModule.method);
 
 	const stateStore = new PrefixedStateReadWriter(new InMemoryPrefixedStateDB());
 
