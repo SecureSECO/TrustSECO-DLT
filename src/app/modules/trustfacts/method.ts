@@ -17,4 +17,10 @@ export class TrustfactsMethod extends Modules.BaseMethod {
 		);
 		return pack;
     }
+
+    public async getAllTrustFacts(context: StateMachine.ImmutableMethodContext): Promise<StoreTrustFact[]> {
+		const trustfactsStore = this.stores.get(TrustFactsStore);
+		const trustfacts = await trustfactsStore.get(context, trustFactsIndex);
+		return trustfacts.facts;
+    }
 }

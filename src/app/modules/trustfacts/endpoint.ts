@@ -1,7 +1,7 @@
 import { Modules, Types, codec, StateMachine } from 'klayr-sdk';
 import { TrustfactsMethod } from './method';
 import { PackageDataMethod } from '../package_data/method';
-import { StoreTrustFact, AddTrustFactSchema, TopPackageResult } from './stores/trustfacts';
+import { StoreTrustFact, AddTrustFactSchema, TopPackageResult, TopPackage } from './stores/trustfacts';
 
 export class TrustfactsEndpoint extends Modules.BaseEndpoint {
     private trustfactsMethod!: TrustfactsMethod;
@@ -30,25 +30,7 @@ export class TrustfactsEndpoint extends Modules.BaseEndpoint {
 		if (typeof descending !== 'boolean') throw new Error('descending should be boolean.');
 		if (typeof count !== 'number') throw new Error('count should be number.');
 
-		const packages = await this.packageDataMethod.getAllPackages(context);
-		const withScore = (
-			await Promise.all(
-				packages.packages.map(async pack => {
-					const score = await this._calculateTrustScore(context, {
-						packageName: pack.packageName,
-						version: undefined,
-						platform: pack.packagePlatform,
-						owner: pack.packageOwner,
-					});
-					if (typeof score !== 'number') return null;
-					return {
-						...pack,
-						score,
-					};
-				}),
-			)
-		)
-			.filter(pack => pack !== null)
+		const withScore = (await this._getAllTrustScores(context))
 			.sort((a, b) => (descending ? b.score - a.score : a.score - b.score))
 			.slice(0, count);
 		return { packages: withScore };
@@ -115,16 +97,45 @@ export class TrustfactsEndpoint extends Modules.BaseEndpoint {
         }
         return trustFactOccurence;
     }
+	
+	private async _getAllTrustScores(
+		context: StateMachine.ImmutableMethodContext,
+	): Promise<TopPackage[]> {
+		const allFacts = await this.trustfactsMethod.getAllTrustFacts(context);
+		const packageFacts: Record<string, StoreTrustFact[]> = {};
+		for (const fact of allFacts) {
+			if (packageFacts[fact.packageName] === undefined) {
+				packageFacts[fact.packageName] = [fact];
+			} else {
+				packageFacts[fact.packageName].push(fact);
+			}
+		}
+		const packages = await this.packageDataMethod.getAllPackages(context);
+		return packages.packages
+			.map(pack => {
+				const score = this._calculateTrustScoreWithFacts(packageFacts[pack.packageName]);
+				if (typeof score !== 'number') return null;
+				return {
+					...pack,
+					score,
+				};
+			})
+			.filter(pack => pack !== null);
+	}
     
     private async _calculateTrustScore(context: StateMachine.ImmutableMethodContext, pack: { packageName: string; version: string | undefined; owner: string | undefined; platform: string | undefined }): Promise<number> {
         const { packageName, version, owner, platform } = pack;
 		let facts = await this.trustfactsMethod.getTrustFacts(context, {packageName, packageOwner: owner, packagePlatform: platform, packageRelease: version});
 		facts = this.getRelevantFacts(facts, version);
+		return this._calculateTrustScoreWithFacts(facts);
+    }
+
+	private _calculateTrustScoreWithFacts(facts: StoreTrustFact[]): number {
 		const occurences = this.findOccurenceOfTrustFacts(facts);
 		const score = this.combineFactsIntoScore(facts, occurences);
 		const squashedScore = this.squashTrustScore(score, 0.02, 50);
 		return squashedScore;
-    }
+	}
 
     /** combines all the trustfacts into a single score */
     private combineFactsIntoScore(facts: StoreTrustFact[], occurences: Record<string, number>) {
