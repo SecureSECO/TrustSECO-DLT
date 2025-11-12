@@ -155,11 +155,11 @@ export const TopPackageSchema: Schema = {
 }
 
 export interface TopPackage {
-    packageName: string,
-    packagePlatform: string,
-    packageOwner: string,
-    packageReleases: string[],
-    score: number,
+    packageName: string;
+    packagePlatform: string;
+    packageOwner: string;
+    packageReleases: string[];
+    score: number;
 }
 
 
