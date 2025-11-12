@@ -143,7 +143,7 @@ export class TrustfactsEndpoint extends Modules.BaseEndpoint {
         for (const fact of facts) {
             // TODO: maybe replace occurences_count by amount of facts, this way packages wont get rewarded only having a few facts
             const occurencesCount = occurences[fact.fact];
-            if (occurencesCount === undefined) throw new Error(`Could not find occurence of trust fact ${  fact.fact}`);
+            if (occurencesCount === undefined) continue;
             const factScore = scores.find(s => s.fact === fact.fact) ?? { fact: "", weight: 0, average: 1, log: false }
             let factValue = parseFloat(fact.factData);
             factValue = factScore.log ? Math.max(Math.log(factValue), 0) : factValue;
