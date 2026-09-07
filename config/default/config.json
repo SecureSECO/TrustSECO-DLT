@@ -1,62 +1,55 @@
 {
-	"system": {
-		"version": "2.0.0",
-		"dataPath": "~/.klayr/TrustSECO",
-		"keepEventsForHeights": 300,
-		"logLevel": "info"
-	},
-	"rpc": {
-		"modes": [
-			"ipc",
-			"ws",
-			"http"
-		],
-		"port": 7887,
-		"host": "0.0.0.0",
-		"allowedMethods": ["*"],
-		"accessControlAllowOrigin": "*"
-	},
-	"network": {
-		"version": "2.0",
-        "seedPeers": [
-            {
-                "ip": "trustseco1.science.uu.nl",
-                "port": 8000
-            },
-            {
-                "ip": "trustseco2.science.uu.nl",
-                "port": 8000
-            }
-        ],
-		"port": 8000
-	},
-	"transactionPool": {
-		"maxTransactions": 4096,
-		"maxTransactionsPerAccount": 64,
-		"transactionExpiryTime": 10800000,
-		"minEntranceFeePriority": "0",
-		"minReplacementFeeDifference": "10"
-	},
-	"genesis": {
-		"block": {
-			"fromFile": "./config/genesis_block.blob"
-		},
-		"blockTime": 30,
-		"bftBatchSize": 103,
-		"maxTransactionsSize": 30720,
-		"chainID": "7365636f"
-	},
-	"generator": {
-		"keys": {
-			"fromFile": "./config/dev-validators.json"
-		}
-	},
-	"modules": {},
-    "plugins": {
-        "dashboard": {
-            "applicationName": "TrustSECO DLT",
-            "port": 8001,
-            "host": "0.0.0.0"
-        }
+  "system": {
+    "version": "2.0.0",
+    "dataPath": "~/.klayr/TrustSECO",
+    "keepEventsForHeights": 300,
+    "logLevel": "info"
+  },
+  "rpc": {
+    "modes": [
+      "ipc",
+      "ws",
+      "http"
+    ],
+    "port": 7887,
+    "host": "0.0.0.0",
+    "allowedMethods": [
+      "*"
+    ],
+    "accessControlAllowOrigin": "*"
+  },
+  "network": {
+    "version": "2.0",
+    "seedPeers": [],
+    "port": 8000
+  },
+  "transactionPool": {
+    "maxTransactions": 4096,
+    "maxTransactionsPerAccount": 64,
+    "transactionExpiryTime": 10800000,
+    "minEntranceFeePriority": "0",
+    "minReplacementFeeDifference": "10"
+  },
+  "genesis": {
+    "block": {
+      "fromFile": "./config/genesis_block.blob"
+    },
+    "blockTime": 30,
+    "bftBatchSize": 103,
+    "maxTransactionsSize": 30720,
+    "chainID": "7365636f"
+  },
+  "generator": {
+    "keys": {
+      "fromFile": "./config/dev-validators.json"
     }
+  },
+  "modules": {},
+  "plugins": {
+    "dashboard": {
+      "applicationName": "TrustSECO DLT",
+      "port": 8001,
+      "host": "0.0.0.0"
+    }
+  }
 }

@@ -4,6 +4,12 @@ exports[`AccountAddCommand constructor should have valid schema 1`] = `
 {
   "$id": "account/accountAdd-params",
   "properties": {
+    "fingerprint": {
+      "dataType": "string",
+      "fieldNumber": 2,
+      "maxLength": 64,
+      "minLength": 40,
+    },
     "url": {
       "dataType": "string",
       "fieldNumber": 1,

@@ -7,6 +7,7 @@ import { KeysStore, keyIndex } from '../stores/keys';
 
 interface Params {
 	url: string;
+	fingerprint?: string;
 }
 
 export class AccountAddCommand extends Modules.BaseCommand {
@@ -16,6 +17,7 @@ export class AccountAddCommand extends Modules.BaseCommand {
 		type: 'object',
 		required: ['url'],
 		properties: {
+			fingerprint: { dataType: 'string', fieldNumber: 2, minLength: 40, maxLength: 64 },
 			url: {
 				dataType: 'string',
 				fieldNumber: 1,
@@ -26,10 +28,9 @@ export class AccountAddCommand extends Modules.BaseCommand {
 	};
 
 	public async verify(context: StateMachine.CommandVerifyContext<Params>): Promise<StateMachine.VerificationResult> {
-		const {url} = context.params
+		const {url, fingerprint} = context.params
         if (!GPG.validateURL(url)) throw new Error('url should be of the form https://github.com/[username].gpg');
-		await GPG.import_(url); // throws error on invalid import
-        const { uid } = await GPG.import_( url );
+        const { uid } = await GPG.import_(url, fingerprint);
 		const accountStore = this.stores.get(AccountStore);
         // when the account is already known, we don't need to do anything
         if (await accountStore.has(context, Buffer.from(uid))) {
@@ -40,10 +41,10 @@ export class AccountAddCommand extends Modules.BaseCommand {
 	}
 
 	public async execute(context: StateMachine.CommandExecuteContext<Params>): Promise<void> {
-		const {url} = context.params
+		const {url, fingerprint} = context.params
         context.logger.info(`Adding GPG key from ${url}`);
 
-        const { uid, key } = await GPG.import_( url );
+        const { uid, key } = await GPG.import_(url, fingerprint);
 
 		const keysStore = this.stores.get(KeysStore);
         let gpgKeys: { key: string }[] = [];

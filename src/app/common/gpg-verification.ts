@@ -15,16 +15,23 @@ export const validateURL = (url: string) => urlPattern.test(url);
 
 /** import a GPG key from a URL
  * returns the account UID, and a string containing the armored key */
-export async function import_(url: string): Promise<ImportResult> {
+export async function import_(url: string, fingerprint?: string): Promise<ImportResult> {
 	const match = url.match(urlPattern);
 	if (!match) throw new Error(`Url ${url} is not a GitHub GPG link`);
 	const response: AxiosResponse<string> = await axios.get(url);
 	const { data } = response;
-	const key = await openpgp.readKey({ armoredKey: data });
+	const blocks = data.match(/-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\S]*?-----END PGP PUBLIC KEY BLOCK-----/g);
+	if (!blocks) throw new Error('No public GPG keys found');
+	const keys = (await Promise.all(blocks.map(armoredKeys => openpgp.readKeys({ armoredKeys })))).flat();
+	// Preserve legacy selection for transactions without a fingerprint.
+	const key = fingerprint === undefined ? keys[0] : keys.find(
+		candidate => candidate.getFingerprint().toUpperCase() === fingerprint.toUpperCase(),
+	);
+	if (!key) throw new Error('Requested GPG fingerprint is not published on GitHub');
 	const accountUid = key.getKeyID().toHex().toUpperCase();
 	if (accountUid === undefined)
 		throw new Error(`Unable to find the uid for the GPG key from ${url}`);
-	return { uid: accountUid, key: data };
+	return { uid: accountUid, key: key.armor() };
 }
 
 /** verify the signature of a signed object
