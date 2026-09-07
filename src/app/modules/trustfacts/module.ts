@@ -23,6 +23,7 @@ export class TrustfactsModule extends Modules.BaseModule {
 	public metadata(): Modules.ModuleMetadata {
 		return {
 			endpoints: [
+                { name: this.endpoint.calculateScoreForFacts.name },
 				{
 					name: this.endpoint.calculateTrustScore.name,
 					request: RequestSchema,
