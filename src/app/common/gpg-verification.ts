@@ -22,7 +22,7 @@ export async function import_(url: string, fingerprint?: string): Promise<Import
 	const { data } = response;
 	const blocks = data.match(/-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\S]*?-----END PGP PUBLIC KEY BLOCK-----/g);
 	if (!blocks) throw new Error('No public GPG keys found');
-	const keys = (await Promise.all(blocks.map(armoredKeys => openpgp.readKeys({ armoredKeys })))).flat();
+	const keys = (await Promise.all(blocks.map(async armoredKeys => openpgp.readKeys({ armoredKeys })))).flat();
 	// Preserve legacy selection for transactions without a fingerprint.
 	const key = fingerprint === undefined ? keys[0] : keys.find(
 		candidate => candidate.getFingerprint().toUpperCase() === fingerprint.toUpperCase(),

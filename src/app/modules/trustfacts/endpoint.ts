@@ -6,10 +6,15 @@ import { StoreTrustFact, AddTrustFactSchema, TopPackageResult, TopPackage } from
 export class TrustfactsEndpoint extends Modules.BaseEndpoint {
     /** Read-only calculation: supplied facts are not asserted to be ledger facts. */
     public calculateScoreForFacts(context: Types.ModuleEndpointContext) {
-        const { facts } = context.params;
-        if (!Array.isArray(facts) || facts.length > 10000 || facts.some(f =>
-            !f || typeof f.fact !== 'string' || typeof f.factData !== 'string'))
+        const input: unknown = context.params.facts;
+        const isFact = (value: unknown): value is { fact: string; factData: string } =>
+            typeof value === 'object' && value !== null &&
+            'fact' in value && typeof value.fact === 'string' &&
+            'factData' in value && typeof value.factData === 'string';
+        if (!Array.isArray(input) || input.length > 10000)
             throw new Error('facts must contain at most 10000 fact/factData string pairs');
+        const facts: unknown[] = input;
+        if (!facts.every(isFact)) throw new Error('Every fact requires fact and factData strings');
         const relevant = facts.filter(f => scores.some(s => s.fact === f.fact) && Number.isFinite(parseFloat(f.factData)));
         return { score: relevant.length ? this._calculateTrustScoreWithFacts(relevant as StoreTrustFact[]) : null,
             measurementCount: relevant.length, factTypeCount: new Set(relevant.map(f => f.fact)).size,
