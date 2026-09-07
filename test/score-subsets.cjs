@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const {TrustfactsModule}=require('../dist/app/modules/trustfacts/module');
+const e=new TrustfactsModule().endpoint;
+const facts=[{fact:'gh_open_issues_count',factData:'149'},{fact:'gh_contributor_count',factData:'795'}];
+const run=facts=>e.calculateScoreForFacts({params:{facts}});
+assert.equal(run(facts).score,e._calculateTrustScoreWithFacts(facts));
+assert.equal(run([]).score,null);
+assert.equal(run([{fact:'gh_repository_language',factData:'"Python"'}]).score,null);
+assert.equal(run([...facts,{fact:'gh_open_issues_count',factData:'invalid'}]).measurementCount,2);
+assert.equal(run(facts).factTypeCount,2);
+assert.notEqual(run(facts).score,run([facts[0]]).score);
+assert.throws(()=>run([{fact:'x',factData:1}]));
+console.log('PASS: same ledger formula, empty/unscored subsets, invalid values, coverage, partial subsets, validation');

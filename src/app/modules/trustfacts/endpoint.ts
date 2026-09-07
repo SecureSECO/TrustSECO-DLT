@@ -4,6 +4,18 @@ import { PackageDataMethod } from '../package_data/method';
 import { StoreTrustFact, AddTrustFactSchema, TopPackageResult, TopPackage } from './stores/trustfacts';
 
 export class TrustfactsEndpoint extends Modules.BaseEndpoint {
+    /** Read-only calculation: supplied facts are not asserted to be ledger facts. */
+    public calculateScoreForFacts(context: Types.ModuleEndpointContext) {
+        const { facts } = context.params;
+        if (!Array.isArray(facts) || facts.length > 10000 || facts.some(f =>
+            !f || typeof f.fact !== 'string' || typeof f.factData !== 'string'))
+            throw new Error('facts must contain at most 10000 fact/factData string pairs');
+        const relevant = facts.filter(f => scores.some(s => s.fact === f.fact) && Number.isFinite(parseFloat(f.factData)));
+        return { score: relevant.length ? this._calculateTrustScoreWithFacts(relevant as StoreTrustFact[]) : null,
+            measurementCount: relevant.length, factTypeCount: new Set(relevant.map(f => f.fact)).size,
+            totalFactTypes: scores.length };
+    }
+
     private trustfactsMethod!: TrustfactsMethod;
     private packageDataMethod!: PackageDataMethod;
     
